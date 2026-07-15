@@ -2,7 +2,8 @@ import { Excalidraw, exportToBlob } from "@excalidraw/excalidraw";
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import type { BinaryFiles, ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createPilotAgentApi } from "./agent/pilotAgentApi";
+import { createPilotAgentApi, type PilotAgentApi } from "./agent/pilotAgentApi";
+import { runTimedAgent, type AgentTrajectoryEntry } from "./agent/timedAgent";
 import { summarizeElements, type SceneSummary } from "./agent/tools";
 import { createSeedScene } from "./data/seedScenes";
 import {
@@ -19,6 +20,7 @@ import type {
   PhaseTransition,
   PointerModalityEvent,
   SessionExport,
+  SessionActor,
   SessionMetadata,
   ThinkAloudEvent
 } from "./data/sessionTypes";
@@ -35,6 +37,8 @@ import {
 const actionIdleMs = 700;
 const snapshotIntervalMs = 5000;
 const recordingTimesliceMs = 10000;
+const agentTimeBudgetMs = 5 * 60 * 1000;
+const agentFinalizationWindowMs = 30 * 1000;
 
 type SessionStatus = "setup" | "active" | "completed";
 type RecordedAction = ArtifactActionEntry & {
@@ -102,6 +106,7 @@ function downloadBlob(fileName: string, blob: Blob) {
 function App() {
   const [api, setApi] = useState<ExcalidrawImperativeAPI | null>(null);
   const [status, setStatus] = useState<SessionStatus>("setup");
+  const [selectedActor, setSelectedActor] = useState<SessionActor | null>(null);
   const [participantId, setParticipantId] = useState("");
   const [selectedTaskType, setSelectedTaskType] = useState<TaskType>("free_creation");
   const [selectedSeedId, setSelectedSeedId] = useState(taskDefinitions[0].seeds[0].id);
@@ -115,11 +120,12 @@ function App() {
   const [snapshotCount, setSnapshotCount] = useState(0);
   const [thinkAloudCount, setThinkAloudCount] = useState(0);
   const [elapsedDisplayMs, setElapsedDisplayMs] = useState(0);
-  const [noteText, setNoteText] = useState("");
   const [postTaskResponse, setPostTaskResponse] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [pendingTranscriptions, setPendingTranscriptions] = useState(0);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
+  const [isAgentRunning, setIsAgentRunning] = useState(false);
+  const [agentTrajectory, setAgentTrajectory] = useState<AgentTrajectoryEntry[]>([]);
   const [message, setMessage] = useState("참가자와 task를 설정하세요.");
 
   const sessionRef = useRef<SessionMetadata | null>(null);
@@ -144,6 +150,11 @@ function App() {
   const audioChunksRef = useRef<Blob[]>([]);
   const audioChunkIndexRef = useRef(0);
   const previousAudioChunkEndRef = useRef(0);
+  const pilotAgentApiRef = useRef<PilotAgentApi | null>(null);
+  const agentAbortRef = useRef<AbortController | null>(null);
+  const agentStartedSessionIdRef = useRef("");
+  const agentTrajectoryRef = useRef<AgentTrajectoryEntry[]>([]);
+  const completionReasonRef = useRef("manual");
 
   const selectedTask = useMemo(() => taskByType(selectedTaskType), [selectedTaskType]);
   const currentInstruction = instructionForTask(selectedTaskType, resolvedSeed.label, phase);
@@ -288,8 +299,8 @@ function App() {
   }, [elapsedMs, flushHumanAction, status]);
 
   const startSession = useCallback(() => {
-    if (!api || !participantId.trim()) {
-      setMessage(api ? "Participant ID를 입력하세요." : "Canvas가 준비되지 않았습니다.");
+    if (!api || !selectedActor || (selectedActor === "human" && !participantId.trim())) {
+      setMessage(!api ? "Canvas가 준비되지 않았습니다." : "Participant ID를 입력하세요.");
       return;
     }
     const seed = chooseSeed(selectedTaskType, selectedSeedId, randomizeSeed);
@@ -299,17 +310,24 @@ function App() {
     const startedAt = new Date();
     const metadata: SessionMetadata = {
       sessionId,
-      participantId: participantId.trim(),
-      actorType: "human",
+      participantId: selectedActor === "human" ? participantId.trim() : "agent",
+      actorType: selectedActor,
       taskType: selectedTaskType,
       taskTitle: selectedTask.title,
       seedId: seed.id,
       seedLabel: seed.label,
       seedSelection: randomizeSeed ? "random" : "manual",
-      inputDevice,
+      inputDevice: selectedActor === "human" ? inputDevice : "unknown",
       startedAt: startedAt.toISOString(),
       endedAt: null,
-      durationMs: null
+      durationMs: null,
+      completionReason: null,
+      agentConfig: selectedActor === "agent" ? {
+        model: null,
+        timeBudgetMs: agentTimeBudgetMs,
+        finalizationWindowMs: agentFinalizationWindowMs,
+        terminationPolicy: "time_budget"
+      } : null
     };
 
     sessionStartedPerformanceRef.current = performance.now();
@@ -319,6 +337,8 @@ function App() {
     actionsRef.current = [];
     snapshotsRef.current = [];
     thinkAloudRef.current = [];
+    agentTrajectoryRef.current = [];
+    completionReasonRef.current = "manual";
     phaseTransitionsRef.current = [];
     pointerEventsRef.current = [];
     audioChunksRef.current = [];
@@ -340,12 +360,14 @@ function App() {
     setActionCount(0);
     setSnapshotCount(0);
     setThinkAloudCount(0);
+    setAgentTrajectory([]);
+    setIsAgentRunning(false);
     setElapsedDisplayMs(0);
     setPostTaskResponse("");
     setStatus("active");
-    setMessage("Session recording active");
+    setMessage(selectedActor === "agent" ? "Agent session ready" : "Session recording active");
     captureSnapshot("initial", initialElements, initialPhase);
-  }, [api, captureSnapshot, inputDevice, participantId, randomizeSeed, selectedSeedId, selectedTask, selectedTaskType]);
+  }, [api, captureSnapshot, inputDevice, participantId, randomizeSeed, selectedActor, selectedSeedId, selectedTask, selectedTaskType]);
 
   const revealPhaseTwo = useCallback(() => {
     if (status !== "active" || selectedTaskType !== "adaptive_reframing" || phaseRef.current !== "phase_1") return;
@@ -452,7 +474,8 @@ function App() {
   }, []);
 
   const finishSession = useCallback(() => {
-    if (status !== "active" || !sessionRef.current) return;
+    if (!sessionRef.current || sessionRef.current.endedAt) return;
+    agentAbortRef.current?.abort();
     if (isRecording) stopRecording();
     flushHumanAction();
     if (postTaskResponse.trim()) appendThinkAloud(postTaskResponse, "post_task_response");
@@ -461,17 +484,18 @@ function App() {
     const completed = {
       ...sessionRef.current,
       endedAt: timestampAt(duration),
-      durationMs: duration
+      durationMs: duration,
+      completionReason: completionReasonRef.current
     };
     sessionRef.current = completed;
     setSessionMetadata(completed);
     setElapsedDisplayMs(duration);
     setStatus("completed");
     setMessage("Session completed. Export data when transcription is finished.");
-  }, [appendThinkAloud, captureSnapshot, elapsedMs, flushHumanAction, isRecording, postTaskResponse, status, stopRecording, timestampAt]);
+  }, [appendThinkAloud, captureSnapshot, elapsedMs, flushHumanAction, isRecording, postTaskResponse, stopRecording, timestampAt]);
 
   const exportSession = useCallback(async () => {
-    if (!api || !sessionRef.current || status !== "completed" || isRecording || pendingTranscriptions > 0) return;
+    if (!api || !sessionRef.current || status !== "completed" || isRecording || isAgentRunning || pendingTranscriptions > 0) return;
     const elements = api.getSceneElements();
     const imageBlob = await exportToBlob({
       elements,
@@ -505,6 +529,7 @@ function App() {
       phaseTransitions: phaseTransitionsRef.current,
       actions: actionsRef.current,
       thinkAloud: thinkAloudRef.current,
+      agentTrajectory: agentTrajectoryRef.current,
       pointerModalities: pointerEventsRef.current,
       snapshots: snapshotsRef.current,
       finalArtifact: {
@@ -515,7 +540,7 @@ function App() {
     };
     downloadBlob(`${sessionRef.current.sessionId}.json`, new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
     setMessage("Session JSON downloaded");
-  }, [api, isRecording, pendingTranscriptions, status]);
+  }, [api, isAgentRunning, isRecording, pendingTranscriptions, status]);
 
   const downloadAudio = useCallback(() => {
     if (!sessionRef.current || audioChunksRef.current.length === 0) return;
@@ -528,10 +553,30 @@ function App() {
     suppressHumanChangeUntilRef.current = performance.now() + 500;
     api.updateScene({ elements: [] });
     sessionRef.current = null;
+    agentAbortRef.current?.abort();
+    agentAbortRef.current = null;
+    agentStartedSessionIdRef.current = "";
     setSessionMetadata(null);
+    setSelectedActor(null);
     setStatus("setup");
     setMessage("참가자와 task를 설정하세요.");
     setSummary(emptySummary);
+    setAgentTrajectory([]);
+  }, [api]);
+
+  const captureAgentScreenshot = useCallback(async () => {
+    if (!api) return undefined;
+    const elements = api.getSceneElements();
+    if (elements.length === 0) return undefined;
+    const blob = await exportToBlob({
+      elements,
+      appState: { ...api.getAppState(), exportBackground: true, viewBackgroundColor: "#ffffff" },
+      files: api.getFiles(),
+      mimeType: "image/png",
+      exportPadding: 24,
+      maxWidthOrHeight: 1400
+    });
+    return blobToDataUrl(blob);
   }, [api]);
 
   useEffect(() => {
@@ -562,11 +607,64 @@ function App() {
       onThinkAloud: text => appendThinkAloud(text, "agent_reasoning"),
       onFinish: finishSession
     });
+    pilotAgentApiRef.current = agentApi;
     window.simevalAgentApi = agentApi;
     return () => {
+      pilotAgentApiRef.current = null;
       delete window.simevalAgentApi;
     };
   }, [api, appendAction, appendThinkAloud, elapsedMs, finishSession, flushHumanAction]);
+
+  useEffect(() => {
+    const session = sessionRef.current;
+    const agentApi = pilotAgentApiRef.current;
+    if (status !== "active" || session?.actorType !== "agent" || !agentApi) return;
+    if (agentStartedSessionIdRef.current === session.sessionId) return;
+    agentStartedSessionIdRef.current = session.sessionId;
+    const controller = new AbortController();
+    agentAbortRef.current = controller;
+    setIsAgentRunning(true);
+    setMessage("Agent is observing the canvas");
+
+    void runTimedAgent({
+      tools: agentApi.tools,
+      getInstruction: () => instructionForTask(
+        sessionRef.current!.taskType,
+        sessionRef.current!.seedLabel,
+        phaseRef.current
+      ),
+      captureScreenshot: captureAgentScreenshot,
+      timeBudgetMs: agentTimeBudgetMs,
+      finalizationWindowMs: agentFinalizationWindowMs,
+      signal: controller.signal,
+      onLog: entry => {
+        agentTrajectoryRef.current.push(entry);
+        setAgentTrajectory([...agentTrajectoryRef.current]);
+        if (entry.model && sessionRef.current?.agentConfig && sessionRef.current.agentConfig.model !== entry.model) {
+          sessionRef.current = {
+            ...sessionRef.current,
+            agentConfig: { ...sessionRef.current.agentConfig, model: entry.model }
+          };
+          setSessionMetadata(sessionRef.current);
+        }
+        setMessage(entry.message ?? entry.kind);
+      }
+    }).then(result => {
+      if (!sessionRef.current?.endedAt) {
+        completionReasonRef.current = result.reason;
+        setMessage(result.reason === "time_budget" ? "Time budget ended" : "Agent finalized the artifact");
+        finishSession();
+      }
+    }).catch(error => {
+      completionReasonRef.current = "agent_error";
+      setMessage(`Agent stopped: ${error instanceof Error ? error.message : String(error)}`);
+      if (!sessionRef.current?.endedAt) finishSession();
+    }).finally(() => {
+      setIsAgentRunning(false);
+    });
+
+    return () => controller.abort();
+  }, [captureAgentScreenshot, finishSession, status]);
 
   useEffect(() => () => {
     if (actionTimerRef.current) clearTimeout(actionTimerRef.current);
@@ -590,16 +688,16 @@ function App() {
       <header className="session-bar">
         <div className="brand-block">
           <strong>Simeval Drawing Pilot</strong>
-          <span>{sessionMetadata ? `${sessionMetadata.participantId} · ${sessionMetadata.taskTitle}` : "Human creative process collection"}</span>
+          <span>{sessionMetadata ? `${sessionMetadata.actorType} · ${sessionMetadata.participantId} · ${sessionMetadata.taskTitle}` : "Human and Agent creative process collection"}</span>
         </div>
         {status !== "setup" && (
           <div className="session-metrics" aria-label="Session status">
-            <span>{formatDuration(elapsedDisplayMs)}</span>
+            <span>{sessionMetadata?.actorType === "agent" ? `${formatDuration(Math.max(0, agentTimeBudgetMs - elapsedDisplayMs))} left` : formatDuration(elapsedDisplayMs)}</span>
             <span>{actionCount} actions</span>
             <span>{snapshotCount} snapshots</span>
           </div>
         )}
-        {status === "active" && <button className="danger-button" onClick={finishSession}>Finish session</button>}
+        {status === "active" && <button className="danger-button" onClick={() => finishSession()}>Finish session</button>}
         {status === "completed" && <button onClick={resetForNextSession}>New session</button>}
       </header>
 
@@ -607,58 +705,90 @@ function App() {
       {status === "setup" && (
         <section className="setup-view">
           <div className="setup-form">
-            <div className="setup-heading">
-              <span className="eyebrow">Pilot session setup</span>
-              <h1>Drawing + Think-aloud</h1>
-            </div>
+            {!selectedActor ? (
+              <>
+                <div className="setup-heading">
+                  <span className="eyebrow">Pilot session</span>
+                  <h1>Who will perform this task?</h1>
+                </div>
+                <div className="actor-picker">
+                  <button onClick={() => setSelectedActor("human")}>
+                    <strong>Human</strong>
+                    <span>Drawing interaction and optional think-aloud recording</span>
+                  </button>
+                  <button onClick={() => setSelectedActor("agent")}>
+                    <strong>Agent</strong>
+                    <span>Five-minute autonomous drawing with live trajectory logs</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <button className="back-button" onClick={() => setSelectedActor(null)}>Back</button>
+                <div className="setup-heading compact-heading">
+                  <span className="eyebrow">{selectedActor} session setup</span>
+                  <h1>{selectedActor === "human" ? "Drawing + Think-aloud" : "Timed Agent Drawing"}</h1>
+                </div>
 
-            <div className="field-grid two-column">
-              <label>
-                <span>Participant ID</span>
-                <input value={participantId} onChange={event => setParticipantId(event.target.value)} placeholder="P001" autoComplete="off" />
-              </label>
-              <label>
-                <span>Primary input device</span>
-                <select value={inputDevice} onChange={event => setInputDevice(event.target.value as InputDevice)}>
-                  <option value="unknown">Not specified</option>
-                  <option value="mouse">Mouse</option>
-                  <option value="stylus">Stylus / pen tablet</option>
-                  <option value="touch">Touch</option>
-                  <option value="mixed">Mixed</option>
-                </select>
-              </label>
-            </div>
+                {selectedActor === "human" ? (
+                  <div className="field-grid two-column">
+                    <label>
+                      <span>Participant ID</span>
+                      <input value={participantId} onChange={event => setParticipantId(event.target.value)} placeholder="P001" autoComplete="off" />
+                    </label>
+                    <label>
+                      <span>Primary input device</span>
+                      <select value={inputDevice} onChange={event => setInputDevice(event.target.value as InputDevice)}>
+                        <option value="unknown">Not specified</option>
+                        <option value="mouse">Mouse</option>
+                        <option value="stylus">Stylus / pen tablet</option>
+                        <option value="touch">Touch</option>
+                        <option value="mixed">Mixed</option>
+                      </select>
+                    </label>
+                  </div>
+                ) : (
+                  <div className="agent-budget-row">
+                    <span>Time budget</span>
+                    <strong>05:00</strong>
+                    <small>Finalization begins with 00:30 remaining</small>
+                  </div>
+                )}
 
-            <fieldset className="task-picker">
-              <legend>Task</legend>
-              {taskDefinitions.map(task => (
-                <label key={task.type} className={selectedTaskType === task.type ? "task-option selected" : "task-option"}>
-                  <input type="radio" name="task" checked={selectedTaskType === task.type} onChange={() => changeTask(task.type)} />
-                  <span className="task-number">{task.number}</span>
-                  <span><strong>{task.title}</strong><small>{task.construct}</small></span>
-                </label>
-              ))}
-            </fieldset>
+                <fieldset className="task-picker">
+                  <legend>Task</legend>
+                  {taskDefinitions.map(task => (
+                    <label key={task.type} className={selectedTaskType === task.type ? "task-option selected" : "task-option"}>
+                      <input type="radio" name="task" checked={selectedTaskType === task.type} onChange={() => changeTask(task.type)} />
+                      <span className="task-number">{task.number}</span>
+                      <span><strong>{task.title}</strong><small>{task.construct}</small></span>
+                    </label>
+                  ))}
+                </fieldset>
 
-            <div className="seed-row">
-              <label className="seed-select">
-                <span>{selectedTaskType === "conceptual_synthesis" ? "Concept pair" : "Seed"}</span>
-                <select value={selectedSeedId} disabled={randomizeSeed} onChange={event => setSelectedSeedId(event.target.value)}>
-                  {selectedTask.seeds.map(seed => <option key={seed.id} value={seed.id}>{seed.label}</option>)}
-                </select>
-              </label>
-              <label className="check-control">
-                <input type="checkbox" checked={randomizeSeed} onChange={event => setRandomizeSeed(event.target.checked)} />
-                <span>Random assignment</span>
-              </label>
-            </div>
+                <div className="seed-row">
+                  <label className="seed-select">
+                    <span>{selectedTaskType === "conceptual_synthesis" ? "Concept pair" : "Seed"}</span>
+                    <select value={selectedSeedId} disabled={randomizeSeed} onChange={event => setSelectedSeedId(event.target.value)}>
+                      {selectedTask.seeds.map(seed => <option key={seed.id} value={seed.id}>{seed.label}</option>)}
+                    </select>
+                  </label>
+                  <label className="check-control">
+                    <input type="checkbox" checked={randomizeSeed} onChange={event => setRandomizeSeed(event.target.checked)} />
+                    <span>Random assignment</span>
+                  </label>
+                </div>
 
-            <div className="instruction-preview">
-              <span>Instruction</span>
-              <p>{selectedTask.instruction}</p>
-            </div>
-            <button className="primary-button start-button" disabled={!api || !participantId.trim()} onClick={startSession}>Start session</button>
-            <p className="status-line">{message}</p>
+                <div className="instruction-preview">
+                  <span>Instruction</span>
+                  <p>{selectedTask.instruction}</p>
+                </div>
+                <button className="primary-button start-button" disabled={!api || (selectedActor === "human" && !participantId.trim())} onClick={startSession}>
+                  Start {selectedActor} session
+                </button>
+                <p className="status-line">{message}</p>
+              </>
+            )}
           </div>
         </section>
       )}
@@ -680,25 +810,32 @@ function App() {
               <button className="constraint-button" onClick={revealPhaseTwo}>Reveal unexpected constraint</button>
             )}
 
-            <section className="think-panel">
-              <div className="section-title-row">
-                <h3>Think-aloud</h3>
-                <span>{thinkAloudCount}</span>
-              </div>
-              <textarea value={noteText} disabled={status !== "active"} onChange={event => setNoteText(event.target.value)} placeholder="생각을 짧게 기록하세요" />
-              <button disabled={status !== "active" || !noteText.trim()} onClick={() => {
-                appendThinkAloud(noteText, "human_text");
-                setNoteText("");
-              }}>Add note</button>
-              <div className="record-row">
-                <button className={isRecording ? "recording" : ""} disabled={status !== "active"} onClick={isRecording ? stopRecording : startRecording}>
-                  {isRecording ? "Stop recording" : "Start recording"}
-                </button>
-                <span>{isRecording ? "Recording" : pendingTranscriptions > 0 ? `${pendingTranscriptions} transcribing` : "Idle"}</span>
-              </div>
-            </section>
+            {sessionMetadata?.actorType === "human" ? (
+              <section className="think-panel">
+                <div className="section-title-row">
+                  <h3>Think-aloud recording</h3>
+                  <span>{thinkAloudCount}</span>
+                </div>
+                <div className="record-row">
+                  <button className={isRecording ? "recording" : ""} disabled={status !== "active"} onClick={isRecording ? stopRecording : startRecording}>
+                    {isRecording ? "Stop recording" : "Start recording"}
+                  </button>
+                  <span>{isRecording ? "Recording" : pendingTranscriptions > 0 ? `${pendingTranscriptions} transcribing` : "Idle"}</span>
+                </div>
+              </section>
+            ) : (
+              <section className="agent-log-panel" aria-live="polite">
+                <div className="section-title-row">
+                  <h3>Agent trajectory</h3>
+                  <span>{isAgentRunning ? "Running" : status === "completed" ? "Finished" : "Ready"}</span>
+                </div>
+                <pre>{agentTrajectory.length > 0
+                  ? agentTrajectory.slice(-20).map(entry => JSON.stringify(entry)).join("\n")
+                  : "Waiting for the first decision..."}</pre>
+              </section>
+            )}
 
-            {selectedTaskType === "conceptual_synthesis" && (
+            {sessionMetadata?.actorType === "human" && selectedTaskType === "conceptual_synthesis" && (
               <label className="post-task-field">
                 <span>두 개념이 어떻게 통합되었나요?</span>
                 <textarea value={postTaskResponse} disabled={status !== "active"} onChange={event => setPostTaskResponse(event.target.value)} />
@@ -712,10 +849,10 @@ function App() {
 
             {status === "completed" && (
               <div className="export-actions">
-                <button className="primary-button" disabled={isRecording || pendingTranscriptions > 0} onClick={() => void exportSession()}>
-                  {isRecording || pendingTranscriptions > 0 ? "Waiting for audio processing" : "Download session JSON"}
+                <button className="primary-button" disabled={isRecording || isAgentRunning || pendingTranscriptions > 0} onClick={() => void exportSession()}>
+                  {isRecording || isAgentRunning || pendingTranscriptions > 0 ? "Waiting for session processing" : "Download session JSON"}
                 </button>
-                <button disabled={audioChunksRef.current.length === 0} onClick={downloadAudio}>Download audio</button>
+                {sessionMetadata?.actorType === "human" && <button disabled={audioChunksRef.current.length === 0} onClick={downloadAudio}>Download audio</button>}
               </div>
             )}
           </aside>
@@ -732,6 +869,7 @@ function App() {
             <Excalidraw
               excalidrawAPI={setApi}
               onChange={onCanvasChange}
+              viewModeEnabled={sessionMetadata?.actorType === "agent" && status === "active"}
               langCode="en"
               theme="light"
             />

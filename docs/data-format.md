@@ -11,7 +11,8 @@ Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v1`입니다.
 - `session`: 참가자, actor, task, seed, 입력 장치, 시작/종료 시각
 - `task`: 제시문, phase별 제시문, seed와 초기 seed element ID
 - `actions`: artifact diff를 idle 단위로 묶은 action과 전후 snapshot 참조
-- `thinkAloud`: text/audio/agent reasoning을 source로 분리한 발화 이벤트
+- `thinkAloud`: Human audio transcript와 task 종료 후 응답
+- `agentTrajectory`: 시간 예산, 판단 번호, 판단 요약, batch 내 각 tool call과 실행 결과
 - `phaseTransitions`: Adaptive Reframing에서 조건 공개 시각과 전후 snapshot
 - `pointerModalities`: 실제 pointerdown에서 감지한 mouse/pen/touch
 - `snapshots`: 초기, action 직후, 5초 주기, phase 경계, 최종 full scene
@@ -26,3 +27,7 @@ Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v1`입니다.
 ## Audio
 
 음성은 10초 단위 chunk로 STT에 전송되고 metadata와 transcript가 `thinkAloud`에 기록됩니다. raw audio는 JSON에 중복 삽입하지 않고 별도 WebM 파일로 export합니다. STT 인증 또는 네트워크 오류가 발생해도 chunk 크기와 오류 정보는 남습니다.
+
+## Agent 종료 조건
+
+Agent 세션의 `session.agentConfig`에는 사용 모델, 전체 시간 예산과 finalization window가 저장됩니다. `session.completionReason`은 `agent_finish`, `time_budget`, `cancelled`, `agent_error`, `manual` 중 실제 종료 경로를 기록합니다. 최대 turn 수는 없으며, `agentTrajectory.decision`은 제한값이 아니라 시간순 판단 번호입니다.

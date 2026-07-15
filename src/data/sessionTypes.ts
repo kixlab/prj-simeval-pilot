@@ -1,6 +1,7 @@
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import type { TaskPhase, TaskType } from "./tasks";
 import type { ArtifactActionEntry } from "../logging/artifactActions";
+import type { AgentTrajectoryEntry } from "../agent/timedAgent";
 
 export type InputDevice = "mouse" | "touch" | "stylus" | "mixed" | "unknown";
 export type SessionActor = "human" | "agent";
@@ -18,6 +19,13 @@ export type SessionMetadata = {
   startedAt: string;
   endedAt: string | null;
   durationMs: number | null;
+  completionReason: string | null;
+  agentConfig: {
+    model: string | null;
+    timeBudgetMs: number;
+    finalizationWindowMs: number;
+    terminationPolicy: "time_budget";
+  } | null;
 };
 
 export type CanvasSnapshot = {
@@ -51,7 +59,7 @@ export type ThinkAloudEvent = {
   endedAtMs: number;
   durationMs: number;
   phase: TaskPhase;
-  source: "human_text" | "human_audio" | "agent_reasoning" | "post_task_response";
+  source: "human_audio" | "agent_reasoning" | "post_task_response";
   content: string;
   linkedEventId?: string;
   audio?: {
@@ -88,6 +96,7 @@ export type SessionExport = {
     seedElementImpacts: string[];
   }>;
   thinkAloud: ThinkAloudEvent[];
+  agentTrajectory: AgentTrajectoryEntry[];
   pointerModalities: PointerModalityEvent[];
   snapshots: CanvasSnapshot[];
   finalArtifact: {

@@ -149,6 +149,65 @@ button:disabled {
   letter-spacing: 0;
 }
 
+.compact-heading {
+  margin-top: 14px;
+}
+
+.back-button {
+  min-height: 36px;
+  padding: 0 12px;
+}
+
+.actor-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.actor-picker button {
+  display: grid;
+  align-content: center;
+  min-height: 150px;
+  padding: 22px;
+  text-align: left;
+}
+
+.actor-picker strong {
+  margin-bottom: 8px;
+  color: #1768ac;
+  font-size: 22px;
+}
+
+.actor-picker span {
+  color: #626761;
+  line-height: 1.5;
+}
+
+.agent-budget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid #d3d6d1;
+  border-bottom: 1px solid #d3d6d1;
+}
+
+.agent-budget-row span,
+.agent-budget-row small {
+  color: #666b65;
+}
+
+.agent-budget-row strong {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.agent-budget-row small {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  font-size: 11px;
+}
+
 .eyebrow,
 .instruction-block > span,
 .instruction-preview > span {
@@ -374,6 +433,24 @@ textarea {
   margin-top: 22px;
 }
 
+.agent-log-panel {
+  margin-top: 22px;
+}
+
+.agent-log-panel pre {
+  max-height: 310px;
+  margin: 9px 0 0;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid #d5d8d2;
+  border-radius: 4px;
+  color: #d8e5da;
+  background: #242825;
+  font: 11px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .section-title-row h3 {
   margin: 0;
   font-size: 14px;
@@ -524,7 +601,8 @@ textarea {
 
   .two-column,
   .task-picker,
-  .seed-row {
+  .seed-row,
+  .actor-picker {
     grid-template-columns: minmax(0, 1fr);
   }
 
