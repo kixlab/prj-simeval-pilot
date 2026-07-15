@@ -1,0 +1,552 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #202124;
+  background: #f3f4f1;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+select,
+input,
+textarea {
+  border: 1px solid #c8cbc6;
+  border-radius: 6px;
+}
+
+button {
+  min-height: 42px;
+  padding: 0 14px;
+  color: #202124;
+  background: #fff;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  border-color: #777d75;
+  background: #f7f8f5;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(23, 104, 172, 0.25);
+  outline-offset: 1px;
+}
+
+button:disabled {
+  color: #91958f;
+  cursor: not-allowed;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-rows: 58px minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+}
+
+.main-stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+.session-bar {
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+  border-bottom: 1px solid #d6d8d3;
+  background: #fff;
+}
+
+.brand-block {
+  display: grid;
+  min-width: 0;
+  margin-right: auto;
+}
+
+.brand-block strong {
+  font-size: 15px;
+}
+
+.brand-block span {
+  overflow: hidden;
+  color: #686d67;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.session-metrics {
+  display: flex;
+  gap: 16px;
+  color: #5f645e;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.danger-button {
+  border-color: #d7aaa6;
+  color: #a12d25;
+}
+
+.primary-button {
+  border-color: #1768ac;
+  color: #fff;
+  background: #1768ac;
+}
+
+.primary-button:hover:not(:disabled) {
+  border-color: #10578f;
+  background: #10578f;
+}
+
+.setup-view {
+  position: absolute;
+  z-index: 30;
+  inset: 0;
+  overflow: auto;
+  padding: 44px 24px 64px;
+  background: #f3f4f1;
+}
+
+.setup-form {
+  width: min(900px, 100%);
+  margin: 0 auto;
+}
+
+.setup-heading {
+  margin-bottom: 30px;
+}
+
+.setup-heading h1 {
+  margin: 5px 0 0;
+  font-size: 30px;
+  letter-spacing: 0;
+}
+
+.eyebrow,
+.instruction-block > span,
+.instruction-preview > span {
+  color: #6d726c;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.field-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.two-column {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+label > span,
+.seed-select > span,
+.post-task-field > span {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  color: #202124;
+  background: #fff;
+}
+
+.task-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 28px 0 20px;
+  padding: 0;
+  border: 0;
+}
+
+.task-picker legend {
+  grid-column: 1 / -1;
+  margin-bottom: 9px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.task-option {
+  display: grid;
+  grid-template-columns: 20px 32px minmax(0, 1fr);
+  align-items: center;
+  min-height: 74px;
+  padding: 12px;
+  border: 1px solid #d1d4cf;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.task-option.selected {
+  border-color: #1768ac;
+  box-shadow: inset 3px 0 #1768ac;
+}
+
+.task-option input {
+  width: 18px;
+  min-height: 18px;
+  margin: 0;
+}
+
+.task-number {
+  color: #1768ac;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.task-option strong,
+.task-option small {
+  display: block;
+}
+
+.task-option small {
+  margin-top: 4px;
+  color: #747973;
+  font-size: 12px;
+}
+
+.seed-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 18px;
+}
+
+.check-control {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 9px;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.check-control input {
+  width: 18px;
+  min-height: 18px;
+}
+
+.check-control span {
+  margin: 0;
+}
+
+.instruction-preview {
+  margin: 24px 0;
+  padding: 17px 0;
+  border-top: 1px solid #d3d6d1;
+  border-bottom: 1px solid #d3d6d1;
+}
+
+.instruction-preview p {
+  max-width: 760px;
+  margin: 8px 0 0;
+  line-height: 1.65;
+}
+
+.start-button {
+  min-width: 170px;
+}
+
+.status-line {
+  margin: 12px 0 0;
+  color: #666b65;
+  font-size: 12px;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 324px minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.workspace-underlay {
+  visibility: hidden;
+}
+
+.panel-collapsed .workspace {
+  grid-template-columns: 0 minmax(0, 1fr);
+}
+
+.study-panel {
+  z-index: 4;
+  min-width: 0;
+  overflow: auto;
+  padding: 18px 16px calc(24px + env(safe-area-inset-bottom));
+  border-right: 1px solid #d4d7d1;
+  background: #f8f9f6;
+}
+
+.panel-collapsed .study-panel {
+  visibility: hidden;
+  padding: 0;
+  overflow: hidden;
+}
+
+.panel-heading,
+.section-title-row,
+.record-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panel-heading h2 {
+  margin: 4px 0 0;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.icon-button {
+  width: 42px;
+  min-width: 42px;
+  padding: 0;
+  font-size: 25px;
+}
+
+.instruction-block {
+  margin: 20px 0;
+  padding: 15px 0;
+  border-top: 1px solid #d8dad6;
+  border-bottom: 1px solid #d8dad6;
+}
+
+.instruction-block p {
+  margin: 8px 0;
+  font-size: 14px;
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+.instruction-block small {
+  color: #626761;
+}
+
+.constraint-button {
+  width: 100%;
+  border-color: #b06b20;
+  color: #8a4b0f;
+  background: #fff8e8;
+}
+
+.think-panel {
+  margin-top: 22px;
+}
+
+.section-title-row h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.section-title-row span {
+  color: #6e736d;
+  font-size: 12px;
+}
+
+.think-panel textarea,
+.post-task-field textarea {
+  min-height: 78px;
+  margin: 9px 0 8px;
+  resize: vertical;
+}
+
+.think-panel > button {
+  width: 100%;
+}
+
+.record-row {
+  margin-top: 8px;
+}
+
+.record-row button {
+  flex: 1;
+}
+
+.record-row button.recording {
+  border-color: #c0382f;
+  color: #a12820;
+  background: #fff2f1;
+}
+
+.record-row span {
+  min-width: 76px;
+  color: #686d67;
+  font-size: 11px;
+  text-align: right;
+}
+
+.post-task-field {
+  display: block;
+  margin-top: 22px;
+}
+
+.collection-status {
+  display: grid;
+  gap: 5px;
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid #d8dad6;
+  color: #6b706a;
+  font-size: 11px;
+}
+
+.export-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.canvas-shell {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  background: #fff;
+  touch-action: none;
+}
+
+.show-panel-button {
+  position: absolute;
+  z-index: 20;
+  top: 10px;
+  left: 76px;
+  min-height: 36px;
+}
+
+.canvas-shell .excalidraw {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-rows: 54px minmax(0, 1fr);
+  }
+
+  .session-bar {
+    gap: 10px;
+  }
+
+  .brand-block span,
+  .session-metrics span:not(:first-child) {
+    display: none;
+  }
+
+  .session-bar button {
+    min-height: 40px;
+    padding: 0 10px;
+  }
+
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(160px, 35vh) minmax(0, 1fr);
+  }
+
+  .panel-collapsed .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 0 minmax(0, 1fr);
+  }
+
+  .study-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+    align-content: start;
+    column-gap: 18px;
+    padding: 12px 14px;
+    border-right: 0;
+    border-bottom: 1px solid #d4d7d1;
+  }
+
+  .panel-heading,
+  .collection-status,
+  .export-actions {
+    grid-column: 1 / -1;
+  }
+
+  .instruction-block {
+    margin: 10px 0 0;
+  }
+
+  .think-panel {
+    margin-top: 10px;
+  }
+
+  .post-task-field,
+  .constraint-button {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 650px) {
+  .setup-view {
+    padding: 26px 16px 48px;
+  }
+
+  .two-column,
+  .task-picker,
+  .seed-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .workspace {
+    grid-template-rows: minmax(170px, 40vh) minmax(0, 1fr);
+  }
+
+  .study-panel {
+    display: block;
+  }
+
+  .instruction-block {
+    margin: 10px 0;
+  }
+
+  .think-panel,
+  .post-task-field,
+  .collection-status {
+    display: none;
+  }
+
+  .show-panel-button {
+    left: 68px;
+  }
+}

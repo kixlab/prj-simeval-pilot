@@ -1,0 +1,28 @@
+# Data Format
+
+Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v1`입니다.
+
+## Timeline 기준
+
+모든 연구 데이터는 한 세션의 시작점을 기준으로 한 `elapsedMs`와 절대 시각인 ISO `timestamp`를 함께 가집니다. 인간과 Agent artifact action, think-aloud, phase transition, snapshot은 이 기준으로 시간 정렬할 수 있습니다.
+
+## 주요 필드
+
+- `session`: 참가자, actor, task, seed, 입력 장치, 시작/종료 시각
+- `task`: 제시문, phase별 제시문, seed와 초기 seed element ID
+- `actions`: artifact diff를 idle 단위로 묶은 action과 전후 snapshot 참조
+- `thinkAloud`: text/audio/agent reasoning을 source로 분리한 발화 이벤트
+- `phaseTransitions`: Adaptive Reframing에서 조건 공개 시각과 전후 snapshot
+- `pointerModalities`: 실제 pointerdown에서 감지한 mouse/pen/touch
+- `snapshots`: 초기, action 직후, 5초 주기, phase 경계, 최종 full scene
+- `finalArtifact`: 최종 scene element와 PNG data URL, 별도 audio 파일명
+
+## Action과 Snapshot
+
+각 `actions[]` 항목은 `beforeSnapshotId`와 `afterSnapshotId`를 가집니다. `artifactDiff`에는 추가, 수정, 삭제된 object ID가 들어갑니다. Task 2에서 초기 제공 요소가 대상이면 해당 ID가 `seedElementImpacts`에도 기록됩니다.
+
+원본 scene을 보존하기 위해 snapshot은 full Excalidraw elements를 저장합니다. 분석 시에는 action의 compact diff를 먼저 읽고, 세부 시각 상태가 필요한 action에서만 연결된 snapshot을 로드하는 방식을 권장합니다.
+
+## Audio
+
+음성은 10초 단위 chunk로 STT에 전송되고 metadata와 transcript가 `thinkAloud`에 기록됩니다. raw audio는 JSON에 중복 삽입하지 않고 별도 WebM 파일로 export합니다. STT 인증 또는 네트워크 오류가 발생해도 chunk 크기와 오류 정보는 남습니다.
