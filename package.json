@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:think-aloud": "node scripts/thinkAloudIntegrity.test.mjs"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.17.0",

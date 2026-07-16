@@ -51,26 +51,56 @@ export type PhaseTransition = {
   revealedInstruction: string;
 };
 
-export type ThinkAloudEvent = {
-  utteranceId: string;
+export type TranscriptionStatus = "completed" | "empty" | "failed";
+
+export type ThinkAloudWord = {
+  word: string;
+  startSec: number;
+  endSec: number;
+  confidence: number | null;
+};
+
+export type ThinkAloudSegment = {
+  index: number;
+  transcript: string;
+  confidence: number | null;
+  words: ThinkAloudWord[];
+};
+
+export type ThinkAloudChunk = {
+  thinkAloudChunkId: string;
   sessionId: string;
+  sequence: number;
   timestamp: string;
-  startedAtMs: number;
-  endedAtMs: number;
+  chunkStartedAtMs: number;
+  chunkEndedAtMs: number;
   durationMs: number;
-  phase: TaskPhase;
-  source: "human_audio" | "agent_reasoning" | "post_task_response";
+  phaseAtStart: TaskPhase;
+  phaseAtEnd: TaskPhase;
+  crossesPhaseTransition: boolean;
+  source: "human_audio";
   content: string;
-  linkedEventId?: string;
-  audio?: {
+  transcriptionStatus: TranscriptionStatus;
+  audio: {
     chunkIndex: number;
     mimeType: string;
     byteSize: number;
+    languageCode: string;
     success: boolean;
     error?: string;
-    languageCode?: string;
-    segments?: unknown[];
+    segments: ThinkAloudSegment[];
   };
+};
+
+export type ThinkAloudNote = {
+  thinkAloudNoteId: string;
+  sessionId: string;
+  timestamp: string;
+  elapsedMs: number;
+  phase: TaskPhase;
+  source: "agent_reasoning" | "post_task_response";
+  content: string;
+  linkedEventId?: string;
 };
 
 export type PointerModalityEvent = {
@@ -80,7 +110,7 @@ export type PointerModalityEvent = {
 };
 
 export type SessionExport = {
-  schemaVersion: "simeval-drawing-session-v1";
+  schemaVersion: "simeval-drawing-session-v2";
   exportedAt: string;
   session: SessionMetadata;
   task: {
@@ -95,13 +125,21 @@ export type SessionExport = {
     afterSnapshotId: string;
     seedElementImpacts: string[];
   }>;
-  thinkAloud: ThinkAloudEvent[];
+  thinkAloudChunks: ThinkAloudChunk[];
+  thinkAloudNotes: ThinkAloudNote[];
   agentTrajectory: AgentTrajectoryEntry[];
   pointerModalities: PointerModalityEvent[];
   snapshots: CanvasSnapshot[];
   finalArtifact: {
     sceneElements: readonly ExcalidrawElement[];
     image: { mimeType: "image/png"; dataUrl: string };
-    audioFileName: string | null;
+    audio: {
+      available: boolean;
+      fileName: string | null;
+      mimeType: string | null;
+      byteSize: number;
+      chunkCount: number;
+      warning?: string;
+    };
   };
 };

@@ -12,6 +12,17 @@ npm run dev
 
 Google Speech-to-Text를 사용하려면 `GOOGLE_APPLICATION_CREDENTIALS` 또는 `.env.local`의 관련 값을 설정해야 합니다. 인증이 없어도 drawing, raw audio 녹음과 JSON export는 사용할 수 있으며 STT 결과만 실패 상태로 기록됩니다.
 
+## Human-only 배포
+
+Prolific 또는 참가자 대상 배포에서는 기본적으로 Agent mode를 숨기고 API도 닫습니다.
+
+```env
+VITE_ENABLE_AGENT_MODE=false
+ENABLE_AGENT_API=false
+```
+
+이 상태에서는 첫 화면이 Human session setup으로 바로 열리며 `/api/agent-decision`도 403을 반환합니다. Agent 연구/디버깅을 다시 켤 때만 두 값을 모두 `true`로 설정하고 `OPENAI_API_KEY`를 제공합니다.
+
 ## 포함된 task
 
 1. Free Creation: 빈 canvas와 seed prompt

@@ -186,13 +186,27 @@ button:disabled {
 .agent-budget-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 14px;
   align-items: center;
   padding: 14px 0;
   border-top: 1px solid #d3d6d1;
   border-bottom: 1px solid #d3d6d1;
 }
 
-.agent-budget-row span,
+.agent-budget-row label {
+  display: grid;
+  grid-template-columns: minmax(0, max-content) 96px;
+  gap: 10px;
+  align-items: center;
+}
+
+.agent-budget-row input {
+  width: 96px;
+  height: 38px;
+  padding: 0 10px;
+}
+
+.agent-budget-row label span,
 .agent-budget-row small {
   color: #666b65;
 }

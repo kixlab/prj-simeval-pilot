@@ -51,6 +51,7 @@ let speechClient: SpeechClient | null = null;
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
+  const agentApiEnabled = env.ENABLE_AGENT_API === "true" || env.VITE_ENABLE_AGENT_MODE === "true";
 
   return {
     plugins: [
@@ -60,6 +61,11 @@ export default defineConfig(({ mode }) => {
         configureServer(server) {
           server.middlewares.use("/api/agent-decision", async (request, response) => {
             response.setHeader("Content-Type", "application/json");
+            if (!agentApiEnabled) {
+              response.statusCode = 403;
+              response.end(JSON.stringify({ success: false, error: "Agent API is disabled." }));
+              return;
+            }
             if (request.method !== "POST") {
               response.statusCode = 405;
               response.end(JSON.stringify({ success: false, error: "POST only" }));
@@ -185,12 +191,12 @@ export default defineConfig(({ mode }) => {
                 return {
                   index,
                   transcript: alternative?.transcript ?? "",
-                  confidence: alternative?.confidence ?? 0,
+                  confidence: alternative?.confidence ?? null,
                   words: (alternative?.words ?? []).map(word => ({
                     word: word.word ?? "",
                     startSec: durationToSeconds(word.startTime),
                     endSec: durationToSeconds(word.endTime),
-                    confidence: word.confidence ?? 0
+                    confidence: word.confidence ?? null
                   }))
                 };
               });

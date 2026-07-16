@@ -22,7 +22,9 @@ import type {
   SessionExport,
   SessionActor,
   SessionMetadata,
-  ThinkAloudEvent
+  ThinkAloudChunk,
+  ThinkAloudNote,
+  ThinkAloudSegment
 } from "./data/sessionTypes";
 import {
   compactSceneTransition,
@@ -37,10 +39,12 @@ import {
 const actionIdleMs = 700;
 const snapshotIntervalMs = 5000;
 const recordingTimesliceMs = 10000;
-const agentTimeBudgetMs = 5 * 60 * 1000;
+const defaultAgentTimeBudgetMinutes = 5;
 const agentFinalizationWindowMs = 30 * 1000;
+const enableAgentMode = import.meta.env.VITE_ENABLE_AGENT_MODE === "true";
 
 type SessionStatus = "setup" | "active" | "completed";
+type RecordingFinalizationStatus = "idle" | "recording" | "stopping" | "transcribing" | "ready_to_export" | "exported";
 type RecordedAction = ArtifactActionEntry & {
   phase: TaskPhase;
   beforeSnapshotId: string;
@@ -60,8 +64,18 @@ type SttResponse = {
   error?: string;
   transcript?: string;
   languageCode?: string;
-  segments?: unknown[];
+  segments?: ThinkAloudSegment[];
 };
+type ThinkAloudChunkContext = {
+  sourceSessionId: string;
+  chunkIndex: number;
+  chunkStartedAtMs: number;
+  chunkEndedAtMs: number;
+  phaseAtStart: TaskPhase;
+  phaseAtEnd: TaskPhase;
+  crossesPhaseTransition: boolean;
+};
+type AudioExportMetadata = SessionExport["finalArtifact"]["audio"];
 
 const emptySummary: SceneSummary = {
   total: 0,
@@ -103,10 +117,64 @@ function downloadBlob(fileName: string, blob: Blob) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+function clearActionTimer(timerRef: React.MutableRefObject<ReturnType<typeof setTimeout> | null>) {
+  if (timerRef.current) clearTimeout(timerRef.current);
+  timerRef.current = null;
+}
+
+function assertCondition(condition: boolean, message: string) {
+  if (!condition) throw new Error(message);
+}
+
+function validateThinkAloudChunks({
+  session,
+  chunks,
+  pendingCount
+}: {
+  session: SessionMetadata;
+  chunks: readonly ThinkAloudChunk[];
+  pendingCount: number;
+}) {
+  const validPhases: TaskPhase[] = ["single_phase", "phase_1", "phase_2"];
+  const seenChunkIds = new Set<string>();
+  const seenChunkIndexes = new Set<number>();
+  let previousSequence = 0;
+
+  assertCondition(pendingCount === 0, "Pending transcription requests remain for this session.");
+  for (const chunk of chunks) {
+    assertCondition(chunk.sessionId === session.sessionId, `Think-aloud chunk belongs to another session: ${chunk.thinkAloudChunkId}`);
+    assertCondition(!seenChunkIds.has(chunk.thinkAloudChunkId), `Duplicate think-aloud chunk id: ${chunk.thinkAloudChunkId}`);
+    assertCondition(!seenChunkIndexes.has(chunk.audio.chunkIndex), `Duplicate audio chunk index: ${chunk.audio.chunkIndex}`);
+    assertCondition(chunk.sequence > previousSequence, `Think-aloud chunk sequence is not strictly increasing: ${chunk.sequence}`);
+    assertCondition(chunk.chunkStartedAtMs >= 0, `Invalid chunk start time: ${chunk.thinkAloudChunkId}`);
+    assertCondition(chunk.chunkEndedAtMs >= chunk.chunkStartedAtMs, `Invalid chunk end time: ${chunk.thinkAloudChunkId}`);
+    assertCondition(chunk.durationMs === chunk.chunkEndedAtMs - chunk.chunkStartedAtMs, `Invalid chunk duration: ${chunk.thinkAloudChunkId}`);
+    assertCondition(validPhases.includes(chunk.phaseAtStart), `Invalid phaseAtStart: ${chunk.phaseAtStart}`);
+    assertCondition(validPhases.includes(chunk.phaseAtEnd), `Invalid phaseAtEnd: ${chunk.phaseAtEnd}`);
+    assertCondition(chunk.crossesPhaseTransition === (chunk.phaseAtStart !== chunk.phaseAtEnd), `Invalid phase transition flag: ${chunk.thinkAloudChunkId}`);
+    if (chunk.transcriptionStatus === "failed") {
+      assertCondition(chunk.audio.success === false, `Failed transcription has audio.success=true: ${chunk.thinkAloudChunkId}`);
+      assertCondition(Boolean(chunk.audio.error), `Failed transcription has no error: ${chunk.thinkAloudChunkId}`);
+    }
+    if (chunk.transcriptionStatus === "empty") {
+      assertCondition(chunk.audio.success === true, `Empty transcription has audio.success=false: ${chunk.thinkAloudChunkId}`);
+      assertCondition(chunk.content.trim() === "", `Empty transcription has content: ${chunk.thinkAloudChunkId}`);
+    }
+    if (chunk.transcriptionStatus === "completed") {
+      assertCondition(chunk.audio.success === true, `Completed transcription has audio.success=false: ${chunk.thinkAloudChunkId}`);
+      assertCondition(chunk.content.trim() !== "", `Completed transcription is empty: ${chunk.thinkAloudChunkId}`);
+    }
+
+    seenChunkIds.add(chunk.thinkAloudChunkId);
+    seenChunkIndexes.add(chunk.audio.chunkIndex);
+    previousSequence = chunk.sequence;
+  }
+}
+
 function App() {
   const [api, setApi] = useState<ExcalidrawImperativeAPI | null>(null);
   const [status, setStatus] = useState<SessionStatus>("setup");
-  const [selectedActor, setSelectedActor] = useState<SessionActor | null>(null);
+  const [selectedActor, setSelectedActor] = useState<SessionActor | null>(enableAgentMode ? null : "human");
   const [participantId, setParticipantId] = useState("");
   const [selectedTaskType, setSelectedTaskType] = useState<TaskType>("free_creation");
   const [selectedSeedId, setSelectedSeedId] = useState(taskDefinitions[0].seeds[0].id);
@@ -123,8 +191,11 @@ function App() {
   const [postTaskResponse, setPostTaskResponse] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [pendingTranscriptions, setPendingTranscriptions] = useState(0);
+  const [recordingFinalizationStatus, setRecordingFinalizationStatus] = useState<RecordingFinalizationStatus>("idle");
+  const [sessionExported, setSessionExported] = useState(true);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [isAgentRunning, setIsAgentRunning] = useState(false);
+  const [agentTimeBudgetMinutes, setAgentTimeBudgetMinutes] = useState(defaultAgentTimeBudgetMinutes);
   const [agentTrajectory, setAgentTrajectory] = useState<AgentTrajectoryEntry[]>([]);
   const [message, setMessage] = useState("참가자와 task를 설정하세요.");
 
@@ -134,7 +205,8 @@ function App() {
   const sessionEpochRef = useRef(0);
   const actionsRef = useRef<RecordedAction[]>([]);
   const snapshotsRef = useRef<CanvasSnapshot[]>([]);
-  const thinkAloudRef = useRef<ThinkAloudEvent[]>([]);
+  const thinkAloudChunksRef = useRef<ThinkAloudChunk[]>([]);
+  const thinkAloudNotesRef = useRef<ThinkAloudNote[]>([]);
   const phaseTransitionsRef = useRef<PhaseTransition[]>([]);
   const pointerEventsRef = useRef<PointerModalityEvent[]>([]);
   const latestElementsRef = useRef<readonly ExcalidrawElement[]>([]);
@@ -148,8 +220,16 @@ function App() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const recorderMimeTypeRef = useRef<string | null>(null);
   const audioChunkIndexRef = useRef(0);
   const previousAudioChunkEndRef = useRef(0);
+  const previousAudioChunkPhaseRef = useRef<TaskPhase>("single_phase");
+  const recordingSessionIdRef = useRef<string | null>(null);
+  const pendingTranscriptionsBySessionRef = useRef<Map<string, number>>(new Map());
+  const pendingResolversBySessionRef = useRef<Map<string, Array<() => void>>>(new Map());
+  const recorderStopResolverRef = useRef<(() => void) | null>(null);
+  const finalDataAvailableHandledRef = useRef(true);
+  const exportedSessionIdsRef = useRef<Set<string>>(new Set());
   const pilotAgentApiRef = useRef<PilotAgentApi | null>(null);
   const agentAbortRef = useRef<AbortController | null>(null);
   const agentStartedSessionIdRef = useRef("");
@@ -159,6 +239,12 @@ function App() {
   const selectedTask = useMemo(() => taskByType(selectedTaskType), [selectedTaskType]);
   const currentInstruction = instructionForTask(selectedTaskType, resolvedSeed.label, phase);
 
+  useEffect(() => {
+    if (!enableAgentMode && selectedActor !== "human") {
+      setSelectedActor("human");
+    }
+  }, [selectedActor]);
+
   const elapsedMs = useCallback(() => {
     if (!sessionRef.current) return 0;
     return Math.max(0, Math.round(performance.now() - sessionStartedPerformanceRef.current));
@@ -167,6 +253,71 @@ function App() {
   const timestampAt = useCallback((relativeMs: number) => {
     return new Date(sessionEpochRef.current + relativeMs).toISOString();
   }, []);
+
+  const getPendingCount = useCallback((sessionId?: string | null) => {
+    if (!sessionId) return 0;
+    return pendingTranscriptionsBySessionRef.current.get(sessionId) ?? 0;
+  }, []);
+
+  const refreshPendingTranscriptions = useCallback((sessionId = sessionRef.current?.sessionId ?? null) => {
+    setPendingTranscriptions(getPendingCount(sessionId));
+  }, [getPendingCount]);
+
+  const resolvePendingWaiters = useCallback((sessionId: string) => {
+    if (getPendingCount(sessionId) !== 0) return;
+    const resolvers = pendingResolversBySessionRef.current.get(sessionId) ?? [];
+    pendingResolversBySessionRef.current.delete(sessionId);
+    resolvers.forEach(resolve => resolve());
+  }, [getPendingCount]);
+
+  const incrementPending = useCallback((sessionId: string) => {
+    const current = getPendingCount(sessionId);
+    pendingTranscriptionsBySessionRef.current.set(sessionId, current + 1);
+    refreshPendingTranscriptions(sessionId);
+  }, [getPendingCount, refreshPendingTranscriptions]);
+
+  const decrementPending = useCallback((sessionId: string) => {
+    const current = getPendingCount(sessionId);
+    pendingTranscriptionsBySessionRef.current.set(sessionId, Math.max(0, current - 1));
+    refreshPendingTranscriptions(sessionId);
+    resolvePendingWaiters(sessionId);
+  }, [getPendingCount, refreshPendingTranscriptions, resolvePendingWaiters]);
+
+  const waitForPendingTranscriptions = useCallback((sessionId: string) => {
+    if (getPendingCount(sessionId) === 0) return Promise.resolve();
+    return new Promise<void>(resolve => {
+      const resolvers = pendingResolversBySessionRef.current.get(sessionId) ?? [];
+      resolvers.push(resolve);
+      pendingResolversBySessionRef.current.set(sessionId, resolvers);
+    });
+  }, [getPendingCount]);
+
+  const createCombinedAudioBlob = useCallback(() => {
+    if (audioChunksRef.current.length === 0) return null;
+    const mimeType = recorderMimeTypeRef.current || audioChunksRef.current[0]?.type || "audio/webm";
+    return new Blob(audioChunksRef.current, { type: mimeType });
+  }, []);
+
+  const buildAudioMetadata = useCallback((sessionId: string): AudioExportMetadata => {
+    const audioBlob = createCombinedAudioBlob();
+    if (!audioBlob) {
+      return {
+        available: false,
+        fileName: null,
+        mimeType: null,
+        byteSize: 0,
+        chunkCount: 0,
+        warning: "No think-aloud audio was recorded for this session."
+      };
+    }
+    return {
+      available: true,
+      fileName: `drawing-${sessionId}.webm`,
+      mimeType: audioBlob.type || "audio/webm",
+      byteSize: audioBlob.size,
+      chunkCount: audioChunksRef.current.length
+    };
+  }, [createCombinedAudioBlob]);
 
   const captureSnapshot = useCallback((
     reason: CanvasSnapshot["reason"],
@@ -195,31 +346,38 @@ function App() {
     return snapshot.snapshotId;
   }, [elapsedMs, timestampAt]);
 
-  const appendThinkAloud = useCallback((
+  const appendThinkAloudNote = useCallback((
     content: string,
-    source: ThinkAloudEvent["source"],
-    startedAtMs = elapsedMs(),
-    endedAtMs = elapsedMs(),
-    audio?: ThinkAloudEvent["audio"]
+    source: ThinkAloudNote["source"],
+    noteElapsedMs = elapsedMs()
   ) => {
     const session = sessionRef.current;
     const clean = content.trim();
-    if (!session || (!clean && source !== "human_audio")) return;
-    const event: ThinkAloudEvent = {
-      utteranceId: `${session.sessionId}:utterance:${thinkAloudRef.current.length + 1}`,
+    if (!session || !clean) return;
+    const note: ThinkAloudNote = {
+      thinkAloudNoteId: `${session.sessionId}:note:${thinkAloudNotesRef.current.length + 1}`,
       sessionId: session.sessionId,
-      timestamp: timestampAt(startedAtMs),
-      startedAtMs,
-      endedAtMs,
-      durationMs: Math.max(0, endedAtMs - startedAtMs),
+      timestamp: timestampAt(noteElapsedMs),
+      elapsedMs: noteElapsedMs,
       phase: phaseRef.current,
       source,
-      content: clean,
-      audio
+      content: clean
     };
-    thinkAloudRef.current.push(event);
-    setThinkAloudCount(thinkAloudRef.current.length);
+    thinkAloudNotesRef.current.push(note);
   }, [elapsedMs, timestampAt]);
+
+  const appendThinkAloudChunk = useCallback((chunk: ThinkAloudChunk) => {
+    if (!sessionRef.current || sessionRef.current.sessionId !== chunk.sessionId) {
+      console.error("[ThinkAloud] Late transcription session mismatch", {
+        sourceSessionId: chunk.sessionId,
+        activeSessionId: sessionRef.current?.sessionId ?? null,
+        chunkIndex: chunk.audio.chunkIndex
+      });
+      return;
+    }
+    thinkAloudChunksRef.current.push(chunk);
+    setThinkAloudCount(thinkAloudChunksRef.current.length);
+  }, []);
 
   const appendAction = useCallback((draft: ArtifactActionDraft, actionPhase: TaskPhase, elements: readonly ExcalidrawElement[]) => {
     const session = sessionRef.current;
@@ -247,8 +405,7 @@ function App() {
   }, [captureSnapshot, timestampAt]);
 
   const flushHumanAction = useCallback(() => {
-    if (actionTimerRef.current) clearTimeout(actionTimerRef.current);
-    actionTimerRef.current = null;
+    clearActionTimer(actionTimerRef);
     const pending = pendingHumanActionRef.current;
     pendingHumanActionRef.current = null;
     if (!pending) return;
@@ -268,6 +425,23 @@ function App() {
       success: true
     }, pending.phase, pending.afterElements);
   }, [appendAction]);
+
+  const resetCanvasForSession = useCallback((elements: readonly ExcalidrawElement[]) => {
+    if (!api) return;
+    clearActionTimer(actionTimerRef);
+    pendingHumanActionRef.current = null;
+    suppressHumanChangeUntilRef.current = performance.now() + 1000;
+    api.resetScene();
+    api.updateScene({ elements: elements as ExcalidrawElement[] });
+    api.history.clear();
+    latestElementsRef.current = elements;
+    latestFilesRef.current = {};
+    baselineRef.current = summarizeElements(elements);
+    setSummary(baselineRef.current);
+    if (elements.length > 0) {
+      api.scrollToContent(elements, { fitToContent: true, animate: false });
+    }
+  }, [api]);
 
   const onCanvasChange = useCallback((
     elements: readonly ExcalidrawElement[],
@@ -303,9 +477,23 @@ function App() {
       setMessage(!api ? "Canvas가 준비되지 않았습니다." : "Participant ID를 입력하세요.");
       return;
     }
+    if (selectedActor === "agent" && !enableAgentMode) {
+      setMessage("Agent mode is disabled in this deployment.");
+      return;
+    }
+    const previousSession = sessionRef.current;
+    if (
+      previousSession &&
+      !sessionExported &&
+      buildAudioMetadata(previousSession.sessionId).available
+    ) {
+      setMessage("Export the previous session JSON/audio before starting a new session.");
+      return;
+    }
     const seed = chooseSeed(selectedTaskType, selectedSeedId, randomizeSeed);
     const initialPhase: TaskPhase = selectedTaskType === "adaptive_reframing" ? "phase_1" : "single_phase";
     const initialElements = selectedTaskType === "open_ended_interpretation" ? createSeedScene(seed.id) : [];
+    const selectedAgentTimeBudgetMs = Math.max(1, agentTimeBudgetMinutes) * 60 * 1000;
     const sessionId = `drawing-${selectedTaskType}-${crypto.randomUUID()}`;
     const startedAt = new Date();
     const metadata: SessionMetadata = {
@@ -324,11 +512,19 @@ function App() {
       completionReason: null,
       agentConfig: selectedActor === "agent" ? {
         model: null,
-        timeBudgetMs: agentTimeBudgetMs,
+        timeBudgetMs: selectedAgentTimeBudgetMs,
         finalizationWindowMs: agentFinalizationWindowMs,
         terminationPolicy: "time_budget"
       } : null
     };
+
+    agentAbortRef.current?.abort();
+    agentAbortRef.current = null;
+    agentStartedSessionIdRef.current = "";
+    clearActionTimer(actionTimerRef);
+    pendingHumanActionRef.current = null;
+    sessionRef.current = null;
+    resetCanvasForSession(initialElements);
 
     sessionStartedPerformanceRef.current = performance.now();
     sessionEpochRef.current = startedAt.getTime();
@@ -336,23 +532,22 @@ function App() {
     phaseRef.current = initialPhase;
     actionsRef.current = [];
     snapshotsRef.current = [];
-    thinkAloudRef.current = [];
+    thinkAloudChunksRef.current = [];
+    thinkAloudNotesRef.current = [];
     agentTrajectoryRef.current = [];
     completionReasonRef.current = "manual";
     phaseTransitionsRef.current = [];
     pointerEventsRef.current = [];
     audioChunksRef.current = [];
+    recorderMimeTypeRef.current = null;
     audioChunkIndexRef.current = 0;
     previousAudioChunkEndRef.current = 0;
+    previousAudioChunkPhaseRef.current = initialPhase;
+    recordingSessionIdRef.current = null;
+    finalDataAvailableHandledRef.current = true;
+    pendingTranscriptionsBySessionRef.current.set(sessionId, 0);
     pendingHumanActionRef.current = null;
     initialSeedElementIdsRef.current = initialElements.map(element => element.id);
-    latestElementsRef.current = initialElements;
-    baselineRef.current = summarizeElements(initialElements);
-    suppressHumanChangeUntilRef.current = performance.now() + 800;
-    api.updateScene({ elements: initialElements as ExcalidrawElement[] });
-    if (initialElements.length > 0) {
-      api.scrollToContent(initialElements, { fitToContent: true, animate: false });
-    }
     setResolvedSeed(seed);
     setPhase(initialPhase);
     setSessionMetadata(metadata);
@@ -360,6 +555,9 @@ function App() {
     setActionCount(0);
     setSnapshotCount(0);
     setThinkAloudCount(0);
+    setPendingTranscriptions(0);
+    setRecordingFinalizationStatus("idle");
+    setSessionExported(false);
     setAgentTrajectory([]);
     setIsAgentRunning(false);
     setElapsedDisplayMs(0);
@@ -367,7 +565,7 @@ function App() {
     setStatus("active");
     setMessage(selectedActor === "agent" ? "Agent session ready" : "Session recording active");
     captureSnapshot("initial", initialElements, initialPhase);
-  }, [api, captureSnapshot, inputDevice, participantId, randomizeSeed, selectedActor, selectedSeedId, selectedTask, selectedTaskType]);
+  }, [agentTimeBudgetMinutes, api, buildAudioMetadata, captureSnapshot, inputDevice, participantId, randomizeSeed, resetCanvasForSession, selectedActor, selectedSeedId, selectedTask, selectedTaskType, sessionExported]);
 
   const revealPhaseTwo = useCallback(() => {
     if (status !== "active" || selectedTaskType !== "adaptive_reframing" || phaseRef.current !== "phase_1") return;
@@ -391,10 +589,8 @@ function App() {
     setMessage("Phase 2 constraint revealed");
   }, [captureSnapshot, elapsedMs, flushHumanAction, resolvedSeed.label, selectedTaskType, status, timestampAt]);
 
-  const transcribeChunk = useCallback(async (blob: Blob, startedAtMs: number, endedAtMs: number) => {
-    const chunkIndex = audioChunkIndexRef.current + 1;
-    audioChunkIndexRef.current = chunkIndex;
-    setPendingTranscriptions(count => count + 1);
+  const transcribeChunk = useCallback(async (blob: Blob, context: ThinkAloudChunkContext) => {
+    incrementPending(context.sourceSessionId);
     try {
       const response = await fetch("/api/google-stt-transcribe", {
         method: "POST",
@@ -402,35 +598,70 @@ function App() {
         body: JSON.stringify({
           audioBase64: await blobToBase64(blob),
           mimeType: blob.type,
-          chunkIndex,
-          chunkStartedAtMs: startedAtMs,
-          chunkEndedAtMs: endedAtMs
+          chunkIndex: context.chunkIndex,
+          chunkStartedAtMs: context.chunkStartedAtMs,
+          chunkEndedAtMs: context.chunkEndedAtMs
         })
       });
       const result = await response.json() as SttResponse;
-      appendThinkAloud(result.transcript ?? "", "human_audio", startedAtMs, endedAtMs, {
-        chunkIndex,
-        mimeType: blob.type,
-        byteSize: blob.size,
-        success: response.ok && result.success,
-        error: result.error,
-        languageCode: result.languageCode,
-        segments: result.segments
+      const content = result.transcript ?? "";
+      appendThinkAloudChunk({
+        thinkAloudChunkId: `${context.sourceSessionId}:think-aloud-chunk:${context.chunkIndex}`,
+        sessionId: context.sourceSessionId,
+        sequence: context.chunkIndex,
+        timestamp: timestampAt(context.chunkStartedAtMs),
+        chunkStartedAtMs: context.chunkStartedAtMs,
+        chunkEndedAtMs: context.chunkEndedAtMs,
+        durationMs: Math.max(0, context.chunkEndedAtMs - context.chunkStartedAtMs),
+        phaseAtStart: context.phaseAtStart,
+        phaseAtEnd: context.phaseAtEnd,
+        crossesPhaseTransition: context.crossesPhaseTransition,
+        source: "human_audio",
+        content: content.trim(),
+        transcriptionStatus: response.ok && result.success
+          ? content.trim().length > 0 ? "completed" : "empty"
+          : "failed",
+        audio: {
+          chunkIndex: context.chunkIndex,
+          mimeType: blob.type,
+          byteSize: blob.size,
+          languageCode: result.languageCode ?? "",
+          success: response.ok && result.success,
+          error: result.error,
+          segments: result.segments ?? []
+        }
       });
-      setMessage(response.ok && result.success ? `Audio chunk ${chunkIndex} transcribed` : `Audio chunk ${chunkIndex} saved; STT failed`);
+      setMessage(response.ok && result.success ? `Audio chunk ${context.chunkIndex} transcribed` : `Audio chunk ${context.chunkIndex} saved; STT failed`);
     } catch (error) {
-      appendThinkAloud("", "human_audio", startedAtMs, endedAtMs, {
-        chunkIndex,
-        mimeType: blob.type,
-        byteSize: blob.size,
-        success: false,
-        error: error instanceof Error ? error.message : String(error)
+      appendThinkAloudChunk({
+        thinkAloudChunkId: `${context.sourceSessionId}:think-aloud-chunk:${context.chunkIndex}`,
+        sessionId: context.sourceSessionId,
+        sequence: context.chunkIndex,
+        timestamp: timestampAt(context.chunkStartedAtMs),
+        chunkStartedAtMs: context.chunkStartedAtMs,
+        chunkEndedAtMs: context.chunkEndedAtMs,
+        durationMs: Math.max(0, context.chunkEndedAtMs - context.chunkStartedAtMs),
+        phaseAtStart: context.phaseAtStart,
+        phaseAtEnd: context.phaseAtEnd,
+        crossesPhaseTransition: context.crossesPhaseTransition,
+        source: "human_audio",
+        content: "",
+        transcriptionStatus: "failed",
+        audio: {
+          chunkIndex: context.chunkIndex,
+          mimeType: blob.type,
+          byteSize: blob.size,
+          languageCode: "",
+          success: false,
+          error: error instanceof Error ? error.message : String(error),
+          segments: []
+        }
       });
-      setMessage(`Audio chunk ${chunkIndex} saved; STT failed`);
+      setMessage(`Audio chunk ${context.chunkIndex} saved; STT failed`);
     } finally {
-      setPendingTranscriptions(count => Math.max(0, count - 1));
+      decrementPending(context.sourceSessionId);
     }
-  }, [appendThinkAloud]);
+  }, [appendThinkAloudChunk, decrementPending, incrementPending, timestampAt]);
 
   const startRecording = useCallback(async () => {
     if (status !== "active") return;
@@ -439,29 +670,55 @@ function App() {
       return;
     }
     try {
+      const session = sessionRef.current;
+      if (!session) return;
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mimeType = preferredAudioMimeType();
       const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       mediaStreamRef.current = stream;
       mediaRecorderRef.current = recorder;
+      recorderMimeTypeRef.current = recorder.mimeType || mimeType || "audio/webm";
+      recordingSessionIdRef.current = session.sessionId;
       audioChunksRef.current = [];
       previousAudioChunkEndRef.current = elapsedMs();
+      previousAudioChunkPhaseRef.current = phaseRef.current;
+      finalDataAvailableHandledRef.current = false;
       recorder.ondataavailable = event => {
+        finalDataAvailableHandledRef.current = true;
         if (event.data.size === 0) return;
+        const sourceSessionId = recordingSessionIdRef.current;
+        if (!sourceSessionId) return;
         audioChunksRef.current.push(event.data);
         const ended = elapsedMs();
         const started = previousAudioChunkEndRef.current;
+        const phaseAtStart = previousAudioChunkPhaseRef.current;
+        const phaseAtEnd = phaseRef.current;
         previousAudioChunkEndRef.current = ended;
-        void transcribeChunk(event.data, started, ended);
+        previousAudioChunkPhaseRef.current = phaseAtEnd;
+        const chunkIndex = audioChunkIndexRef.current + 1;
+        audioChunkIndexRef.current = chunkIndex;
+        void transcribeChunk(event.data, {
+          sourceSessionId,
+          chunkIndex,
+          chunkStartedAtMs: started,
+          chunkEndedAtMs: ended,
+          phaseAtStart,
+          phaseAtEnd,
+          crossesPhaseTransition: phaseAtStart !== phaseAtEnd
+        });
       };
       recorder.onstop = () => {
         stream.getTracks().forEach(track => track.stop());
+        finalDataAvailableHandledRef.current = true;
         mediaRecorderRef.current = null;
         mediaStreamRef.current = null;
         setIsRecording(false);
+        recorderStopResolverRef.current?.();
+        recorderStopResolverRef.current = null;
       };
       recorder.start(recordingTimesliceMs);
       setIsRecording(true);
+      setRecordingFinalizationStatus("recording");
       setMessage("Continuous think-aloud recording active");
     } catch (error) {
       setMessage(`Microphone access failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -473,12 +730,36 @@ function App() {
     if (recorder && recorder.state !== "inactive") recorder.stop();
   }, []);
 
-  const finishSession = useCallback(() => {
+  const stopRecordingAndWait = useCallback(() => {
+    const recorder = mediaRecorderRef.current;
+    if (!recorder || recorder.state === "inactive") {
+      finalDataAvailableHandledRef.current = true;
+      return Promise.resolve();
+    }
+    setRecordingFinalizationStatus("stopping");
+    return new Promise<void>(resolve => {
+      recorderStopResolverRef.current = resolve;
+      recorder.stop();
+    });
+  }, []);
+
+  const finishSession = useCallback(async () => {
     if (!sessionRef.current || sessionRef.current.endedAt) return;
+    const finishingSessionId = sessionRef.current.sessionId;
     agentAbortRef.current?.abort();
-    if (isRecording) stopRecording();
+    if (isRecording || mediaRecorderRef.current?.state === "recording") {
+      await stopRecordingAndWait();
+    }
+    if (!finalDataAvailableHandledRef.current) {
+      setRecordingFinalizationStatus("stopping");
+    }
+    if (getPendingCount(finishingSessionId) > 0) {
+      setRecordingFinalizationStatus("transcribing");
+      setMessage(`Waiting for ${getPendingCount(finishingSessionId)} audio transcription(s)`);
+      await waitForPendingTranscriptions(finishingSessionId);
+    }
     flushHumanAction();
-    if (postTaskResponse.trim()) appendThinkAloud(postTaskResponse, "post_task_response");
+    if (postTaskResponse.trim()) appendThinkAloudNote(postTaskResponse, "post_task_response");
     captureSnapshot("final", latestElementsRef.current);
     const duration = elapsedMs();
     const completed = {
@@ -491,11 +772,24 @@ function App() {
     setSessionMetadata(completed);
     setElapsedDisplayMs(duration);
     setStatus("completed");
-    setMessage("Session completed. Export data when transcription is finished.");
-  }, [appendThinkAloud, captureSnapshot, elapsedMs, flushHumanAction, isRecording, postTaskResponse, stopRecording, timestampAt]);
+    setRecordingFinalizationStatus("ready_to_export");
+    refreshPendingTranscriptions(finishingSessionId);
+    setMessage("Session completed. Export JSON and audio before starting the next session.");
+  }, [appendThinkAloudNote, captureSnapshot, elapsedMs, flushHumanAction, getPendingCount, isRecording, postTaskResponse, refreshPendingTranscriptions, stopRecordingAndWait, timestampAt, waitForPendingTranscriptions]);
 
   const exportSession = useCallback(async () => {
-    if (!api || !sessionRef.current || status !== "completed" || isRecording || isAgentRunning || pendingTranscriptions > 0) return;
+    if (!api || !sessionRef.current || status !== "completed" || isRecording || isAgentRunning || getPendingCount(sessionRef.current.sessionId) > 0) return;
+    const session = sessionRef.current;
+    try {
+      validateThinkAloudChunks({
+        session,
+        chunks: thinkAloudChunksRef.current,
+        pendingCount: getPendingCount(session.sessionId)
+      });
+    } catch (error) {
+      setMessage(`Export validation failed: ${error instanceof Error ? error.message : String(error)}`);
+      return;
+    }
     const elements = api.getSceneElements();
     const imageBlob = await exportToBlob({
       elements,
@@ -505,53 +799,73 @@ function App() {
       exportPadding: 24,
       maxWidthOrHeight: 1800
     });
-    const task = taskByType(sessionRef.current.taskType);
-    const instructionsByPhase = sessionRef.current.taskType === "adaptive_reframing"
+    const task = taskByType(session.taskType);
+    const instructionsByPhase = session.taskType === "adaptive_reframing"
       ? {
-          phase_1: instructionForTask(sessionRef.current.taskType, sessionRef.current.seedLabel, "phase_1"),
-          phase_2: instructionForTask(sessionRef.current.taskType, sessionRef.current.seedLabel, "phase_2")
+          phase_1: instructionForTask(session.taskType, session.seedLabel, "phase_1"),
+          phase_2: instructionForTask(session.taskType, session.seedLabel, "phase_2")
         }
-      : { single_phase: instructionForTask(sessionRef.current.taskType, sessionRef.current.seedLabel, "single_phase") };
-    const audioFileName = audioChunksRef.current.length > 0 ? `${sessionRef.current.sessionId}-think-aloud.webm` : null;
+      : { single_phase: instructionForTask(session.taskType, session.seedLabel, "single_phase") };
+    const audioBlob = createCombinedAudioBlob();
+    const audioMetadata = buildAudioMetadata(session.sessionId);
     const payload: SessionExport = {
-      schemaVersion: "simeval-drawing-session-v1",
+      schemaVersion: "simeval-drawing-session-v2",
       exportedAt: new Date().toISOString(),
-      session: sessionRef.current,
+      session,
       task: {
         instruction: task.instruction,
         instructionsByPhase,
         seed: {
-          id: sessionRef.current.seedId,
-          label: sessionRef.current.seedLabel,
+          id: session.seedId,
+          label: session.seedLabel,
           initialElementIds: initialSeedElementIdsRef.current
         }
       },
       phaseTransitions: phaseTransitionsRef.current,
       actions: actionsRef.current,
-      thinkAloud: thinkAloudRef.current,
+      thinkAloudChunks: thinkAloudChunksRef.current,
+      thinkAloudNotes: thinkAloudNotesRef.current,
       agentTrajectory: agentTrajectoryRef.current,
       pointerModalities: pointerEventsRef.current,
       snapshots: snapshotsRef.current,
       finalArtifact: {
         sceneElements: cloneElements(elements),
         image: { mimeType: "image/png", dataUrl: await blobToDataUrl(imageBlob) },
-        audioFileName
+        audio: audioMetadata
       }
     };
-    downloadBlob(`${sessionRef.current.sessionId}.json`, new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
-    setMessage("Session JSON downloaded");
-  }, [api, isAgentRunning, isRecording, pendingTranscriptions, status]);
+    if (audioBlob && audioMetadata.fileName) {
+      downloadBlob(audioMetadata.fileName, audioBlob);
+    }
+    downloadBlob(`drawing-${session.sessionId}.json`, new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
+    exportedSessionIdsRef.current.add(session.sessionId);
+    setSessionExported(true);
+    setRecordingFinalizationStatus("exported");
+    setMessage(audioBlob ? "Session JSON and audio downloaded" : "Session JSON downloaded; no audio was recorded");
+  }, [api, buildAudioMetadata, createCombinedAudioBlob, getPendingCount, isAgentRunning, isRecording, status]);
 
   const downloadAudio = useCallback(() => {
     if (!sessionRef.current || audioChunksRef.current.length === 0) return;
-    const mimeType = audioChunksRef.current[0].type || "audio/webm";
-    downloadBlob(`${sessionRef.current.sessionId}-think-aloud.webm`, new Blob(audioChunksRef.current, { type: mimeType }));
-  }, []);
+    const audioBlob = createCombinedAudioBlob();
+    if (!audioBlob) return;
+    downloadBlob(`drawing-${sessionRef.current.sessionId}.webm`, audioBlob);
+  }, [createCombinedAudioBlob]);
 
   const resetForNextSession = useCallback(() => {
     if (!api) return;
-    suppressHumanChangeUntilRef.current = performance.now() + 500;
-    api.updateScene({ elements: [] });
+    if (
+      sessionRef.current &&
+      !sessionExported &&
+      buildAudioMetadata(sessionRef.current.sessionId).available
+    ) {
+      setMessage("Export the previous session JSON/audio before starting a new session.");
+      return;
+    }
+    if (sessionRef.current && getPendingCount(sessionRef.current.sessionId) > 0) {
+      setMessage("Wait for pending transcription before starting a new session.");
+      return;
+    }
+    resetCanvasForSession([]);
     sessionRef.current = null;
     agentAbortRef.current?.abort();
     agentAbortRef.current = null;
@@ -562,7 +876,8 @@ function App() {
     setMessage("참가자와 task를 설정하세요.");
     setSummary(emptySummary);
     setAgentTrajectory([]);
-  }, [api]);
+    setRecordingFinalizationStatus("idle");
+  }, [api, buildAudioMetadata, getPendingCount, resetCanvasForSession, sessionExported]);
 
   const captureAgentScreenshot = useCallback(async () => {
     if (!api) return undefined;
@@ -582,15 +897,22 @@ function App() {
   useEffect(() => {
     if (status !== "active") return;
     const timer = setInterval(() => setElapsedDisplayMs(elapsedMs()), 1000);
-    const snapshotTimer = setInterval(() => captureSnapshot("periodic", latestElementsRef.current), snapshotIntervalMs);
+    const snapshotTimer = sessionRef.current?.actorType === "human"
+      ? setInterval(() => captureSnapshot("periodic", latestElementsRef.current), snapshotIntervalMs)
+      : null;
     return () => {
       clearInterval(timer);
-      clearInterval(snapshotTimer);
+      if (snapshotTimer) clearInterval(snapshotTimer);
     };
   }, [captureSnapshot, elapsedMs, status]);
 
   useEffect(() => {
     if (!api) return;
+    if (!enableAgentMode) {
+      pilotAgentApiRef.current = null;
+      delete window.simevalAgentApi;
+      return;
+    }
     const agentApi = createPilotAgentApi({
       api,
       nowMs: elapsedMs,
@@ -604,7 +926,7 @@ function App() {
         appendAction(draft, phaseRef.current, nextElements);
         baselineRef.current = summarizeElements(nextElements);
       },
-      onThinkAloud: text => appendThinkAloud(text, "agent_reasoning"),
+      onThinkAloud: text => appendThinkAloudNote(text, "agent_reasoning"),
       onFinish: finishSession
     });
     pilotAgentApiRef.current = agentApi;
@@ -613,12 +935,12 @@ function App() {
       pilotAgentApiRef.current = null;
       delete window.simevalAgentApi;
     };
-  }, [api, appendAction, appendThinkAloud, elapsedMs, finishSession, flushHumanAction]);
+  }, [api, appendAction, appendThinkAloudNote, elapsedMs, finishSession, flushHumanAction]);
 
   useEffect(() => {
     const session = sessionRef.current;
     const agentApi = pilotAgentApiRef.current;
-    if (status !== "active" || session?.actorType !== "agent" || !agentApi) return;
+    if (!enableAgentMode || status !== "active" || session?.actorType !== "agent" || !agentApi) return;
     if (agentStartedSessionIdRef.current === session.sessionId) return;
     agentStartedSessionIdRef.current = session.sessionId;
     const controller = new AbortController();
@@ -634,8 +956,8 @@ function App() {
         phaseRef.current
       ),
       captureScreenshot: captureAgentScreenshot,
-      timeBudgetMs: agentTimeBudgetMs,
-      finalizationWindowMs: agentFinalizationWindowMs,
+      timeBudgetMs: session.agentConfig?.timeBudgetMs ?? defaultAgentTimeBudgetMinutes * 60 * 1000,
+      finalizationWindowMs: session.agentConfig?.finalizationWindowMs ?? agentFinalizationWindowMs,
       signal: controller.signal,
       onLog: entry => {
         agentTrajectoryRef.current.push(entry);
@@ -667,7 +989,7 @@ function App() {
   }, [captureAgentScreenshot, finishSession, status]);
 
   useEffect(() => () => {
-    if (actionTimerRef.current) clearTimeout(actionTimerRef.current);
+    clearActionTimer(actionTimerRef);
     mediaStreamRef.current?.getTracks().forEach(track => track.stop());
   }, []);
 
@@ -683,29 +1005,34 @@ function App() {
     return `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
   };
 
+  const currentSessionPendingTranscriptions = getPendingCount(sessionMetadata?.sessionId);
+  const currentSessionHasAudio = audioChunksRef.current.length > 0;
+  const canStartNextSession = status === "completed" && currentSessionPendingTranscriptions === 0 && (sessionExported || !currentSessionHasAudio);
+  const canExportSession = status === "completed" && !isRecording && !isAgentRunning && currentSessionPendingTranscriptions === 0;
+
   return (
     <main className={`app-shell ${panelCollapsed ? "panel-collapsed" : ""}`}>
       <header className="session-bar">
         <div className="brand-block">
           <strong>Simeval Drawing Pilot</strong>
-          <span>{sessionMetadata ? `${sessionMetadata.actorType} · ${sessionMetadata.participantId} · ${sessionMetadata.taskTitle}` : "Human and Agent creative process collection"}</span>
+          <span>{sessionMetadata ? `${sessionMetadata.actorType} · ${sessionMetadata.participantId} · ${sessionMetadata.taskTitle}` : enableAgentMode ? "Human and Agent creative process collection" : "Human drawing process collection"}</span>
         </div>
         {status !== "setup" && (
           <div className="session-metrics" aria-label="Session status">
-            <span>{sessionMetadata?.actorType === "agent" ? `${formatDuration(Math.max(0, agentTimeBudgetMs - elapsedDisplayMs))} left` : formatDuration(elapsedDisplayMs)}</span>
+            <span>{sessionMetadata?.actorType === "agent" ? `${formatDuration(Math.max(0, (sessionMetadata.agentConfig?.timeBudgetMs ?? defaultAgentTimeBudgetMinutes * 60 * 1000) - elapsedDisplayMs))} left` : formatDuration(elapsedDisplayMs)}</span>
             <span>{actionCount} actions</span>
             <span>{snapshotCount} snapshots</span>
           </div>
         )}
-        {status === "active" && <button className="danger-button" onClick={() => finishSession()}>Finish session</button>}
-        {status === "completed" && <button onClick={resetForNextSession}>New session</button>}
+        {status === "active" && <button className="danger-button" onClick={() => void finishSession()}>Finish session</button>}
+        {status === "completed" && <button disabled={!canStartNextSession} onClick={resetForNextSession}>New session</button>}
       </header>
 
       <div className="main-stage">
       {status === "setup" && (
         <section className="setup-view">
           <div className="setup-form">
-            {!selectedActor ? (
+            {!selectedActor && enableAgentMode ? (
               <>
                 <div className="setup-heading">
                   <span className="eyebrow">Pilot session</span>
@@ -724,10 +1051,10 @@ function App() {
               </>
             ) : (
               <>
-                <button className="back-button" onClick={() => setSelectedActor(null)}>Back</button>
+                {enableAgentMode && <button className="back-button" onClick={() => setSelectedActor(null)}>Back</button>}
                 <div className="setup-heading compact-heading">
-                  <span className="eyebrow">{selectedActor} session setup</span>
-                  <h1>{selectedActor === "human" ? "Drawing + Think-aloud" : "Timed Agent Drawing"}</h1>
+                  <span className="eyebrow">{selectedActor ?? "human"} session setup</span>
+                  <h1>{selectedActor === "agent" ? "Timed Agent Drawing" : "Drawing + Think-aloud"}</h1>
                 </div>
 
                 {selectedActor === "human" ? (
@@ -749,9 +1076,19 @@ function App() {
                   </div>
                 ) : (
                   <div className="agent-budget-row">
-                    <span>Time budget</span>
-                    <strong>05:00</strong>
-                    <small>Finalization begins with 00:30 remaining</small>
+                    <label>
+                      <span>Time budget</span>
+                      <input
+                        type="number"
+                        min={1}
+                        max={30}
+                        step={1}
+                        value={agentTimeBudgetMinutes}
+                        onChange={event => setAgentTimeBudgetMinutes(Math.min(30, Math.max(1, Number(event.target.value) || 1)))}
+                      />
+                    </label>
+                    <strong>{String(agentTimeBudgetMinutes).padStart(2, "0")}:00</strong>
+                    <small>Minutes. Finalization begins with 00:30 remaining.</small>
                   </div>
                 )}
 
@@ -820,7 +1157,7 @@ function App() {
                   <button className={isRecording ? "recording" : ""} disabled={status !== "active"} onClick={isRecording ? stopRecording : startRecording}>
                     {isRecording ? "Stop recording" : "Start recording"}
                   </button>
-                  <span>{isRecording ? "Recording" : pendingTranscriptions > 0 ? `${pendingTranscriptions} transcribing` : "Idle"}</span>
+                  <span>{isRecording ? "Recording" : currentSessionPendingTranscriptions > 0 ? `${currentSessionPendingTranscriptions} transcribing` : recordingFinalizationStatus}</span>
                 </div>
               </section>
             ) : (
@@ -849,8 +1186,8 @@ function App() {
 
             {status === "completed" && (
               <div className="export-actions">
-                <button className="primary-button" disabled={isRecording || isAgentRunning || pendingTranscriptions > 0} onClick={() => void exportSession()}>
-                  {isRecording || isAgentRunning || pendingTranscriptions > 0 ? "Waiting for session processing" : "Download session JSON"}
+                <button className="primary-button" disabled={!canExportSession} onClick={() => void exportSession()}>
+                  {!canExportSession ? "Waiting for session processing" : "Download session JSON + audio"}
                 </button>
                 {sessionMetadata?.actorType === "human" && <button disabled={audioChunksRef.current.length === 0} onClick={downloadAudio}>Download audio</button>}
               </div>
@@ -869,7 +1206,7 @@ function App() {
             <Excalidraw
               excalidrawAPI={setApi}
               onChange={onCanvasChange}
-              viewModeEnabled={sessionMetadata?.actorType === "agent" && status === "active"}
+              viewModeEnabled={false}
               langCode="en"
               theme="light"
             />
