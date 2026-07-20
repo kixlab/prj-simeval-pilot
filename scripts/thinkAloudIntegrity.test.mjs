@@ -227,4 +227,103 @@ assert.match(viteSource, /: message;/);
 assert.match(viteSource, /languageCode,\n\s+error: formatSttError\(error\)/);
 assert.equal(failedChunk.audio.languageCode, "ko-KR");
 
+function createPendingStore(sessionId) {
+  let nextSequence = 1;
+  const chunks = [];
+  return {
+    chunks,
+    flush(startedAtMs, endedAtMs) {
+      const sequence = nextSequence;
+      nextSequence += 1;
+      const chunk = buildChunk({
+        sessionId,
+        chunkIndex: sequence,
+        chunkStartedAtMs: startedAtMs,
+        chunkEndedAtMs: endedAtMs,
+        phaseAtStart: "single_phase",
+        phaseAtEnd: "single_phase",
+        content: ""
+      });
+      chunk.transcriptionStatus = "pending";
+      chunk.audio.success = false;
+      chunks.push(chunk);
+      return chunk.thinkAloudChunkId;
+    },
+    settle(chunkId, { failed = false, content = "done" } = {}) {
+      const index = chunks.findIndex(chunk => chunk.thinkAloudChunkId === chunkId);
+      assert.notEqual(index, -1);
+      chunks[index] = {
+        ...chunks[index],
+        content: failed ? "" : content,
+        transcriptionStatus: failed ? "failed" : content ? "completed" : "empty",
+        audio: {
+          ...chunks[index].audio,
+          success: !failed,
+          error: failed ? "STT failed" : undefined,
+          languageCode: "ko-KR"
+        }
+      };
+    }
+  };
+}
+
+// Test 11. Manual stop at the 29-30 second boundary preserves unique 1..N sequences.
+const boundaryStore = createPendingStore("boundary-session");
+const boundaryIds = [
+  boundaryStore.flush(0, 10000),
+  boundaryStore.flush(10000, 20000),
+  boundaryStore.flush(20000, 29980)
+];
+boundaryIds.forEach(chunkId => boundaryStore.settle(chunkId));
+assert.deepEqual(boundaryStore.chunks.map(chunk => chunk.sequence), [1, 2, 3]);
+validate("boundary-session", boundaryStore.chunks);
+
+// Test 12. A periodic and final flush racing through one mutex produce one finalized chunk.
+let stopRequested = false;
+let finalizedCount = 0;
+let serializedQueue = Promise.resolve();
+function requestConcurrentFlush() {
+  if (stopRequested) return;
+  stopRequested = true;
+  serializedQueue = serializedQueue.then(() => { finalizedCount += 1; });
+}
+requestConcurrentFlush();
+requestConcurrentFlush();
+await serializedQueue;
+assert.equal(finalizedCount, 1);
+
+// Test 13. Reverse STT completion updates existing pending chunks without reordering.
+const reverseStore = createPendingStore("reverse-session");
+const reverseIds = [reverseStore.flush(0, 10000), reverseStore.flush(10000, 20000), reverseStore.flush(20000, 30000)];
+reverseStore.settle(reverseIds[2], { content: "third" });
+reverseStore.settle(reverseIds[1], { content: "second" });
+reverseStore.settle(reverseIds[0], { content: "first" });
+assert.deepEqual(reverseStore.chunks.map(chunk => chunk.sequence), [1, 2, 3]);
+assert.deepEqual(reverseStore.chunks.map(chunk => chunk.content), ["first", "second", "third"]);
+validate("reverse-session", reverseStore.chunks);
+
+// Test 14. All STT failures retain unique chunks and still validate structurally.
+const failedStore = createPendingStore("failed-session");
+const failedIds = [failedStore.flush(0, 10000), failedStore.flush(10000, 20000), failedStore.flush(20000, 30000)];
+failedIds.reverse().forEach(chunkId => failedStore.settle(chunkId, { failed: true }));
+assert(failedStore.chunks.every(chunk => chunk.transcriptionStatus === "failed"));
+validate("failed-session", failedStore.chunks);
+
+// Test 15. A final sub-second chunk is retained with the next unique sequence.
+const shortStore = createPendingStore("short-session");
+const shortIds = [shortStore.flush(0, 10000), shortStore.flush(10000, 10750)];
+shortIds.forEach(chunkId => shortStore.settle(chunkId));
+assert.equal(shortStore.chunks[1].durationMs, 750);
+assert.deepEqual(shortStore.chunks.map(chunk => chunk.sequence), [1, 2]);
+validate("short-session", shortStore.chunks);
+
+// Test 16. Source enforces pending insertion, ID-based update, serialized flush, sorted non-blocking export.
+assert.match(appSource, /const sequence = nextThinkAloudChunkSequenceRef\.current;\n\s+nextThinkAloudChunkSequenceRef\.current \+= 1;/);
+assert.match(appSource, /transcriptionStatus: "pending"[\s\S]*void transcribeChunk\(blob/);
+assert.match(appSource, /findIndex\(chunk => chunk\.thinkAloudChunkId === thinkAloudChunkId\)/);
+assert.match(appSource, /sttFlushQueueRef\.current = sttFlushQueueRef\.current\.then\(flush, flush\)/);
+assert.match(appSource, /sort\(\(left, right\) => left\.sequence - right\.sequence\)/);
+assert.match(appSource, /validationErrors\.push[\s\S]*const elements = api\.getSceneElements\(\)/);
+assert.doesNotMatch(appSource, /setMessage\(`Export validation failed:[\s\S]{0,120}return;/);
+
 console.log("think-aloud integrity tests passed");

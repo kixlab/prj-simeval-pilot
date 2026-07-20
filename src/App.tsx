@@ -71,6 +71,8 @@ type SttResponse = {
 };
 type ThinkAloudChunkContext = {
   sourceSessionId: string;
+  thinkAloudChunkId: string;
+  sequence: number;
   chunkIndex: number;
   chunkStartedAtMs: number;
   chunkEndedAtMs: number;
@@ -141,14 +143,22 @@ function validateThinkAloudChunks({
   const validPhases: TaskPhase[] = ["single_phase", "phase_1", "phase_2"];
   const seenChunkIds = new Set<string>();
   const seenChunkIndexes = new Set<number>();
+  const seenSequences = new Set<number>();
   let previousSequence = 0;
 
   assertCondition(pendingCount === 0, "Pending transcription requests remain for this session.");
-  for (const chunk of chunks) {
+  for (const [arrayIndex, chunk] of chunks.entries()) {
     assertCondition(chunk.sessionId === session.sessionId, `Think-aloud chunk belongs to another session: ${chunk.thinkAloudChunkId}`);
     assertCondition(!seenChunkIds.has(chunk.thinkAloudChunkId), `Duplicate think-aloud chunk id: ${chunk.thinkAloudChunkId}`);
     assertCondition(!seenChunkIndexes.has(chunk.audio.chunkIndex), `Duplicate audio chunk index: ${chunk.audio.chunkIndex}`);
-    assertCondition(chunk.sequence > previousSequence, `Think-aloud chunk sequence is not strictly increasing: ${chunk.sequence}`);
+    assertCondition(
+      !seenSequences.has(chunk.sequence),
+      `Duplicate think-aloud chunk sequence: previousSequence=${previousSequence}, currentSequence=${chunk.sequence}, arrayIndex=${arrayIndex}, chunkId=${chunk.thinkAloudChunkId}`
+    );
+    assertCondition(
+      chunk.sequence > previousSequence,
+      `Think-aloud chunk sequence is not strictly increasing: previousSequence=${previousSequence}, currentSequence=${chunk.sequence}, arrayIndex=${arrayIndex}, chunkId=${chunk.thinkAloudChunkId}`
+    );
     assertCondition(chunk.chunkStartedAtMs >= 0, `Invalid chunk start time: ${chunk.thinkAloudChunkId}`);
     assertCondition(chunk.chunkEndedAtMs >= chunk.chunkStartedAtMs, `Invalid chunk end time: ${chunk.thinkAloudChunkId}`);
     assertCondition(chunk.durationMs === chunk.chunkEndedAtMs - chunk.chunkStartedAtMs, `Invalid chunk duration: ${chunk.thinkAloudChunkId}`);
@@ -167,9 +177,11 @@ function validateThinkAloudChunks({
       assertCondition(chunk.audio.success === true, `Completed transcription has audio.success=false: ${chunk.thinkAloudChunkId}`);
       assertCondition(chunk.content.trim() !== "", `Completed transcription is empty: ${chunk.thinkAloudChunkId}`);
     }
+    assertCondition(chunk.transcriptionStatus !== "pending", `Pending transcription remains: arrayIndex=${arrayIndex}, chunkId=${chunk.thinkAloudChunkId}`);
 
     seenChunkIds.add(chunk.thinkAloudChunkId);
     seenChunkIndexes.add(chunk.audio.chunkIndex);
+    seenSequences.add(chunk.sequence);
     previousSequence = chunk.sequence;
   }
 }
@@ -228,9 +240,12 @@ function App() {
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const sttChunkPartsRef = useRef<Blob[]>([]);
   const sttChunkTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sttStopRequestedRef = useRef(false);
+  const sttFlushQueueRef = useRef<Promise<void>>(Promise.resolve());
   const audioChunksRef = useRef<Blob[]>([]);
   const recorderMimeTypeRef = useRef<string | null>(null);
   const audioChunkIndexRef = useRef(0);
+  const nextThinkAloudChunkSequenceRef = useRef(1);
   const previousAudioChunkEndRef = useRef(0);
   const previousAudioChunkPhaseRef = useRef<TaskPhase>("single_phase");
   const recordingSessionIdRef = useRef<string | null>(null);
@@ -375,9 +390,9 @@ function App() {
     thinkAloudNotesRef.current.push(note);
   }, [elapsedMs, timestampAt]);
 
-  const appendThinkAloudChunk = useCallback((chunk: ThinkAloudChunk) => {
+  const insertPendingThinkAloudChunk = useCallback((chunk: ThinkAloudChunk) => {
     if (!sessionRef.current || sessionRef.current.sessionId !== chunk.sessionId) {
-      console.error("[ThinkAloud] Late transcription session mismatch", {
+      console.error("[ThinkAloud] Pending chunk session mismatch", {
         sourceSessionId: chunk.sessionId,
         activeSessionId: sessionRef.current?.sessionId ?? null,
         chunkIndex: chunk.audio.chunkIndex
@@ -386,6 +401,27 @@ function App() {
     }
     thinkAloudChunksRef.current.push(chunk);
     setThinkAloudCount(thinkAloudChunksRef.current.length);
+  }, []);
+
+  const updateThinkAloudChunk = useCallback((
+    sourceSessionId: string,
+    thinkAloudChunkId: string,
+    update: (chunk: ThinkAloudChunk) => ThinkAloudChunk
+  ) => {
+    if (!sessionRef.current || sessionRef.current.sessionId !== sourceSessionId) {
+      console.error("[ThinkAloud] Late transcription session mismatch", {
+        sourceSessionId,
+        activeSessionId: sessionRef.current?.sessionId ?? null,
+        thinkAloudChunkId
+      });
+      return;
+    }
+    const index = thinkAloudChunksRef.current.findIndex(chunk => chunk.thinkAloudChunkId === thinkAloudChunkId);
+    if (index < 0) {
+      console.error("[ThinkAloud] Pending chunk not found", { sourceSessionId, thinkAloudChunkId });
+      return;
+    }
+    thinkAloudChunksRef.current[index] = update(thinkAloudChunksRef.current[index]);
   }, []);
 
   const appendAction = useCallback((draft: ArtifactActionDraft, actionPhase: TaskPhase, elements: readonly ExcalidrawElement[]) => {
@@ -576,12 +612,15 @@ function App() {
     audioChunksRef.current = [];
     recorderMimeTypeRef.current = null;
     audioChunkIndexRef.current = 0;
+    nextThinkAloudChunkSequenceRef.current = 1;
     previousAudioChunkEndRef.current = 0;
     previousAudioChunkPhaseRef.current = initialPhase;
     recordingSessionIdRef.current = null;
     sttChunkPartsRef.current = [];
     if (sttChunkTimerRef.current) clearTimeout(sttChunkTimerRef.current);
     sttChunkTimerRef.current = null;
+    sttStopRequestedRef.current = false;
+    sttFlushQueueRef.current = Promise.resolve();
     finalDataAvailableHandledRef.current = true;
     pendingTranscriptionsBySessionRef.current.set(sessionId, 0);
     pendingHumanActionRef.current = null;
@@ -643,63 +682,48 @@ function App() {
       });
       const result = await response.json() as SttResponse;
       const content = result.transcript ?? "";
-      appendThinkAloudChunk({
-        thinkAloudChunkId: `${context.sourceSessionId}:think-aloud-chunk:${context.chunkIndex}`,
-        sessionId: context.sourceSessionId,
-        sequence: context.chunkIndex,
-        timestamp: timestampAt(context.chunkStartedAtMs),
-        chunkStartedAtMs: context.chunkStartedAtMs,
-        chunkEndedAtMs: context.chunkEndedAtMs,
-        durationMs: Math.max(0, context.chunkEndedAtMs - context.chunkStartedAtMs),
-        phaseAtStart: context.phaseAtStart,
-        phaseAtEnd: context.phaseAtEnd,
-        crossesPhaseTransition: context.crossesPhaseTransition,
-        source: "human_audio",
+      updateThinkAloudChunk(context.sourceSessionId, context.thinkAloudChunkId, chunk => ({
+        ...chunk,
         content: content.trim(),
         transcriptionStatus: response.ok && result.success
           ? content.trim().length > 0 ? "completed" : "empty"
           : "failed",
         audio: {
-          chunkIndex: context.chunkIndex,
-          mimeType: blob.type,
-          byteSize: blob.size,
+          ...chunk.audio,
           languageCode: result.languageCode ?? "",
           success: response.ok && result.success,
           error: result.error,
           segments: result.segments ?? []
         }
-      });
+      }));
       setMessage(response.ok && result.success ? `Audio chunk ${context.chunkIndex} transcribed` : `Audio chunk ${context.chunkIndex} saved; STT failed`);
     } catch (error) {
-      appendThinkAloudChunk({
-        thinkAloudChunkId: `${context.sourceSessionId}:think-aloud-chunk:${context.chunkIndex}`,
-        sessionId: context.sourceSessionId,
-        sequence: context.chunkIndex,
-        timestamp: timestampAt(context.chunkStartedAtMs),
-        chunkStartedAtMs: context.chunkStartedAtMs,
-        chunkEndedAtMs: context.chunkEndedAtMs,
-        durationMs: Math.max(0, context.chunkEndedAtMs - context.chunkStartedAtMs),
-        phaseAtStart: context.phaseAtStart,
-        phaseAtEnd: context.phaseAtEnd,
-        crossesPhaseTransition: context.crossesPhaseTransition,
-        source: "human_audio",
+      updateThinkAloudChunk(context.sourceSessionId, context.thinkAloudChunkId, chunk => ({
+        ...chunk,
         content: "",
         transcriptionStatus: "failed",
         audio: {
-          chunkIndex: context.chunkIndex,
-          mimeType: blob.type,
-          byteSize: blob.size,
+          ...chunk.audio,
           languageCode: "",
           success: false,
           error: error instanceof Error ? error.message : String(error),
           segments: []
         }
-      });
+      }));
       setMessage(`Audio chunk ${context.chunkIndex} saved; STT failed`);
     } finally {
       decrementPending(context.sourceSessionId);
     }
-  }, [appendThinkAloudChunk, decrementPending, incrementPending, timestampAt]);
+  }, [decrementPending, incrementPending, updateThinkAloudChunk]);
+
+  const stopActiveSttChunkRecorder = useCallback(() => {
+    if (sttChunkTimerRef.current) clearTimeout(sttChunkTimerRef.current);
+    sttChunkTimerRef.current = null;
+    const recorder = mediaRecorderRef.current;
+    if (!recorder || recorder.state !== "recording" || sttStopRequestedRef.current) return;
+    sttStopRequestedRef.current = true;
+    recorder.stop();
+  }, []);
 
   const startSttChunkRecorder = useCallback((stream: MediaStream, mimeType: string, sourceSessionId: string) => {
     if (recordingSessionIdRef.current !== sourceSessionId || !stream.active) return;
@@ -708,6 +732,7 @@ function App() {
     const phaseAtStart = previousAudioChunkPhaseRef.current;
     sttChunkPartsRef.current = [];
     mediaRecorderRef.current = recorder;
+    sttStopRequestedRef.current = false;
     finalDataAvailableHandledRef.current = false;
 
     recorder.ondataavailable = event => {
@@ -718,39 +743,71 @@ function App() {
       sttChunkTimerRef.current = null;
       const parts = sttChunkPartsRef.current;
       sttChunkPartsRef.current = [];
-      const ended = elapsedMs();
-      const phaseAtEnd = phaseRef.current;
-      finalDataAvailableHandledRef.current = true;
-      if (parts.length > 0) {
-        const blob = new Blob(parts, { type: recorder.mimeType || mimeType || "audio/webm" });
-        const chunkIndex = audioChunkIndexRef.current + 1;
-        audioChunkIndexRef.current = chunkIndex;
-        void transcribeChunk(blob, {
-          sourceSessionId,
-          chunkIndex,
-          chunkStartedAtMs: started,
-          chunkEndedAtMs: ended,
-          phaseAtStart,
-          phaseAtEnd,
-          crossesPhaseTransition: phaseAtStart !== phaseAtEnd
-        });
-      }
-      previousAudioChunkEndRef.current = ended;
-      previousAudioChunkPhaseRef.current = phaseAtEnd;
-      mediaRecorderRef.current = null;
+      const flush = async () => {
+        const ended = elapsedMs();
+        const phaseAtEnd = phaseRef.current;
+        finalDataAvailableHandledRef.current = true;
+        if (parts.length > 0) {
+          const blob = new Blob(parts, { type: recorder.mimeType || mimeType || "audio/webm" });
+          const sequence = nextThinkAloudChunkSequenceRef.current;
+          nextThinkAloudChunkSequenceRef.current += 1;
+          const chunkIndex = audioChunkIndexRef.current + 1;
+          audioChunkIndexRef.current = chunkIndex;
+          const thinkAloudChunkId = `${sourceSessionId}:think-aloud-chunk:${sequence}`;
+          insertPendingThinkAloudChunk({
+            thinkAloudChunkId,
+            sessionId: sourceSessionId,
+            sequence,
+            timestamp: timestampAt(started),
+            chunkStartedAtMs: started,
+            chunkEndedAtMs: ended,
+            durationMs: Math.max(0, ended - started),
+            phaseAtStart,
+            phaseAtEnd,
+            crossesPhaseTransition: phaseAtStart !== phaseAtEnd,
+            source: "human_audio",
+            content: "",
+            transcriptionStatus: "pending",
+            audio: {
+              chunkIndex,
+              mimeType: blob.type,
+              byteSize: blob.size,
+              languageCode: "",
+              success: false,
+              segments: []
+            }
+          });
+          void transcribeChunk(blob, {
+            sourceSessionId,
+            thinkAloudChunkId,
+            sequence,
+            chunkIndex,
+            chunkStartedAtMs: started,
+            chunkEndedAtMs: ended,
+            phaseAtStart,
+            phaseAtEnd,
+            crossesPhaseTransition: phaseAtStart !== phaseAtEnd
+          });
+        }
+        previousAudioChunkEndRef.current = ended;
+        previousAudioChunkPhaseRef.current = phaseAtEnd;
+        mediaRecorderRef.current = null;
+        sttStopRequestedRef.current = false;
 
-      if (recordingSessionIdRef.current === sourceSessionId && stream.active) {
-        startSttChunkRecorder(stream, mimeType, sourceSessionId);
-        return;
-      }
-      const fullRecorder = fullSessionMediaRecorderRef.current;
-      if (fullRecorder && fullRecorder.state !== "inactive") fullRecorder.stop();
+        if (recordingSessionIdRef.current === sourceSessionId && stream.active) {
+          startSttChunkRecorder(stream, mimeType, sourceSessionId);
+          return;
+        }
+        const fullRecorder = fullSessionMediaRecorderRef.current;
+        if (fullRecorder && fullRecorder.state !== "inactive") fullRecorder.stop();
+      };
+      sttFlushQueueRef.current = sttFlushQueueRef.current.then(flush, flush);
     };
     recorder.start();
     sttChunkTimerRef.current = setTimeout(() => {
-      if (recorder.state === "recording") recorder.stop();
+      stopActiveSttChunkRecorder();
     }, recordingTimesliceMs);
-  }, [elapsedMs, transcribeChunk]);
+  }, [elapsedMs, insertPendingThinkAloudChunk, stopActiveSttChunkRecorder, timestampAt, transcribeChunk]);
 
   const startRecording = useCallback(async () => {
     if (status !== "active") return;
@@ -793,16 +850,16 @@ function App() {
   }, [elapsedMs, startSttChunkRecorder, status]);
 
   const stopRecording = useCallback(() => {
-    recordingSessionIdRef.current = null;
     if (sttChunkTimerRef.current) clearTimeout(sttChunkTimerRef.current);
     sttChunkTimerRef.current = null;
+    recordingSessionIdRef.current = null;
     const recorder = mediaRecorderRef.current;
-    if (recorder && recorder.state !== "inactive") recorder.stop();
+    if (recorder) stopActiveSttChunkRecorder();
     else {
       const fullRecorder = fullSessionMediaRecorderRef.current;
       if (fullRecorder && fullRecorder.state !== "inactive") fullRecorder.stop();
     }
-  }, []);
+  }, [stopActiveSttChunkRecorder]);
 
   const stopRecordingAndWait = useCallback(() => {
     const recorder = mediaRecorderRef.current;
@@ -814,13 +871,13 @@ function App() {
     setRecordingFinalizationStatus("stopping");
     return new Promise<void>(resolve => {
       recorderStopResolverRef.current = resolve;
-      recordingSessionIdRef.current = null;
       if (sttChunkTimerRef.current) clearTimeout(sttChunkTimerRef.current);
       sttChunkTimerRef.current = null;
-      if (recorder && recorder.state !== "inactive") recorder.stop();
+      recordingSessionIdRef.current = null;
+      if (recorder) stopActiveSttChunkRecorder();
       else if (fullRecorder && fullRecorder.state !== "inactive") fullRecorder.stop();
     });
-  }, []);
+  }, [stopActiveSttChunkRecorder]);
 
   const finishSession = useCallback(async () => {
     if (!sessionRef.current || sessionRef.current.endedAt) return;
@@ -859,15 +916,17 @@ function App() {
   const exportSession = useCallback(async () => {
     if (!api || !sessionRef.current || status !== "completed" || isRecording || isAgentRunning || getPendingCount(sessionRef.current.sessionId) > 0) return;
     const session = sessionRef.current;
+    const sortedThinkAloudChunks = [...thinkAloudChunksRef.current].sort((left, right) => left.sequence - right.sequence);
+    thinkAloudChunksRef.current = sortedThinkAloudChunks;
+    const validationErrors: string[] = [];
     try {
       validateThinkAloudChunks({
         session,
-        chunks: thinkAloudChunksRef.current,
+        chunks: sortedThinkAloudChunks,
         pendingCount: getPendingCount(session.sessionId)
       });
     } catch (error) {
-      setMessage(`Export validation failed: ${error instanceof Error ? error.message : String(error)}`);
-      return;
+      validationErrors.push(error instanceof Error ? error.message : String(error));
     }
     const elements = api.getSceneElements();
     const imageBlob = await exportToBlob({
@@ -903,7 +962,8 @@ function App() {
       phaseTransitions: phaseTransitionsRef.current,
       actions: actionsRef.current,
       elementMutations: elementMutationsRef.current,
-      thinkAloudChunks: thinkAloudChunksRef.current,
+      thinkAloudChunks: sortedThinkAloudChunks,
+      validationErrors,
       thinkAloudNotes: thinkAloudNotesRef.current,
       agentTrajectory: agentTrajectoryRef.current,
       pointerModalities: pointerEventsRef.current,
@@ -921,7 +981,9 @@ function App() {
     exportedSessionIdsRef.current.add(session.sessionId);
     setSessionExported(true);
     setRecordingFinalizationStatus("exported");
-    setMessage(audioBlob ? "Session JSON and audio downloaded" : "Session JSON downloaded; no audio was recorded");
+    setMessage(validationErrors.length > 0
+      ? `Session exported with validation warning: ${validationErrors.join(" | ")}`
+      : audioBlob ? "Session JSON and audio downloaded" : "Session JSON downloaded; no audio was recorded");
   }, [api, buildAudioMetadata, createCombinedAudioBlob, getPendingCount, isAgentRunning, isRecording, status]);
 
   const downloadAudio = useCallback(() => {

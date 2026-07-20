@@ -51,7 +51,7 @@ export type PhaseTransition = {
   revealedInstruction: string;
 };
 
-export type TranscriptionStatus = "completed" | "empty" | "failed";
+export type TranscriptionStatus = "pending" | "completed" | "empty" | "failed";
 
 export type ThinkAloudWord = {
   word: string;
@@ -173,6 +173,7 @@ export type SessionExport = {
   }>;
   elementMutations: ElementMutation[];
   thinkAloudChunks: ThinkAloudChunk[];
+  validationErrors: string[];
   thinkAloudNotes: ThinkAloudNote[];
   agentTrajectory: AgentTrajectoryEntry[];
   pointerModalities: PointerModalityEvent[];

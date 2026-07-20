@@ -13,6 +13,7 @@ Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v3`입니다.
 - `actions`: artifact diff를 idle 단위로 묶은 action과 전후 snapshot 참조
 - `elementMutations`: Human mode의 매 Excalidraw `onChange`에서 기록한 element/property 단위 원본 변화
 - `thinkAloud`: Human audio transcript와 task 종료 후 응답
+- `validationErrors`: export 직전 무결성 검사에서 발견된 오류. 오류가 있어도 raw JSON과 audio export는 계속 진행됨
 - `agentTrajectory`: 시간 예산, 판단 번호, 판단 요약, batch 내 각 tool call과 실행 결과
 - `phaseTransitions`: Adaptive Reframing에서 조건 공개 시각과 전후 snapshot
 - `pointerModalities`: 실제 pointerdown에서 감지한 mouse/pen/touch
@@ -30,6 +31,8 @@ Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v3`입니다.
 ## Audio
 
 음성은 10초 단위 chunk로 STT에 전송되고 metadata와 transcript가 `thinkAloud`에 기록됩니다. raw audio는 JSON에 중복 삽입하지 않고 별도 WebM 파일로 export합니다. STT 인증 또는 네트워크 오류가 발생해도 chunk 크기와 오류 정보는 남습니다.
+
+각 audio chunk는 녹음 flush 직후 고유 sequence를 예약하고 `pending` 상태로 먼저 배열에 들어갑니다. STT 응답은 완료 순서와 무관하게 chunk ID로 기존 항목을 갱신합니다. export 시에는 sequence 순으로 정렬하고 duplicate sequence를 별도로 검사합니다.
 
 ## Agent 종료 조건
 
