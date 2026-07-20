@@ -16,6 +16,8 @@ import {
 } from "./data/tasks";
 import type {
   CanvasSnapshot,
+  CompactElementState,
+  ElementMutation,
   InputDevice,
   PhaseTransition,
   PointerModalityEvent,
@@ -35,6 +37,7 @@ import {
   type ArtifactActionDraft,
   type ArtifactActionEntry
 } from "./logging/artifactActions";
+import { compactElementMap, diffElementMaps } from "./logging/elementMutations";
 
 const actionIdleMs = 700;
 const snapshotIntervalMs = 5000;
@@ -204,6 +207,9 @@ function App() {
   const sessionStartedPerformanceRef = useRef(0);
   const sessionEpochRef = useRef(0);
   const actionsRef = useRef<RecordedAction[]>([]);
+  const elementMutationsRef = useRef<ElementMutation[]>([]);
+  const previousElementsByIdRef = useRef<Map<string, CompactElementState>>(new Map());
+  const onChangeBatchSequenceRef = useRef(0);
   const snapshotsRef = useRef<CanvasSnapshot[]>([]);
   const thinkAloudChunksRef = useRef<ThinkAloudChunk[]>([]);
   const thinkAloudNotesRef = useRef<ThinkAloudNote[]>([]);
@@ -440,6 +446,7 @@ function App() {
     latestElementsRef.current = elements;
     latestFilesRef.current = {};
     baselineRef.current = summarizeElements(elements);
+    previousElementsByIdRef.current = compactElementMap(elements);
     setSummary(baselineRef.current);
     if (elements.length > 0) {
       api.scrollToContent(elements, { fitToContent: true, animate: false });
@@ -454,12 +461,35 @@ function App() {
     latestElementsRef.current = elements;
     latestFilesRef.current = files;
     const nextSummary = summarizeElements(elements);
+    const currentElementsById = compactElementMap(elements);
     setSummary(nextSummary);
-    if (status !== "active" || performance.now() < suppressHumanChangeUntilRef.current) {
+    const session = sessionRef.current;
+    if (status !== "active" || session?.actorType !== "human" || performance.now() < suppressHumanChangeUntilRef.current) {
+      previousElementsByIdRef.current = currentElementsById;
       baselineRef.current = nextSummary;
       return;
     }
     const now = elapsedMs();
+    const batchNumber = onChangeBatchSequenceRef.current + 1;
+    onChangeBatchSequenceRef.current = batchNumber;
+    const drafts = diffElementMaps(previousElementsByIdRef.current, currentElementsById);
+    const onChangeBatchId = `${session.sessionId}:onchange-batch:${batchNumber}`;
+    for (const [batchSequence, draft] of drafts.entries()) {
+      const sequence = elementMutationsRef.current.length + 1;
+      elementMutationsRef.current.push({
+        ...draft,
+        mutationId: `${session.sessionId}:element-mutation:${sequence}`,
+        sessionId: session.sessionId,
+        sequence,
+        timestamp: timestampAt(now),
+        elapsedMs: now,
+        onChangeBatchId,
+        batchSequence,
+        actorType: "human",
+        source: "excalidraw_onchange"
+      });
+    }
+    previousElementsByIdRef.current = currentElementsById;
     const pending = pendingHumanActionRef.current;
     pendingHumanActionRef.current = pending
       ? { ...pending, after: nextSummary, afterElements: elements, endedAtMs: now }
@@ -473,7 +503,7 @@ function App() {
         };
     if (actionTimerRef.current) clearTimeout(actionTimerRef.current);
     actionTimerRef.current = setTimeout(flushHumanAction, actionIdleMs);
-  }, [elapsedMs, flushHumanAction, status]);
+  }, [elapsedMs, flushHumanAction, status, timestampAt]);
 
   const startSession = useCallback(() => {
     if (!api || !selectedActor || (selectedActor === "human" && !participantId.trim())) {
@@ -534,6 +564,8 @@ function App() {
     sessionRef.current = metadata;
     phaseRef.current = initialPhase;
     actionsRef.current = [];
+    elementMutationsRef.current = [];
+    onChangeBatchSequenceRef.current = 0;
     snapshotsRef.current = [];
     thinkAloudChunksRef.current = [];
     thinkAloudNotesRef.current = [];
@@ -856,7 +888,7 @@ function App() {
     const audioBlob = createCombinedAudioBlob();
     const audioMetadata = buildAudioMetadata(session.sessionId);
     const payload: SessionExport = {
-      schemaVersion: "simeval-drawing-session-v2",
+      schemaVersion: "simeval-drawing-session-v3",
       exportedAt: new Date().toISOString(),
       session,
       task: {
@@ -870,6 +902,7 @@ function App() {
       },
       phaseTransitions: phaseTransitionsRef.current,
       actions: actionsRef.current,
+      elementMutations: elementMutationsRef.current,
       thinkAloudChunks: thinkAloudChunksRef.current,
       thinkAloudNotes: thinkAloudNotesRef.current,
       agentTrajectory: agentTrajectoryRef.current,

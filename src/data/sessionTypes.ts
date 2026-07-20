@@ -109,8 +109,54 @@ export type PointerModalityEvent = {
   pointerType: "mouse" | "pen" | "touch";
 };
 
+export type ElementMutationOperation =
+  | "create" | "delete" | "move" | "resize" | "rotate" | "change_text"
+  | "change_style" | "change_points" | "change_binding" | "compound_change";
+
+export type CompactElementState = {
+  id: string;
+  type: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  angle: number;
+  text: string | null;
+  originalText: string | null;
+  points: unknown;
+  strokeColor: string;
+  backgroundColor: string;
+  fillStyle: string;
+  strokeWidth: number;
+  strokeStyle: string;
+  opacity: number;
+  groupIds: string[];
+  containerId: string | null;
+  startBinding: unknown;
+  endBinding: unknown;
+  isDeleted: boolean;
+};
+
+export type ElementMutation = {
+  mutationId: string;
+  sessionId: string;
+  sequence: number;
+  timestamp: string;
+  elapsedMs: number;
+  onChangeBatchId: string;
+  batchSequence: number;
+  actorType: "human";
+  source: "excalidraw_onchange";
+  elementId: string;
+  elementType: string;
+  operation: ElementMutationOperation;
+  changedProperties: Array<{ property: string; before: unknown; after: unknown }>;
+  beforeElement: CompactElementState | null;
+  afterElement: CompactElementState | null;
+};
+
 export type SessionExport = {
-  schemaVersion: "simeval-drawing-session-v2";
+  schemaVersion: "simeval-drawing-session-v3";
   exportedAt: string;
   session: SessionMetadata;
   task: {
@@ -125,6 +171,7 @@ export type SessionExport = {
     afterSnapshotId: string;
     seedElementImpacts: string[];
   }>;
+  elementMutations: ElementMutation[];
   thinkAloudChunks: ThinkAloudChunk[];
   thinkAloudNotes: ThinkAloudNote[];
   agentTrajectory: AgentTrajectoryEntry[];

@@ -1,6 +1,6 @@
 # Data Format
 
-Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v1`입니다.
+Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v3`입니다.
 
 ## Timeline 기준
 
@@ -11,6 +11,7 @@ Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v1`입니다.
 - `session`: 참가자, actor, task, seed, 입력 장치, 시작/종료 시각
 - `task`: 제시문, phase별 제시문, seed와 초기 seed element ID
 - `actions`: artifact diff를 idle 단위로 묶은 action과 전후 snapshot 참조
+- `elementMutations`: Human mode의 매 Excalidraw `onChange`에서 기록한 element/property 단위 원본 변화
 - `thinkAloud`: Human audio transcript와 task 종료 후 응답
 - `agentTrajectory`: 시간 예산, 판단 번호, 판단 요약, batch 내 각 tool call과 실행 결과
 - `phaseTransitions`: Adaptive Reframing에서 조건 공개 시각과 전후 snapshot
@@ -19,6 +20,8 @@ Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v1`입니다.
 - `finalArtifact`: 최종 scene element와 PNG data URL, 별도 audio 파일명
 
 ## Action과 Snapshot
+
+`elementMutations[]`는 후처리 전 원본 시간 스트림입니다. element마다 별도 항목을 만들며, 같은 callback에서 감지된 변화는 같은 `onChangeBatchId`와 서로 다른 `batchSequence`를 가집니다. `actions[]`는 기존 호환성을 위한 700ms idle-flush 단위 요약이므로 원본 변화 순서 분석에는 `elementMutations[]`를 사용합니다.
 
 각 `actions[]` 항목은 `beforeSnapshotId`와 `afterSnapshotId`를 가집니다. `artifactDiff`에는 추가, 수정, 삭제된 object ID가 들어갑니다. Task 2에서 초기 제공 요소가 대상이면 해당 ID가 `seedElementImpacts`에도 기록됩니다.
 
