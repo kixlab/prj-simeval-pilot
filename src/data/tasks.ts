@@ -80,6 +80,12 @@ export function taskByType(type: TaskType) {
 
 export function instructionForTask(type: TaskType, seedLabel: string, phase: TaskPhase) {
   const task = taskByType(type);
+  if (type === "free_creation") {
+    return `${task.instruction}\n\n이번 세션의 출발 조건: ${seedLabel}`;
+  }
+  if (type === "open_ended_interpretation") {
+    return `${task.instruction}\n\n이번 세션에 주어진 시각적 요소: ${seedLabel}`;
+  }
   if (type === "conceptual_synthesis") return `${task.instruction}\n\n개념 쌍: ${seedLabel}`;
   if (type === "adaptive_reframing") {
     if (phase === "phase_2") {

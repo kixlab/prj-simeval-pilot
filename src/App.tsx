@@ -1031,7 +1031,7 @@ function App() {
       files: api.getFiles(),
       mimeType: "image/png",
       exportPadding: 24,
-      maxWidthOrHeight: 1400
+      maxWidthOrHeight: 2400
     });
     return blobToDataUrl(blob);
   }, [api]);
