@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 const validPhases = ["single_phase", "phase_1", "phase_2"];
 
@@ -177,5 +178,53 @@ validate(exportSessionId, [
   buildChunk({ sessionId: exportSessionId, chunkIndex: 1, chunkStartedAtMs: 0, chunkEndedAtMs: 10000, phaseAtStart: "single_phase", phaseAtEnd: "single_phase" }),
   buildChunk({ sessionId: exportSessionId, chunkIndex: 2, chunkStartedAtMs: 10000, chunkEndedAtMs: 18000, phaseAtStart: "single_phase", phaseAtEnd: "single_phase" })
 ]);
+
+// Test 8. Sequential recorder finalization includes the final data event before transcription.
+const lifecycle = [];
+const finalizedParts = [];
+function finalizeStandaloneChunk(parts, chunkIndex, startedAtMs, endedAtMs) {
+  lifecycle.push(`stop:${chunkIndex}`);
+  finalizedParts.push(...parts, "final-dataavailable");
+  lifecycle.push(`dataavailable:${chunkIndex}`);
+  const blobParts = [...finalizedParts];
+  lifecycle.push(`transcribe:${chunkIndex}`);
+  finalizedParts.length = 0;
+  return buildChunk({
+    sessionId: "session-a",
+    chunkIndex,
+    chunkStartedAtMs: startedAtMs,
+    chunkEndedAtMs: endedAtMs,
+    phaseAtStart: "single_phase",
+    phaseAtEnd: "single_phase",
+    byteSize: blobParts.length
+  });
+}
+const sequentialChunks = [
+  finalizeStandaloneChunk(["header-1", "audio-1"], 1, 0, 10000),
+  finalizeStandaloneChunk(["header-2", "audio-2"], 2, 10000, 20000),
+  finalizeStandaloneChunk(["header-3", "partial-audio"], 3, 20000, 24750)
+];
+assert.deepEqual(lifecycle, [
+  "stop:1", "dataavailable:1", "transcribe:1",
+  "stop:2", "dataavailable:2", "transcribe:2",
+  "stop:3", "dataavailable:3", "transcribe:3"
+]);
+assert.equal(sequentialChunks[2].durationMs, 4750);
+validate("session-a", sequentialChunks);
+
+// Test 9. The implementation uses fresh stopped recorders for STT and keeps a separate full-session recorder.
+const appSource = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+assert.match(appSource, /const startSttChunkRecorder/);
+assert.match(appSource, /recorder\.onstop = \(\) => \{[\s\S]*new Blob\(parts[\s\S]*transcribeChunk\(blob/);
+assert.match(appSource, /fullRecorder\.start\(recordingTimesliceMs\)/);
+assert.match(appSource, /recorder\.start\(\);/);
+assert.doesNotMatch(appSource, /recorder\.start\(recordingTimesliceMs\)/);
+
+// Test 10. INVALID_ARGUMENT errors keep their real cause, while auth failures get credential guidance.
+const viteSource = readFileSync(new URL("../vite.config.ts", import.meta.url), "utf8");
+assert.match(viteSource, /authenticationFailure[\s\S]*\? `\$\{message\}\. Check Google Cloud ADC/);
+assert.match(viteSource, /: message;/);
+assert.match(viteSource, /languageCode,\n\s+error: formatSttError\(error\)/);
+assert.equal(failedChunk.audio.languageCode, "ko-KR");
 
 console.log("think-aloud integrity tests passed");

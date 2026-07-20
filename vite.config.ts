@@ -47,6 +47,14 @@ function extractOutputText(payload: { output?: unknown }) {
   return null;
 }
 
+function formatSttError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  const authenticationFailure = /default credentials|unauthenticated|permission[_ ]denied|invalid service account|could not load the default credentials/i.test(message);
+  return authenticationFailure
+    ? `${message}. Check Google Cloud ADC or GOOGLE_APPLICATION_CREDENTIALS.`
+    : message;
+}
+
 let speechClient: SpeechClient | null = null;
 
 export default defineConfig(({ mode }) => {
@@ -146,6 +154,7 @@ export default defineConfig(({ mode }) => {
 
           server.middlewares.use("/api/google-stt-transcribe", async (request, response) => {
             response.setHeader("Content-Type", "application/json");
+            const languageCode = env.GOOGLE_STT_LANGUAGE_CODE || process.env.GOOGLE_STT_LANGUAGE_CODE || "ko-KR";
             if (request.method !== "POST") {
               response.statusCode = 405;
               response.end(JSON.stringify({ success: false, error: "POST only" }));
@@ -168,7 +177,6 @@ export default defineConfig(({ mode }) => {
 
               const keyFilename = env.GOOGLE_APPLICATION_CREDENTIALS || process.env.GOOGLE_APPLICATION_CREDENTIALS;
               speechClient ??= new SpeechClient(keyFilename ? { keyFilename } : undefined);
-              const languageCode = env.GOOGLE_STT_LANGUAGE_CODE || process.env.GOOGLE_STT_LANGUAGE_CODE || "ko-KR";
               const alternativeLanguageCodes = (env.GOOGLE_STT_ALTERNATIVE_LANGUAGE_CODES || process.env.GOOGLE_STT_ALTERNATIVE_LANGUAGE_CODES || "en-US")
                 .split(",")
                 .map(code => code.trim())
@@ -217,9 +225,8 @@ export default defineConfig(({ mode }) => {
               response.statusCode = 500;
               response.end(JSON.stringify({
                 success: false,
-                error: error instanceof Error
-                  ? `${error.message}. Check Google Cloud ADC or GOOGLE_APPLICATION_CREDENTIALS.`
-                  : String(error)
+                languageCode,
+                error: formatSttError(error)
               }));
             }
           });

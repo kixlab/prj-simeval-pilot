@@ -218,7 +218,10 @@ function App() {
   const initialSeedElementIdsRef = useRef<string[]>([]);
   const suppressHumanChangeUntilRef = useRef(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const fullSessionMediaRecorderRef = useRef<MediaRecorder | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
+  const sttChunkPartsRef = useRef<Blob[]>([]);
+  const sttChunkTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recorderMimeTypeRef = useRef<string | null>(null);
   const audioChunkIndexRef = useRef(0);
@@ -544,6 +547,9 @@ function App() {
     previousAudioChunkEndRef.current = 0;
     previousAudioChunkPhaseRef.current = initialPhase;
     recordingSessionIdRef.current = null;
+    sttChunkPartsRef.current = [];
+    if (sttChunkTimerRef.current) clearTimeout(sttChunkTimerRef.current);
+    sttChunkTimerRef.current = null;
     finalDataAvailableHandledRef.current = true;
     pendingTranscriptionsBySessionRef.current.set(sessionId, 0);
     pendingHumanActionRef.current = null;
@@ -663,6 +669,57 @@ function App() {
     }
   }, [appendThinkAloudChunk, decrementPending, incrementPending, timestampAt]);
 
+  const startSttChunkRecorder = useCallback((stream: MediaStream, mimeType: string, sourceSessionId: string) => {
+    if (recordingSessionIdRef.current !== sourceSessionId || !stream.active) return;
+    const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+    const started = previousAudioChunkEndRef.current;
+    const phaseAtStart = previousAudioChunkPhaseRef.current;
+    sttChunkPartsRef.current = [];
+    mediaRecorderRef.current = recorder;
+    finalDataAvailableHandledRef.current = false;
+
+    recorder.ondataavailable = event => {
+      if (event.data.size > 0) sttChunkPartsRef.current.push(event.data);
+    };
+    recorder.onstop = () => {
+      if (sttChunkTimerRef.current) clearTimeout(sttChunkTimerRef.current);
+      sttChunkTimerRef.current = null;
+      const parts = sttChunkPartsRef.current;
+      sttChunkPartsRef.current = [];
+      const ended = elapsedMs();
+      const phaseAtEnd = phaseRef.current;
+      finalDataAvailableHandledRef.current = true;
+      if (parts.length > 0) {
+        const blob = new Blob(parts, { type: recorder.mimeType || mimeType || "audio/webm" });
+        const chunkIndex = audioChunkIndexRef.current + 1;
+        audioChunkIndexRef.current = chunkIndex;
+        void transcribeChunk(blob, {
+          sourceSessionId,
+          chunkIndex,
+          chunkStartedAtMs: started,
+          chunkEndedAtMs: ended,
+          phaseAtStart,
+          phaseAtEnd,
+          crossesPhaseTransition: phaseAtStart !== phaseAtEnd
+        });
+      }
+      previousAudioChunkEndRef.current = ended;
+      previousAudioChunkPhaseRef.current = phaseAtEnd;
+      mediaRecorderRef.current = null;
+
+      if (recordingSessionIdRef.current === sourceSessionId && stream.active) {
+        startSttChunkRecorder(stream, mimeType, sourceSessionId);
+        return;
+      }
+      const fullRecorder = fullSessionMediaRecorderRef.current;
+      if (fullRecorder && fullRecorder.state !== "inactive") fullRecorder.stop();
+    };
+    recorder.start();
+    sttChunkTimerRef.current = setTimeout(() => {
+      if (recorder.state === "recording") recorder.stop();
+    }, recordingTimesliceMs);
+  }, [elapsedMs, transcribeChunk]);
+
   const startRecording = useCallback(async () => {
     if (status !== "active") return;
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
@@ -674,72 +731,62 @@ function App() {
       if (!session) return;
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mimeType = preferredAudioMimeType();
-      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+      const fullRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       mediaStreamRef.current = stream;
-      mediaRecorderRef.current = recorder;
-      recorderMimeTypeRef.current = recorder.mimeType || mimeType || "audio/webm";
+      fullSessionMediaRecorderRef.current = fullRecorder;
+      recorderMimeTypeRef.current = fullRecorder.mimeType || mimeType || "audio/webm";
       recordingSessionIdRef.current = session.sessionId;
       audioChunksRef.current = [];
       previousAudioChunkEndRef.current = elapsedMs();
       previousAudioChunkPhaseRef.current = phaseRef.current;
-      finalDataAvailableHandledRef.current = false;
-      recorder.ondataavailable = event => {
-        finalDataAvailableHandledRef.current = true;
-        if (event.data.size === 0) return;
-        const sourceSessionId = recordingSessionIdRef.current;
-        if (!sourceSessionId) return;
-        audioChunksRef.current.push(event.data);
-        const ended = elapsedMs();
-        const started = previousAudioChunkEndRef.current;
-        const phaseAtStart = previousAudioChunkPhaseRef.current;
-        const phaseAtEnd = phaseRef.current;
-        previousAudioChunkEndRef.current = ended;
-        previousAudioChunkPhaseRef.current = phaseAtEnd;
-        const chunkIndex = audioChunkIndexRef.current + 1;
-        audioChunkIndexRef.current = chunkIndex;
-        void transcribeChunk(event.data, {
-          sourceSessionId,
-          chunkIndex,
-          chunkStartedAtMs: started,
-          chunkEndedAtMs: ended,
-          phaseAtStart,
-          phaseAtEnd,
-          crossesPhaseTransition: phaseAtStart !== phaseAtEnd
-        });
+      fullRecorder.ondataavailable = event => {
+        if (event.data.size > 0) audioChunksRef.current.push(event.data);
       };
-      recorder.onstop = () => {
+      fullRecorder.onstop = () => {
         stream.getTracks().forEach(track => track.stop());
-        finalDataAvailableHandledRef.current = true;
-        mediaRecorderRef.current = null;
+        fullSessionMediaRecorderRef.current = null;
         mediaStreamRef.current = null;
         setIsRecording(false);
         recorderStopResolverRef.current?.();
         recorderStopResolverRef.current = null;
       };
-      recorder.start(recordingTimesliceMs);
+      fullRecorder.start(recordingTimesliceMs);
+      startSttChunkRecorder(stream, recorderMimeTypeRef.current, session.sessionId);
       setIsRecording(true);
       setRecordingFinalizationStatus("recording");
       setMessage("Continuous think-aloud recording active");
     } catch (error) {
       setMessage(`Microphone access failed: ${error instanceof Error ? error.message : String(error)}`);
     }
-  }, [elapsedMs, status, transcribeChunk]);
+  }, [elapsedMs, startSttChunkRecorder, status]);
 
   const stopRecording = useCallback(() => {
+    recordingSessionIdRef.current = null;
+    if (sttChunkTimerRef.current) clearTimeout(sttChunkTimerRef.current);
+    sttChunkTimerRef.current = null;
     const recorder = mediaRecorderRef.current;
     if (recorder && recorder.state !== "inactive") recorder.stop();
+    else {
+      const fullRecorder = fullSessionMediaRecorderRef.current;
+      if (fullRecorder && fullRecorder.state !== "inactive") fullRecorder.stop();
+    }
   }, []);
 
   const stopRecordingAndWait = useCallback(() => {
     const recorder = mediaRecorderRef.current;
-    if (!recorder || recorder.state === "inactive") {
+    const fullRecorder = fullSessionMediaRecorderRef.current;
+    if ((!recorder || recorder.state === "inactive") && (!fullRecorder || fullRecorder.state === "inactive")) {
       finalDataAvailableHandledRef.current = true;
       return Promise.resolve();
     }
     setRecordingFinalizationStatus("stopping");
     return new Promise<void>(resolve => {
       recorderStopResolverRef.current = resolve;
-      recorder.stop();
+      recordingSessionIdRef.current = null;
+      if (sttChunkTimerRef.current) clearTimeout(sttChunkTimerRef.current);
+      sttChunkTimerRef.current = null;
+      if (recorder && recorder.state !== "inactive") recorder.stop();
+      else if (fullRecorder && fullRecorder.state !== "inactive") fullRecorder.stop();
     });
   }, []);
 
