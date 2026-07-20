@@ -226,6 +226,9 @@ export default defineConfig(({ mode }) => {
         }
       }
     ],
+    server: {
+      allowedHosts: ["internal.kixlab.org"]
+    },
     define: {
       "process.env.NODE_ENV": JSON.stringify(mode === "production" ? "production" : "development")
     }
