@@ -1,6 +1,7 @@
 import { toSkeletonElement } from "./sceneElementTypes";
 import type { AgentTools, SceneSummary, ToolOutput } from "./tools";
 import type { TimedAgentDecision, TimedAgentToolCall } from "./timedAgentProtocol";
+import { setAgentToolExecutionContext } from "../logging/artifactActions";
 
 export type AgentTrajectoryEntry = {
   eventId: string;
@@ -8,12 +9,22 @@ export type AgentTrajectoryEntry = {
   elapsedMs: number;
   remainingMs: number;
   decision: number;
+  decisionNumber?: number;
   model?: string;
   kind: "decision" | "tool_call" | "error" | "finish";
   agentThought?: string;
   decisionRationale?: string;
   semanticLabel?: string;
   toolName?: string;
+  toolCallIndex?: number;
+  toolCallCount?: number;
+  toolExecutionId?: string;
+  executionStatus?: "success" | "failed" | "skipped";
+  startedAtMs?: number;
+  endedAtMs?: number;
+  durationMs?: number;
+  failedToolCallIndex?: number;
+  failedToolExecutionId?: string;
   toolInput?: unknown;
   toolOutput?: unknown;
   success: boolean;
@@ -96,6 +107,13 @@ async function requestDecision({
   finalizationWindow: boolean;
   signal: AbortSignal;
 }) {
+  const recentEntries = recentTrajectory.slice(-12);
+  const latestFailedCall = [...recentTrajectory]
+    .reverse()
+    .find(entry => entry.kind === "tool_call" && entry.executionStatus === "failed");
+  if (latestFailedCall && !recentEntries.some(entry => entry.eventId === latestFailedCall.eventId)) {
+    recentEntries.unshift(latestFailedCall);
+  }
   const response = await fetch("/api/agent-decision", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -104,7 +122,7 @@ async function requestDecision({
       instruction,
       sceneSummary: compactSummary(sceneSummary),
       screenshotDataUrl,
-      recentTrajectory: recentTrajectory.slice(-12),
+      recentTrajectory: recentEntries,
       elapsedMs,
       remainingMs,
       finalizationWindow
@@ -179,6 +197,7 @@ export async function runTimedAgent({
         elapsedMs,
         remainingMs,
         decision: decisionNumber,
+        decisionNumber,
         model,
         kind: "decision",
         agentThought: decision.agentThought,
@@ -188,22 +207,91 @@ export async function runTimedAgent({
         message: `${decision.toolCalls.length} tool call(s) planned`
       });
 
-      for (const call of decision.toolCalls) {
+      const toolCallCount = decision.toolCalls.length;
+      let failedCall: { index: number; executionId: string } | null = null;
+      for (let toolCallIndex = 0; toolCallIndex < toolCallCount; toolCallIndex += 1) {
+        const call = decision.toolCalls[toolCallIndex];
+        const toolExecutionId = `agent-tool:${decisionNumber}:${toolCallIndex}:${trajectory.length + 1}`;
+        if (failedCall) {
+          append({
+            elapsedMs: Math.round(performance.now() - startedAt),
+            remainingMs: Math.max(0, Math.round(deadline - performance.now())),
+            decision: decisionNumber,
+            decisionNumber,
+            kind: "tool_call",
+            semanticLabel: decision.semanticLabel,
+            toolName: call.toolName,
+            toolCallIndex,
+            toolCallCount,
+            toolExecutionId,
+            executionStatus: "skipped",
+            failedToolCallIndex: failedCall.index,
+            failedToolExecutionId: failedCall.executionId,
+            toolInput: call,
+            success: false,
+            message: `Skipped because tool call ${failedCall.index} failed (${failedCall.executionId}).`
+          });
+          continue;
+        }
         if (signal.aborted || performance.now() >= deadline) break;
-        const callElapsedMs = Math.round(performance.now() - startedAt);
-        const { input, output } = executeTool(tools, call);
-        append({
-          elapsedMs: callElapsedMs,
-          remainingMs: Math.max(0, Math.round(deadline - performance.now())),
-          decision: decisionNumber,
-          kind: "tool_call",
-          semanticLabel: decision.semanticLabel,
-          toolName: call.toolName,
-          toolInput: input,
-          toolOutput: { success: output.success, error: output.error, result: output.result },
-          success: output.success,
-          message: call.description
-        });
+
+        const startedAtMs = Math.round(performance.now() - startedAt);
+        try {
+          setAgentToolExecutionContext(tools, { decisionNumber, toolCallIndex, toolExecutionId });
+          const { input, output } = executeTool(tools, call);
+          const endedAtMs = Math.round(performance.now() - startedAt);
+          const executionStatus = output.success ? "success" : "failed";
+          append({
+            elapsedMs: startedAtMs,
+            remainingMs: Math.max(0, Math.round(deadline - performance.now())),
+            decision: decisionNumber,
+            decisionNumber,
+            kind: "tool_call",
+            semanticLabel: decision.semanticLabel,
+            toolName: call.toolName,
+            toolCallIndex,
+            toolCallCount,
+            toolExecutionId,
+            executionStatus,
+            startedAtMs,
+            endedAtMs,
+            durationMs: Math.max(0, endedAtMs - startedAtMs),
+            toolInput: input,
+            toolOutput: { success: output.success, error: output.error, result: output.result },
+            success: output.success,
+            message: output.success ? call.description : output.error ?? call.description
+          });
+          if (!output.success) failedCall = { index: toolCallIndex, executionId: toolExecutionId };
+        } catch (error) {
+          const endedAtMs = Math.round(performance.now() - startedAt);
+          append({
+            elapsedMs: startedAtMs,
+            remainingMs: Math.max(0, Math.round(deadline - performance.now())),
+            decision: decisionNumber,
+            decisionNumber,
+            kind: "tool_call",
+            semanticLabel: decision.semanticLabel,
+            toolName: call.toolName,
+            toolCallIndex,
+            toolCallCount,
+            toolExecutionId,
+            executionStatus: "failed",
+            startedAtMs,
+            endedAtMs,
+            durationMs: Math.max(0, endedAtMs - startedAtMs),
+            toolInput: call,
+            toolOutput: { success: false, error: error instanceof Error ? error.message : String(error) },
+            success: false,
+            message: error instanceof Error ? error.message : String(error)
+          });
+          failedCall = { index: toolCallIndex, executionId: toolExecutionId };
+        } finally {
+          setAgentToolExecutionContext(tools, null);
+        }
+      }
+
+      if (failedCall) {
+        continue;
       }
 
       const inFinalizationWindow = remainingMs <= finalizationWindowMs;

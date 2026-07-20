@@ -39,6 +39,9 @@ export type ArtifactActionEntry = {
   artifactDiff: SceneArtifactDiff;
   elementChanges: SceneElementChange[];
   toolInput?: unknown;
+  decisionNumber?: number;
+  toolCallIndex?: number;
+  toolExecutionId?: string;
   success: boolean;
   error?: string;
 };
@@ -61,6 +64,19 @@ const mutatingToolNames = [
 ] as const;
 
 type MutatingToolName = (typeof mutatingToolNames)[number];
+
+export type AgentToolExecutionContext = {
+  decisionNumber: number;
+  toolCallIndex: number;
+  toolExecutionId: string;
+};
+
+const agentToolExecutionContexts = new WeakMap<AgentTools, AgentToolExecutionContext>();
+
+export function setAgentToolExecutionContext(tools: AgentTools, context: AgentToolExecutionContext | null) {
+  if (context) agentToolExecutionContexts.set(tools, context);
+  else agentToolExecutionContexts.delete(tools);
+}
 
 function byId(elements: readonly SceneElementSummary[]) {
   return new Map(elements.map(element => [element.id, element]));
@@ -184,6 +200,7 @@ export function instrumentExcalidrawAgentTools({
       if (before && after) {
         const artifactDiff = diffSceneSummaries(before, after);
         if (hasSceneChanges(artifactDiff)) {
+          const executionContext = agentToolExecutionContexts.get(instrumented);
           onAction({
             startedAtMs,
             endedAtMs,
@@ -195,6 +212,9 @@ export function instrumentExcalidrawAgentTools({
             targetObjectIds: sceneTargetIds(artifactDiff),
             ...compactSceneTransition(before, after, artifactDiff),
             toolInput: input,
+            decisionNumber: executionContext?.decisionNumber,
+            toolCallIndex: executionContext?.toolCallIndex,
+            toolExecutionId: executionContext?.toolExecutionId,
             success: output.success,
             error: output.error
           });

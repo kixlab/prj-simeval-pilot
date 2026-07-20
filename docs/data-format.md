@@ -37,3 +37,7 @@ Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v3`입니다.
 ## Agent 종료 조건
 
 Agent 세션의 `session.agentConfig`에는 사용 모델, 전체 시간 예산과 finalization window가 저장됩니다. `session.completionReason`은 `agent_finish`, `time_budget`, `cancelled`, `agent_error`, `manual` 중 실제 종료 경로를 기록합니다. 최대 turn 수는 없으며, `agentTrajectory.decision`은 제한값이 아니라 시간순 판단 번호입니다.
+
+한 decision의 tool call은 `toolCallIndex`의 0-based 순서대로 동기 실행됩니다. 각 trajectory entry에는 `toolCallCount`, `toolExecutionId`, `executionStatus`, 실행 시작·종료·기간이 기록됩니다. 앞선 call이 실패하거나 exception을 발생시키면 후속 call은 실행하지 않고 `executionStatus: "skipped"`로 기록하며, 실패한 call의 index와 execution ID를 참조합니다. skipped call은 실제 artifact action을 만들지 않습니다. 실패한 batch 뒤에는 다음 decision cycle로 이동하여 scene summary와 screenshot을 새로 관찰합니다.
+
+실제로 scene을 바꾼 Agent action에는 가능한 경우 `decisionNumber`, `toolCallIndex`, `toolExecutionId`가 함께 저장되어 trajectory의 실행 call과 연결할 수 있습니다.
