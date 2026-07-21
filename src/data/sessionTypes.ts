@@ -110,7 +110,7 @@ export type PointerModalityEvent = {
 };
 
 export type ElementMutationOperation =
-  | "create" | "delete" | "move" | "resize" | "rotate" | "change_text"
+  | "create" | "create_stroke" | "delete" | "move" | "resize" | "rotate" | "change_text"
   | "change_style" | "change_points" | "change_binding" | "compound_change";
 
 export type CompactElementState = {
@@ -153,6 +153,10 @@ export type ElementMutation = {
   changedProperties: Array<{ property: string; before: unknown; after: unknown }>;
   beforeElement: CompactElementState | null;
   afterElement: CompactElementState | null;
+  startedAtMs?: number;
+  endedAtMs?: number;
+  durationMs?: number;
+  pointCount?: number;
 };
 
 export type SessionExport = {

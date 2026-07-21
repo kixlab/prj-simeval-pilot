@@ -40,6 +40,7 @@ import {
 import { compactElementMap, diffElementMaps } from "./logging/elementMutations";
 
 const actionIdleMs = 700;
+const freeDrawIdleMs = 1500;
 const snapshotIntervalMs = 5000;
 const recordingTimesliceMs = 10000;
 const defaultAgentTimeBudgetMinutes = 5;
@@ -61,6 +62,12 @@ type PendingHumanAction = {
   startedAtMs: number;
   endedAtMs: number;
   phase: TaskPhase;
+};
+type PendingFreeDrawStroke = {
+  elementId: string;
+  startedAtMs: number;
+  latestElement: CompactElementState;
+  onChangeBatchId: string;
 };
 type SttResponse = {
   success: boolean;
@@ -222,6 +229,10 @@ function App() {
   const elementMutationsRef = useRef<ElementMutation[]>([]);
   const previousElementsByIdRef = useRef<Map<string, CompactElementState>>(new Map());
   const onChangeBatchSequenceRef = useRef(0);
+  const pendingFreeDrawStrokeRef = useRef<PendingFreeDrawStroke | null>(null);
+  const pendingFreeDrawStartedAtRef = useRef<number | null>(null);
+  const freeDrawIdleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const activeToolTypeRef = useRef<string | null>(null);
   const snapshotsRef = useRef<CanvasSnapshot[]>([]);
   const thinkAloudChunksRef = useRef<ThinkAloudChunk[]>([]);
   const thinkAloudNotesRef = useRef<ThinkAloudNote[]>([]);
@@ -475,6 +486,10 @@ function App() {
     if (!api) return;
     clearActionTimer(actionTimerRef);
     pendingHumanActionRef.current = null;
+    if (freeDrawIdleTimerRef.current) clearTimeout(freeDrawIdleTimerRef.current);
+    freeDrawIdleTimerRef.current = null;
+    pendingFreeDrawStrokeRef.current = null;
+    pendingFreeDrawStartedAtRef.current = null;
     suppressHumanChangeUntilRef.current = performance.now() + 1000;
     api.resetScene();
     api.updateScene({ elements: elements as ExcalidrawElement[] });
@@ -489,9 +504,51 @@ function App() {
     }
   }, [api]);
 
+  const flushFreeDrawStroke = useCallback((endedAtMs = elapsedMs()) => {
+    if (freeDrawIdleTimerRef.current) clearTimeout(freeDrawIdleTimerRef.current);
+    freeDrawIdleTimerRef.current = null;
+    pendingFreeDrawStartedAtRef.current = null;
+    const stroke = pendingFreeDrawStrokeRef.current;
+    pendingFreeDrawStrokeRef.current = null;
+    const session = sessionRef.current;
+    if (!stroke || !session || stroke.latestElement.isDeleted) return;
+
+    const end = Math.max(stroke.startedAtMs, endedAtMs);
+    const sequence = elementMutationsRef.current.length + 1;
+    const changedProperties = Object.entries(stroke.latestElement)
+      .filter(([property]) => property !== "id" && property !== "type")
+      .map(([property, after]) => ({ property, before: null, after }));
+    elementMutationsRef.current.push({
+      mutationId: `${session.sessionId}:element-mutation:${sequence}`,
+      sessionId: session.sessionId,
+      sequence,
+      timestamp: timestampAt(end),
+      elapsedMs: end,
+      onChangeBatchId: stroke.onChangeBatchId,
+      batchSequence: 0,
+      actorType: "human",
+      source: "excalidraw_onchange",
+      elementId: stroke.elementId,
+      elementType: "freedraw",
+      operation: "create_stroke",
+      changedProperties,
+      beforeElement: null,
+      afterElement: stroke.latestElement,
+      startedAtMs: stroke.startedAtMs,
+      endedAtMs: end,
+      durationMs: end - stroke.startedAtMs,
+      pointCount: Array.isArray(stroke.latestElement.points) ? stroke.latestElement.points.length : 0
+    });
+  }, [elapsedMs, timestampAt]);
+
+  const finishFreeDrawPointer = useCallback(() => {
+    // Let Excalidraw's final pointer update reach onChange before committing the stroke.
+    setTimeout(() => flushFreeDrawStroke(), 0);
+  }, [flushFreeDrawStroke]);
+
   const onCanvasChange = useCallback((
     elements: readonly ExcalidrawElement[],
-    _appState: unknown,
+    appState: unknown,
     files: BinaryFiles
   ) => {
     latestElementsRef.current = elements;
@@ -511,6 +568,27 @@ function App() {
     const drafts = diffElementMaps(previousElementsByIdRef.current, currentElementsById);
     const onChangeBatchId = `${session.sessionId}:onchange-batch:${batchNumber}`;
     for (const [batchSequence, draft] of drafts.entries()) {
+      if (draft.elementType === "freedraw") {
+        const pendingStroke = pendingFreeDrawStrokeRef.current;
+        if (draft.operation === "create" || pendingStroke?.elementId === draft.elementId) {
+          if (draft.afterElement) {
+            if (pendingStroke && pendingStroke.elementId !== draft.elementId) flushFreeDrawStroke(now);
+            pendingFreeDrawStrokeRef.current = {
+              elementId: draft.elementId,
+              startedAtMs: pendingStroke?.elementId === draft.elementId
+                ? pendingStroke.startedAtMs
+                : pendingFreeDrawStartedAtRef.current ?? now,
+              latestElement: draft.afterElement,
+              onChangeBatchId: pendingStroke?.elementId === draft.elementId
+                ? pendingStroke.onChangeBatchId
+                : onChangeBatchId
+            };
+            if (freeDrawIdleTimerRef.current) clearTimeout(freeDrawIdleTimerRef.current);
+            freeDrawIdleTimerRef.current = setTimeout(() => flushFreeDrawStroke(now), freeDrawIdleMs);
+          }
+          continue;
+        }
+      }
       const sequence = elementMutationsRef.current.length + 1;
       elementMutationsRef.current.push({
         ...draft,
@@ -525,6 +603,11 @@ function App() {
         source: "excalidraw_onchange"
       });
     }
+    const nextActiveToolType = (appState as { activeTool?: { type?: string } } | null)?.activeTool?.type ?? null;
+    if (activeToolTypeRef.current === "freedraw" && nextActiveToolType !== "freedraw") {
+      flushFreeDrawStroke(now);
+    }
+    activeToolTypeRef.current = nextActiveToolType;
     previousElementsByIdRef.current = currentElementsById;
     const pending = pendingHumanActionRef.current;
     pendingHumanActionRef.current = pending
@@ -539,7 +622,7 @@ function App() {
         };
     if (actionTimerRef.current) clearTimeout(actionTimerRef.current);
     actionTimerRef.current = setTimeout(flushHumanAction, actionIdleMs);
-  }, [elapsedMs, flushHumanAction, status, timestampAt]);
+  }, [elapsedMs, flushFreeDrawStroke, flushHumanAction, status, timestampAt]);
 
   const startSession = useCallback(() => {
     if (!api || !selectedActor || (selectedActor === "human" && !participantId.trim())) {
@@ -601,6 +684,10 @@ function App() {
     phaseRef.current = initialPhase;
     actionsRef.current = [];
     elementMutationsRef.current = [];
+    pendingFreeDrawStrokeRef.current = null;
+    pendingFreeDrawStartedAtRef.current = null;
+    if (freeDrawIdleTimerRef.current) clearTimeout(freeDrawIdleTimerRef.current);
+    freeDrawIdleTimerRef.current = null;
     onChangeBatchSequenceRef.current = 0;
     snapshotsRef.current = [];
     thinkAloudChunksRef.current = [];
@@ -894,6 +981,7 @@ function App() {
       setMessage(`Waiting for ${getPendingCount(finishingSessionId)} audio transcription(s)`);
       await waitForPendingTranscriptions(finishingSessionId);
     }
+    flushFreeDrawStroke();
     flushHumanAction();
     if (postTaskResponse.trim()) appendThinkAloudNote(postTaskResponse, "post_task_response");
     captureSnapshot("final", latestElementsRef.current);
@@ -911,11 +999,12 @@ function App() {
     setRecordingFinalizationStatus("ready_to_export");
     refreshPendingTranscriptions(finishingSessionId);
     setMessage("Session completed. Export JSON and audio before starting the next session.");
-  }, [appendThinkAloudNote, captureSnapshot, elapsedMs, flushHumanAction, getPendingCount, isRecording, postTaskResponse, refreshPendingTranscriptions, stopRecordingAndWait, timestampAt, waitForPendingTranscriptions]);
+  }, [appendThinkAloudNote, captureSnapshot, elapsedMs, flushFreeDrawStroke, flushHumanAction, getPendingCount, isRecording, postTaskResponse, refreshPendingTranscriptions, stopRecordingAndWait, timestampAt, waitForPendingTranscriptions]);
 
   const exportSession = useCallback(async () => {
     if (!api || !sessionRef.current || status !== "completed" || isRecording || isAgentRunning || getPendingCount(sessionRef.current.sessionId) > 0) return;
     const session = sessionRef.current;
+    flushFreeDrawStroke();
     const sortedThinkAloudChunks = [...thinkAloudChunksRef.current].sort((left, right) => left.sequence - right.sequence);
     thinkAloudChunksRef.current = sortedThinkAloudChunks;
     const validationErrors: string[] = [];
@@ -984,7 +1073,7 @@ function App() {
     setMessage(validationErrors.length > 0
       ? `Session exported with validation warning: ${validationErrors.join(" | ")}`
       : audioBlob ? "Session JSON and audio downloaded" : "Session JSON downloaded; no audio was recorded");
-  }, [api, buildAudioMetadata, createCombinedAudioBlob, getPendingCount, isAgentRunning, isRecording, status]);
+  }, [api, buildAudioMetadata, createCombinedAudioBlob, flushFreeDrawStroke, getPendingCount, isAgentRunning, isRecording, status]);
 
   const downloadAudio = useCallback(() => {
     if (!sessionRef.current || audioChunksRef.current.length === 0) return;
@@ -1132,8 +1221,9 @@ function App() {
 
   useEffect(() => () => {
     clearActionTimer(actionTimerRef);
+    flushFreeDrawStroke();
     mediaStreamRef.current?.getTracks().forEach(track => track.stop());
-  }, []);
+  }, [flushFreeDrawStroke]);
 
   const changeTask = (type: TaskType) => {
     const task = taskByType(type);
@@ -1340,9 +1430,15 @@ function App() {
             className="canvas-shell"
             onPointerDown={event => {
               if (status !== "active") return;
+              const now = elapsedMs();
               const pointerType = event.pointerType === "pen" || event.pointerType === "touch" ? event.pointerType : "mouse";
-              pointerEventsRef.current.push({ timestamp: timestampAt(elapsedMs()), elapsedMs: elapsedMs(), pointerType });
+              pointerEventsRef.current.push({ timestamp: timestampAt(now), elapsedMs: now, pointerType });
+              if (api?.getAppState().activeTool.type === "freedraw") {
+                pendingFreeDrawStartedAtRef.current = now;
+              }
             }}
+            onPointerUp={finishFreeDrawPointer}
+            onPointerCancel={finishFreeDrawPointer}
           >
             {panelCollapsed && <button className="show-panel-button" onClick={() => setPanelCollapsed(false)}>Task</button>}
             <Excalidraw

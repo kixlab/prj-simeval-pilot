@@ -112,4 +112,16 @@ assert.match(appSource, /elementMutations: elementMutationsRef\.current/);
 assert.match(appSource, /actions: actionsRef\.current/);
 assert.match(appSource, /schemaVersion: "simeval-drawing-session-v3"/);
 
+// Test 9. Free-draw callbacks are buffered into one stroke mutation and all
+// required finalization paths remain wired.
+assert.match(appSource, /draft\.elementType === "freedraw"/);
+assert.match(appSource, /operation: "create_stroke"/);
+assert.match(appSource, /pointCount: Array\.isArray\(stroke\.latestElement\.points\)/);
+assert.match(appSource, /setTimeout\(\(\) => flushFreeDrawStroke\(now\), freeDrawIdleMs\)/);
+assert.match(appSource, /activeToolTypeRef\.current === "freedraw"/);
+assert.match(appSource, /onPointerUp=\{finishFreeDrawPointer\}/);
+assert.match(appSource, /onPointerCancel=\{finishFreeDrawPointer\}/);
+assert.match(appSource, /const finishSession[\s\S]*?flushFreeDrawStroke\(\)/);
+assert.match(appSource, /const exportSession[\s\S]*?flushFreeDrawStroke\(\)/);
+
 console.log("element mutation integrity tests passed");
