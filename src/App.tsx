@@ -280,6 +280,24 @@ function App() {
     }
   }, [selectedActor]);
 
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    const updateAppHeight = () => {
+      const height = viewport?.height ?? window.innerHeight;
+      document.documentElement.style.setProperty("--app-height", `${Math.round(height)}px`);
+    };
+    updateAppHeight();
+    viewport?.addEventListener("resize", updateAppHeight);
+    viewport?.addEventListener("scroll", updateAppHeight);
+    window.addEventListener("orientationchange", updateAppHeight);
+    return () => {
+      viewport?.removeEventListener("resize", updateAppHeight);
+      viewport?.removeEventListener("scroll", updateAppHeight);
+      window.removeEventListener("orientationchange", updateAppHeight);
+      document.documentElement.style.removeProperty("--app-height");
+    };
+  }, []);
+
   const elapsedMs = useCallback(() => {
     if (!sessionRef.current) return 0;
     return Math.max(0, Math.round(performance.now() - sessionStartedPerformanceRef.current));
@@ -1293,7 +1311,16 @@ function App() {
                   <div className="field-grid two-column">
                     <label>
                       <span>Participant ID</span>
-                      <input value={participantId} onChange={event => setParticipantId(event.target.value)} placeholder="P001" autoComplete="off" />
+                      <input
+                        value={participantId}
+                        onChange={event => setParticipantId(event.target.value)}
+                        placeholder="P001"
+                        autoComplete="off"
+                        autoCapitalize="off"
+                        autoCorrect="off"
+                        inputMode="text"
+                        enterKeyHint="done"
+                      />
                     </label>
                     <label>
                       <span>Primary input device</span>
