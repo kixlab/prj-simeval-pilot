@@ -71,6 +71,7 @@ type RecordedAction = ArtifactActionEntry & {
 };
 type PendingHumanAction = {
   before: SceneSummary;
+  beforeSnapshotId: string;
   after: SceneSummary;
   afterElements: readonly ExcalidrawElement[];
   startedAtMs: number;
@@ -280,6 +281,7 @@ function App() {
   const finalDataAvailableHandledRef = useRef(true);
   const exportedSessionIdsRef = useRef<Set<string>>(new Set());
   const pilotAgentApiRef = useRef<PilotAgentApi | null>(null);
+  const pendingAgentBeforeSnapshotIdRef = useRef("");
   const agentAbortRef = useRef<AbortController | null>(null);
   const agentStartedSessionIdRef = useRef("");
   const agentTrajectoryRef = useRef<AgentTrajectoryEntry[]>([]);
@@ -467,11 +469,15 @@ function App() {
     thinkAloudChunksRef.current[index] = update(thinkAloudChunksRef.current[index]);
   }, []);
 
-  const appendAction = useCallback((draft: ArtifactActionDraft, actionPhase: TaskPhase, elements: readonly ExcalidrawElement[]) => {
+  const appendAction = useCallback((
+    draft: ArtifactActionDraft,
+    actionPhase: TaskPhase,
+    elements: readonly ExcalidrawElement[],
+    beforeSnapshotId: string
+  ) => {
     const session = sessionRef.current;
     if (!session) return;
     const sequence = actionsRef.current.length + 1;
-    const beforeSnapshotId = currentSnapshotIdRef.current;
     const afterSnapshotId = captureSnapshot("action", elements, actionPhase, sequence);
     const targetIds = draft.targetObjectIds;
     const seedElementImpacts = targetIds.filter(id => initialSeedElementIdsRef.current.includes(id));
@@ -511,7 +517,7 @@ function App() {
       targetObjectIds: sceneTargetIds(artifactDiff),
       ...compactSceneTransition(pending.before, pending.after, artifactDiff),
       success: true
-    }, pending.phase, pending.afterElements);
+    }, pending.phase, pending.afterElements, pending.beforeSnapshotId);
   }, [appendAction]);
 
   const resetCanvasForSession = useCallback((elements: readonly ExcalidrawElement[]) => {
@@ -646,6 +652,7 @@ function App() {
       ? { ...pending, after: nextSummary, afterElements: elements, endedAtMs: now }
       : {
           before: baselineRef.current,
+          beforeSnapshotId: currentSnapshotIdRef.current,
           after: nextSummary,
           afterElements: elements,
           startedAtMs: now,
@@ -717,6 +724,7 @@ function App() {
     agentAbortRef.current?.abort();
     agentAbortRef.current = null;
     agentStartedSessionIdRef.current = "";
+    pendingAgentBeforeSnapshotIdRef.current = "";
     clearActionTimer(actionTimerRef);
     pendingHumanActionRef.current = null;
     sessionRef.current = null;
@@ -1261,12 +1269,15 @@ function App() {
       nowMs: elapsedMs,
       onBeforeMutation: () => {
         flushHumanAction();
+        pendingAgentBeforeSnapshotIdRef.current = currentSnapshotIdRef.current;
         suppressHumanChangeUntilRef.current = performance.now() + 1000;
         pendingHumanActionRef.current = null;
       },
       onAction: draft => {
         const nextElements = api.getSceneElements();
-        appendAction(draft, phaseRef.current, nextElements);
+        const beforeSnapshotId = pendingAgentBeforeSnapshotIdRef.current || currentSnapshotIdRef.current;
+        appendAction(draft, phaseRef.current, nextElements, beforeSnapshotId);
+        pendingAgentBeforeSnapshotIdRef.current = "";
         baselineRef.current = summarizeElements(nextElements);
       },
       onThinkAloud: text => appendThinkAloudNote(text, "agent_reasoning"),

@@ -78,6 +78,10 @@ assert.match(appSource, /screenshotPolicy: "initial_action_phase_final_no_period
 assert.match(appSource, /outcomeEvaluationId/);
 assert.match(appSource, /buildRationaleRecords/);
 assert.doesNotMatch(appSource, /Study ID|Condition ID|Assignment ID|Matched pair ID|Primary input device/);
+assert.match(appSource, /beforeSnapshotId: currentSnapshotIdRef\.current/);
+assert.match(appSource, /pending\.beforeSnapshotId/);
+assert.doesNotMatch(appSource, /const beforeSnapshotId = currentSnapshotIdRef\.current/);
+assert.match(appSource, /pendingAgentBeforeSnapshotIdRef\.current = currentSnapshotIdRef\.current/);
 assert.match(agentSource, /observationSnapshotId/);
 assert.match(agentSource, /requestDurationMs/);
 
