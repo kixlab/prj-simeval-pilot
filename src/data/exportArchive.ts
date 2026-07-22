@@ -14,13 +14,10 @@ function compactUtcTimestamp(isoTimestamp: string) {
 }
 
 export function sessionArchiveBaseName(session: SessionMetadata) {
-  const subject = session.actorType === "human" ? session.participantId : "agent";
   const shortId = session.sessionId.split("-").at(-1)?.slice(-8) ?? "session";
   return [
     "simeval",
-    `study-${safeSegment(session.study.studyId)}`,
-    `condition-${safeSegment(session.study.conditionId)}`,
-    `${session.actorType}-${safeSegment(subject)}`,
+    `participant-${safeSegment(session.participantId)}`,
     `task-${safeSegment(session.taskType)}`,
     `seed-${safeSegment(session.seedId)}`,
     compactUtcTimestamp(session.startedAt),

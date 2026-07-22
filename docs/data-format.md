@@ -2,7 +2,7 @@
 
 Export ZIP의 `session.json` 최상위 `schemaVersion`은 `simeval-drawing-session-v4`입니다.
 
-ZIP 파일명은 actor, participant, task, seed, 시작 시각, 짧은 session ID를 포함합니다. ZIP 내부에는 같은 이름의 root directory가 만들어지며 `session.json`, `README.txt`, 선택된 snapshot PNG, 선택적 think-aloud WebM이 저장됩니다.
+ZIP 파일명은 participant ID, task, seed, 시작 시각, 짧은 session ID를 포함합니다. ZIP 내부에는 같은 이름의 root directory가 만들어지며 `session.json`, `README.txt`, 선택된 snapshot PNG, 선택적 think-aloud WebM이 저장됩니다.
 
 ## Timeline 기준
 
@@ -10,7 +10,7 @@ ZIP 파일명은 actor, participant, task, seed, 시작 시각, 짧은 session I
 
 ## 주요 필드
 
-- `session`: 참가자, actor, task, seed, 입력 장치, 시작/종료 시각, study/condition, dataset ID, app/prompt/tool version
+- `session`: participant ID, actor, task, seed, 시작/종료 시각, dataset ID, app/prompt/tool version
 - `task`: 제시문, phase별 제시문, seed와 초기 seed element ID
 - `actions`: artifact diff를 idle 단위로 묶은 action과 전후 snapshot 참조
 - `elementMutations`: Human mode의 매 Excalidraw `onChange`에서 기록한 element/property 단위 원본 변화

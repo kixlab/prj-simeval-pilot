@@ -15,8 +15,6 @@ import { buildRationaleRecords } from "./data/rationaleRecords";
 import {
   agentPromptVersion,
   agentToolSchemaVersion,
-  defaultConditionId,
-  defaultStudyId,
   sessionSchemaVersion,
   taskDefinitionVersion
 } from "./data/versionInfo";
@@ -32,7 +30,6 @@ import type {
   CanvasSnapshot,
   CompactElementState,
   ElementMutation,
-  InputDevice,
   PhaseTransition,
   PointerModalityEvent,
   SessionExport,
@@ -60,8 +57,6 @@ const recordingTimesliceMs = 10000;
 const defaultAgentTimeBudgetMinutes = 5;
 const agentFinalizationWindowMs = 30 * 1000;
 const enableAgentMode = import.meta.env.VITE_ENABLE_AGENT_MODE === "true";
-const configuredStudyId = import.meta.env.VITE_STUDY_ID || defaultStudyId;
-const configuredConditionId = import.meta.env.VITE_CONDITION_ID || defaultConditionId;
 const appVersion = import.meta.env.VITE_APP_VERSION || "unknown";
 const appCommit = import.meta.env.VITE_APP_COMMIT || "unknown";
 const agentPromptHash = import.meta.env.VITE_AGENT_PROMPT_HASH || "unknown";
@@ -217,14 +212,9 @@ function App() {
   const [status, setStatus] = useState<SessionStatus>("setup");
   const [selectedActor, setSelectedActor] = useState<SessionActor | null>(enableAgentMode ? null : "human");
   const [participantId, setParticipantId] = useState("");
-  const [studyId, setStudyId] = useState(configuredStudyId);
-  const [conditionId, setConditionId] = useState(configuredConditionId);
-  const [assignmentId, setAssignmentId] = useState("");
-  const [matchedPairId, setMatchedPairId] = useState("");
   const [selectedTaskType, setSelectedTaskType] = useState<TaskType>("free_creation");
   const [selectedSeedId, setSelectedSeedId] = useState(taskDefinitions[0].seeds[0].id);
   const [randomizeSeed, setRandomizeSeed] = useState(true);
-  const [inputDevice, setInputDevice] = useState<InputDevice>("unknown");
   const [phase, setPhase] = useState<TaskPhase>("single_phase");
   const [resolvedSeed, setResolvedSeed] = useState(taskDefinitions[0].seeds[0]);
   const [sessionMetadata, setSessionMetadata] = useState<SessionMetadata | null>(null);
@@ -667,12 +657,10 @@ function App() {
   }, [elapsedMs, flushFreeDrawStroke, flushHumanAction, status, timestampAt]);
 
   const startSession = useCallback(() => {
-    if (!api || !selectedActor || !studyId.trim() || !conditionId.trim() || (selectedActor === "human" && !participantId.trim())) {
+    if (!api || !selectedActor || (selectedActor === "human" && !participantId.trim())) {
       setMessage(!api
         ? "Canvas가 준비되지 않았습니다."
-        : !studyId.trim() || !conditionId.trim()
-          ? "Study ID와 Condition ID를 입력하세요."
-          : "Participant ID를 입력하세요.");
+        : "Participant ID를 입력하세요.");
       return;
     }
     if (selectedActor === "agent" && !enableAgentMode) {
@@ -702,17 +690,10 @@ function App() {
       seedId: seed.id,
       seedLabel: seed.label,
       seedSelection: randomizeSeed ? "random" : "manual",
-      inputDevice: selectedActor === "human" ? inputDevice : "unknown",
       startedAt: startedAt.toISOString(),
       endedAt: null,
       durationMs: null,
       completionReason: null,
-      study: {
-        studyId: studyId.trim(),
-        conditionId: conditionId.trim(),
-        assignmentId: assignmentId.trim() || null,
-        matchedPairId: matchedPairId.trim() || null
-      },
       datasetIds: { artifactId, trajectoryId, outcomeEvaluationId },
       versions: {
         taskDefinitionVersion,
@@ -792,7 +773,7 @@ function App() {
     setStatus("active");
     setMessage(selectedActor === "agent" ? "Agent session ready" : "Session recording active");
     captureSnapshot("initial", initialElements, initialPhase);
-  }, [agentTimeBudgetMinutes, api, assignmentId, captureSnapshot, conditionId, inputDevice, matchedPairId, participantId, randomizeSeed, resetCanvasForSession, selectedActor, selectedSeedId, selectedTask, selectedTaskType, sessionExported, studyId]);
+  }, [agentTimeBudgetMinutes, api, captureSnapshot, participantId, randomizeSeed, resetCanvasForSession, selectedActor, selectedSeedId, selectedTask, selectedTaskType, sessionExported]);
 
   const revealPhaseTwo = useCallback(() => {
     if (status !== "active" || selectedTaskType !== "adaptive_reframing" || phaseRef.current !== "phase_1") return;
@@ -1185,7 +1166,6 @@ function App() {
       `Participant: ${session.participantId}`,
       `Task: ${session.taskType}`,
       `Seed: ${session.seedId}`,
-      `Study / condition: ${session.study.studyId} / ${session.study.conditionId}`,
       "",
       "session.json contains raw event streams, scene snapshots, rationale timing, and file references.",
       "PNG files are generated at export for initial, action, phase-boundary, and final snapshots.",
@@ -1421,27 +1401,8 @@ function App() {
                   <h1>{selectedActor === "agent" ? "Timed Agent Drawing" : "Drawing + Think-aloud"}</h1>
                 </div>
 
-                <div className="field-grid two-column">
-                  <label>
-                    <span>Study ID</span>
-                    <input value={studyId} onChange={event => setStudyId(event.target.value)} placeholder="simeval-pilot" />
-                  </label>
-                  <label>
-                    <span>Condition ID</span>
-                    <input value={conditionId} onChange={event => setConditionId(event.target.value)} placeholder="baseline" />
-                  </label>
-                  <label>
-                    <span>Assignment ID (optional)</span>
-                    <input value={assignmentId} onChange={event => setAssignmentId(event.target.value)} placeholder="A001" />
-                  </label>
-                  <label>
-                    <span>Matched pair ID (optional)</span>
-                    <input value={matchedPairId} onChange={event => setMatchedPairId(event.target.value)} placeholder="pair-task1-seed2-01" />
-                  </label>
-                </div>
-
                 {selectedActor === "human" ? (
-                  <div className="field-grid two-column">
+                  <div className="field-grid participant-field">
                     <label>
                       <span>Participant ID</span>
                       <input
@@ -1454,16 +1415,6 @@ function App() {
                         inputMode="text"
                         enterKeyHint="done"
                       />
-                    </label>
-                    <label>
-                      <span>Primary input device</span>
-                      <select value={inputDevice} onChange={event => setInputDevice(event.target.value as InputDevice)}>
-                        <option value="unknown">Not specified</option>
-                        <option value="mouse">Mouse</option>
-                        <option value="stylus">Stylus / pen tablet</option>
-                        <option value="touch">Touch</option>
-                        <option value="mixed">Mixed</option>
-                      </select>
                     </label>
                   </div>
                 ) : (
@@ -1488,9 +1439,11 @@ function App() {
                   <legend>Task</legend>
                   {taskDefinitions.map(task => (
                     <label key={task.type} className={selectedTaskType === task.type ? "task-option selected" : "task-option"}>
-                      <input type="radio" name="task" checked={selectedTaskType === task.type} onChange={() => changeTask(task.type)} />
-                      <span className="task-number">{task.number}</span>
-                      <span><strong>{task.title}</strong><small>{task.construct}</small></span>
+                      <span className="task-choice-marker">
+                        <input type="radio" name="task" checked={selectedTaskType === task.type} onChange={() => changeTask(task.type)} />
+                        <span className="task-number">{task.number}</span>
+                      </span>
+                      <span className="task-copy"><strong>{task.title}</strong><small>{task.construct}</small></span>
                     </label>
                   ))}
                 </fieldset>
@@ -1512,7 +1465,7 @@ function App() {
                   <span>Instruction</span>
                   <p>{selectedTask.instruction}</p>
                 </div>
-                <button className="primary-button start-button" disabled={!api || !studyId.trim() || !conditionId.trim() || (selectedActor === "human" && !participantId.trim())} onClick={startSession}>
+                <button className="primary-button start-button" disabled={!api || (selectedActor === "human" && !participantId.trim())} onClick={startSession}>
                   Start {selectedActor} session
                 </button>
                 <p className="status-line">{message}</p>
