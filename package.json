@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "test:think-aloud": "node scripts/thinkAloudIntegrity.test.mjs",
     "test:element-mutations": "node scripts/elementMutationIntegrity.test.mjs",
-    "test:agent-batch": "node scripts/agentBatchIntegrity.test.mjs"
+    "test:agent-batch": "node scripts/agentBatchIntegrity.test.mjs",
+    "test:agent-transforms": "node scripts/agentTransformIntegrity.test.mjs"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.17.0",

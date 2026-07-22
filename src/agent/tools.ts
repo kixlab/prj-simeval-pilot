@@ -22,6 +22,12 @@ import {
   type ElementPatch
 } from "./elementUpdates";
 import { toFreeDrawElement, type FreeDrawPath } from "./freeDrawElements";
+import {
+  applyElementBindings,
+  applyElementRotations,
+  type ElementBinding,
+  type ElementRotation
+} from "./elementTransforms";
 
 export type { ElementPatch } from "./elementUpdates";
 
@@ -66,6 +72,8 @@ export type SceneElementSummary = {
   groupIds?: string[];
   containerId?: string;
   boundElementIds?: string[];
+  startBinding?: { elementId: string; focus: number; gap: number } | null;
+  endBinding?: { elementId: string; focus: number; gap: number } | null;
   angle?: number;
   strokeColor?: string;
   backgroundColor?: string;
@@ -98,6 +106,16 @@ export type DeleteElementsInput = {
 export type MoveElementsInput = {
   description: string;
   moves: Array<{ id: string; x: number; y: number }>;
+};
+
+export type RotateElementsInput = {
+  description: string;
+  rotations: ElementRotation[];
+};
+
+export type BindElementsInput = {
+  description: string;
+  bindings: ElementBinding[];
 };
 
 export type ReplaceSceneInput = {
@@ -135,6 +153,8 @@ export type AgentTools = {
   update_elements: (input: UpdateElementsInput) => ToolOutput;
   delete_elements: (input: DeleteElementsInput) => ToolOutput;
   move_elements: (input: MoveElementsInput) => ToolOutput;
+  rotate_elements: (input: RotateElementsInput) => ToolOutput;
+  bind_elements: (input: BindElementsInput) => ToolOutput;
   replace_scene: (input: ReplaceSceneInput) => ToolOutput;
   sketch_path: (input: SketchPathInput) => ToolOutput;
   free_draw: (input: FreeDrawInput) => ToolOutput;
@@ -308,6 +328,8 @@ function summarizeElement(element: ExcalidrawElement): SceneElementSummary {
     groupIds: [...element.groupIds],
     containerId: (element as ExcalidrawElement & { containerId?: string | null }).containerId ?? undefined,
     boundElementIds: element.boundElements?.map(boundElement => boundElement.id),
+    startBinding: element.type === "arrow" || element.type === "line" ? element.startBinding : undefined,
+    endBinding: element.type === "arrow" || element.type === "line" ? element.endBinding : undefined,
     angle: element.angle,
     strokeColor: visual.strokeColor,
     backgroundColor: visual.backgroundColor,
@@ -648,6 +670,115 @@ export function createExcalidrawTools(
           result: {
             description: input.description,
             moved: input.moves.map(move => move.id),
+            ...sceneResult({ before, after: elements })
+          },
+          sceneSummaryAfter
+        };
+      }),
+
+    rotate_elements: (input) =>
+      runTool(() => {
+        const before = excalidrawAPI.getSceneElements();
+        const beforeById = new Map(before.map(element => [element.id, element]));
+        const missing = input.rotations.filter(rotation => !beforeById.has(rotation.id)).map(rotation => rotation.id);
+        const fixed = fixedElementIds(before, input.rotations.map(rotation => rotation.id));
+        const invalidAngles = input.rotations
+          .filter(rotation => !Number.isFinite(rotation.angleDegrees))
+          .map(rotation => rotation.id);
+        if (missing.length > 0) {
+          return {
+            success: false,
+            error: `Cannot rotate missing element IDs: ${missing.join(", ")}`,
+            sceneSummaryAfter: summarizeElements(before)
+          };
+        }
+        if (fixed.length > 0) {
+          return {
+            success: false,
+            error: `Cannot rotate fixed constraint elements: ${fixed.join(", ")}`,
+            sceneSummaryAfter: summarizeElements(before)
+          };
+        }
+        if (invalidAngles.length > 0) {
+          return {
+            success: false,
+            error: `Rotation angles must be finite numbers: ${invalidAngles.join(", ")}`,
+            sceneSummaryAfter: summarizeElements(before)
+          };
+        }
+        const elements = applyElementRotations(before, input.rotations);
+        const sceneSummaryAfter = updateSceneAndSummarize(excalidrawAPI, elements, false);
+        return {
+          success: true,
+          result: {
+            description: input.description,
+            rotated: input.rotations.map(rotation => rotation.id),
+            ...sceneResult({ before, after: elements })
+          },
+          sceneSummaryAfter
+        };
+      }),
+
+    bind_elements: (input) =>
+      runTool(() => {
+        const before = excalidrawAPI.getSceneElements();
+        const beforeById = new Map(before.map(element => [element.id, element]));
+        const missingArrows = input.bindings
+          .filter(binding => !beforeById.has(binding.arrowId))
+          .map(binding => binding.arrowId);
+        const nonArrows = input.bindings
+          .filter(binding => {
+            const element = beforeById.get(binding.arrowId);
+            return element && element.type !== "arrow";
+          })
+          .map(binding => binding.arrowId);
+        const targetIds = input.bindings.flatMap(binding =>
+          [binding.startElementId, binding.endElementId].filter((id): id is string => Boolean(id))
+        );
+        const missingTargets = targetIds.filter(id => !beforeById.has(id));
+        const invalidTargets = targetIds.filter(id => {
+          const target = beforeById.get(id);
+          return target && !["rectangle", "diamond", "ellipse", "text", "image", "embeddable", "frame"].includes(target.type);
+        });
+        const selfBindings = input.bindings
+          .filter(binding => binding.startElementId === binding.arrowId || binding.endElementId === binding.arrowId)
+          .map(binding => binding.arrowId);
+        const fixed = fixedElementIds(before, input.bindings.map(binding => binding.arrowId));
+        if (missingArrows.length > 0 || missingTargets.length > 0) {
+          return {
+            success: false,
+            error: `Cannot bind missing element IDs: ${[...new Set([...missingArrows, ...missingTargets])].join(", ")}`,
+            sceneSummaryAfter: summarizeElements(before)
+          };
+        }
+        if (nonArrows.length > 0) {
+          return {
+            success: false,
+            error: `Only arrow elements can be bound: ${[...new Set(nonArrows)].join(", ")}`,
+            sceneSummaryAfter: summarizeElements(before)
+          };
+        }
+        if (invalidTargets.length > 0 || selfBindings.length > 0) {
+          return {
+            success: false,
+            error: `Invalid binding targets: ${[...new Set([...invalidTargets, ...selfBindings])].join(", ")}`,
+            sceneSummaryAfter: summarizeElements(before)
+          };
+        }
+        if (fixed.length > 0) {
+          return {
+            success: false,
+            error: `Cannot change bindings for fixed constraint arrows: ${fixed.join(", ")}`,
+            sceneSummaryAfter: summarizeElements(before)
+          };
+        }
+        const elements = applyElementBindings(before, input.bindings);
+        const sceneSummaryAfter = updateSceneAndSummarize(excalidrawAPI, elements, false);
+        return {
+          success: true,
+          result: {
+            description: input.description,
+            bound: input.bindings.map(binding => binding.arrowId),
             ...sceneResult({ before, after: elements })
           },
           sceneSummaryAfter

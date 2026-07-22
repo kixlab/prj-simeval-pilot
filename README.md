@@ -166,10 +166,14 @@ The timed agent can use:
 - `update_elements`
 - `delete_elements`
 - `move_elements`
+- `rotate_elements`
+- `bind_elements`
 - `replace_scene`
 - `sketch_path`
 - `free_draw`
 - `get_scene_summary`
+
+`rotate_elements` uses absolute clockwise degrees. `bind_elements` connects an existing arrow's start and end to existing bindable shapes; a `null` endpoint removes that binding.
 
 The browser also exposes `window.simevalAgentApi` when agent mode is enabled:
 

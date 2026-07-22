@@ -224,7 +224,7 @@ assert.doesNotMatch(appSource, /recorder\.start\(recordingTimesliceMs\)/);
 const viteSource = readFileSync(new URL("../vite.config.ts", import.meta.url), "utf8");
 assert.match(viteSource, /authenticationFailure[\s\S]*\? `\$\{message\}\. Check Google Cloud ADC/);
 assert.match(viteSource, /: message;/);
-assert.match(viteSource, /languageCode,\n\s+error: formatSttError\(error\)/);
+assert.match(viteSource, /languageCode,\r?\n\s+error: formatSttError\(error\)/);
 assert.equal(failedChunk.audio.languageCode, "ko-KR");
 
 function createPendingStore(sessionId) {
@@ -318,7 +318,7 @@ assert.deepEqual(shortStore.chunks.map(chunk => chunk.sequence), [1, 2]);
 validate("short-session", shortStore.chunks);
 
 // Test 16. Source enforces pending insertion, ID-based update, serialized flush, sorted non-blocking export.
-assert.match(appSource, /const sequence = nextThinkAloudChunkSequenceRef\.current;\n\s+nextThinkAloudChunkSequenceRef\.current \+= 1;/);
+assert.match(appSource, /const sequence = nextThinkAloudChunkSequenceRef\.current;\r?\n\s+nextThinkAloudChunkSequenceRef\.current \+= 1;/);
 assert.match(appSource, /transcriptionStatus: "pending"[\s\S]*void transcribeChunk\(blob/);
 assert.match(appSource, /findIndex\(chunk => chunk\.thinkAloudChunkId === thinkAloudChunkId\)/);
 assert.match(appSource, /sttFlushQueueRef\.current = sttFlushQueueRef\.current\.then\(flush, flush\)/);

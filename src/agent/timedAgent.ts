@@ -78,6 +78,14 @@ function executeTool(tools: AgentTools, call: TimedAgentToolCall): { input: unkn
     const input = { description: call.description, moves: call.moves };
     return { input, output: tools.move_elements(input) };
   }
+  if (call.toolName === "rotate_elements") {
+    const input = { description: call.description, rotations: call.rotations };
+    return { input, output: tools.rotate_elements(input) };
+  }
+  if (call.toolName === "bind_elements") {
+    const input = { description: call.description, bindings: call.bindings };
+    return { input, output: tools.bind_elements(input) };
+  }
   if (call.toolName === "replace_scene") {
     const input = { reason: call.reason, fitToContent: call.fitToContent, elements: call.elements.map(toSkeletonElement), expectedPreservedRoles: [] };
     return { input, output: tools.replace_scene(input) };

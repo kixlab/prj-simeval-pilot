@@ -1,5 +1,6 @@
 import type { LLMSceneElement } from "./sceneElementTypes";
 import type { ElementPatch, SketchPathInput } from "./tools";
+import type { ElementBinding, ElementRotation } from "./elementTransforms";
 
 export const timedAgentToolNames = [
   "clear_canvas",
@@ -9,6 +10,8 @@ export const timedAgentToolNames = [
   "update_elements",
   "delete_elements",
   "move_elements",
+  "rotate_elements",
+  "bind_elements",
   "replace_scene",
   "sketch_path",
   "free_draw",
@@ -25,6 +28,8 @@ export type TimedAgentToolCall = {
   updates: Array<{ id: string; patch: ElementPatch }>;
   elementIds: string[];
   moves: Array<{ id: string; x: number; y: number }>;
+  rotations: ElementRotation[];
+  bindings: ElementBinding[];
   paths: SketchPathInput["paths"];
 };
 
@@ -79,7 +84,7 @@ const toolCallSchema = {
   additionalProperties: false,
   required: [
     "toolName", "description", "reason", "replace", "fitToContent", "elements",
-    "updates", "elementIds", "moves", "paths"
+    "updates", "elementIds", "moves", "rotations", "bindings", "paths"
   ],
   properties: {
     toolName: { type: "string", enum: timedAgentToolNames },
@@ -129,6 +134,31 @@ const toolCallSchema = {
         additionalProperties: false,
         required: ["id", "x", "y"],
         properties: { id: { type: "string" }, x: { type: "number" }, y: { type: "number" } }
+      }
+    },
+    rotations: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["id", "angleDegrees"],
+        properties: {
+          id: { type: "string" },
+          angleDegrees: { type: "number" }
+        }
+      }
+    },
+    bindings: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["arrowId", "startElementId", "endElementId"],
+        properties: {
+          arrowId: { type: "string" },
+          startElementId: { type: ["string", "null"] },
+          endElementId: { type: ["string", "null"] }
+        }
       }
     },
     paths: {
