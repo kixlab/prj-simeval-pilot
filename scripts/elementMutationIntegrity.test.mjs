@@ -110,7 +110,15 @@ const appSource = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8
 assert.match(appSource, /session\?\.actorType !== "human"/);
 assert.match(appSource, /elementMutations: elementMutationsRef\.current/);
 assert.match(appSource, /actions: actionsRef\.current/);
-assert.match(appSource, /schemaVersion: "simeval-drawing-session-v3"/);
+assert.match(appSource, /schemaVersion: sessionSchemaVersion/);
+
+// Test 8b. Expanded style and intentionally out-of-scope properties are not silently lost.
+const fontChanged = element("text-style", "text", { text: "label", originalText: "label", fontSize: 24 });
+const fontChangedAgain = element("text-style", "text", { text: "label", originalText: "label", fontSize: 30 });
+assert.equal(diff([fontChanged], [fontChangedAgain])[0].operation, "change_style");
+const grouped = element("grouped", "rectangle", { groupIds: ["group-1"] });
+assert.equal(diff([element("grouped", "rectangle")], [grouped])[0].operation, "out_of_scope_change");
+assert.match(moduleSource, /categories\.size === 0\) return "unclassified_change"/);
 
 // Test 9. Free-draw callbacks are buffered into one stroke mutation and all
 // required finalization paths remain wired.

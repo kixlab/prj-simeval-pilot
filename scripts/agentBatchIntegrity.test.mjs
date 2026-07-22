@@ -104,7 +104,7 @@ assert.match(timedAgentSource, /for \(let toolCallIndex = 0; toolCallIndex < too
 assert.doesNotMatch(timedAgentSource, /Promise\.all\([^)]*decision\.toolCalls/);
 assert.match(timedAgentSource, /executionStatus: "skipped"/);
 assert.match(timedAgentSource, /if \(!output\.success\) failedCall/);
-assert.match(timedAgentSource, /if \(failedCall\) \{\n\s+continue;\n\s+\}/);
+assert.match(timedAgentSource, /if \(failedCall\) \{\r?\n\s+continue;\r?\n\s+\}/);
 assert.match(timedAgentSource, /setAgentToolExecutionContext\(tools, \{ decisionNumber, toolCallIndex, toolExecutionId \}\)/);
 assert.match(actionSource, /decisionNumber: executionContext\?\.decisionNumber/);
 assert.match(actionSource, /toolCallIndex: executionContext\?\.toolCallIndex/);

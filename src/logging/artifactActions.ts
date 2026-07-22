@@ -7,6 +7,8 @@ export type SceneArtifactDiff = {
   updated: string[];
   moved: string[];
   resized: string[];
+  rotated: string[];
+  bindingChanged: string[];
   deleted: string[];
 };
 
@@ -58,6 +60,8 @@ const mutatingToolNames = [
   "update_elements",
   "delete_elements",
   "move_elements",
+  "rotate_elements",
+  "bind_elements",
   "replace_scene",
   "sketch_path",
   "free_draw"
@@ -85,7 +89,15 @@ function byId(elements: readonly SceneElementSummary[]) {
 export function diffSceneSummaries(before: SceneSummary, after: SceneSummary): SceneArtifactDiff {
   const beforeById = byId(before.elements);
   const afterById = byId(after.elements);
-  const diff: SceneArtifactDiff = { added: [], updated: [], moved: [], resized: [], deleted: [] };
+  const diff: SceneArtifactDiff = {
+    added: [],
+    updated: [],
+    moved: [],
+    resized: [],
+    rotated: [],
+    bindingChanged: [],
+    deleted: []
+  };
 
   for (const [id, next] of afterById) {
     const previous = beforeById.get(id);
@@ -95,11 +107,19 @@ export function diffSceneSummaries(before: SceneSummary, after: SceneSummary): S
     }
     if (previous.x !== next.x || previous.y !== next.y) diff.moved.push(id);
     if (previous.width !== next.width || previous.height !== next.height) diff.resized.push(id);
+    if (previous.angle !== next.angle) diff.rotated.push(id);
+    if (
+      JSON.stringify(previous.startBinding ?? null) !== JSON.stringify(next.startBinding ?? null) ||
+      JSON.stringify(previous.endBinding ?? null) !== JSON.stringify(next.endBinding ?? null) ||
+      JSON.stringify(previous.boundElementIds ?? []) !== JSON.stringify(next.boundElementIds ?? []) ||
+      previous.containerId !== next.containerId
+    ) {
+      diff.bindingChanged.push(id);
+    }
     if (
       previous.text !== next.text ||
       previous.type !== next.type ||
       previous.semanticRole !== next.semanticRole ||
-      previous.angle !== next.angle ||
       previous.strokeColor !== next.strokeColor ||
       previous.backgroundColor !== next.backgroundColor ||
       previous.fillStyle !== next.fillStyle ||
@@ -131,11 +151,21 @@ export function sceneActionLabel(diff: SceneArtifactDiff) {
   if (diff.deleted.length) return "delete_object";
   if (diff.moved.length) return "move_object";
   if (diff.resized.length) return "resize_object";
+  if (diff.rotated.length) return "rotate_object";
+  if (diff.bindingChanged.length) return "change_binding";
   return "update_object";
 }
 
 export function sceneTargetIds(diff: SceneArtifactDiff) {
-  return [...new Set([...diff.added, ...diff.updated, ...diff.moved, ...diff.resized, ...diff.deleted])];
+  return [...new Set([
+    ...diff.added,
+    ...diff.updated,
+    ...diff.moved,
+    ...diff.resized,
+    ...diff.rotated,
+    ...diff.bindingChanged,
+    ...diff.deleted
+  ])];
 }
 
 export function sceneStateDigest(summary: SceneSummary): SceneStateDigest {

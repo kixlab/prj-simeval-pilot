@@ -20,11 +20,33 @@ export type SessionMetadata = {
   endedAt: string | null;
   durationMs: number | null;
   completionReason: string | null;
+  study: {
+    studyId: string;
+    conditionId: string;
+    assignmentId: string | null;
+    matchedPairId: string | null;
+  };
+  datasetIds: {
+    artifactId: string;
+    trajectoryId: string;
+    outcomeEvaluationId: string;
+  };
+  versions: {
+    taskDefinitionVersion: string;
+    appVersion: string;
+    appCommit: string;
+    promptVersion: string | null;
+    promptHash: string | null;
+    toolSchemaVersion: string | null;
+  };
   agentConfig: {
     model: string | null;
     timeBudgetMs: number;
     finalizationWindowMs: number;
     terminationPolicy: "time_budget";
+    promptVersion: string;
+    promptHash: string;
+    toolSchemaVersion: string;
   } | null;
 };
 
@@ -37,6 +59,7 @@ export type CanvasSnapshot = {
   phase: TaskPhase;
   reason: "initial" | "action" | "periodic" | "phase_1_end" | "phase_2_start" | "final";
   actionSequence?: number;
+  imageFileName?: string;
   elements: readonly ExcalidrawElement[];
 };
 
@@ -103,6 +126,29 @@ export type ThinkAloudNote = {
   linkedEventId?: string;
 };
 
+export type RationaleRecord = {
+  rationaleId: string;
+  sessionId: string;
+  sequence: number;
+  actorType: "human" | "agent";
+  source:
+    | "explicit_think_aloud"
+    | "agent_decision_rationale"
+    | "agent_reasoning"
+    | "clarification_response"
+    | "post_task_response"
+    | "inferred";
+  content: string;
+  startedAtMs: number;
+  endedAtMs: number;
+  availableAtMs: number;
+  sourceEventIds: string[];
+  linkedEventIds: string[];
+  provenance: "observed" | "model_inferred" | "human_annotated";
+  confidence?: number | null;
+  decisionNumber?: number;
+};
+
 export type PointerModalityEvent = {
   timestamp: string;
   elapsedMs: number;
@@ -111,7 +157,7 @@ export type PointerModalityEvent = {
 
 export type ElementMutationOperation =
   | "create" | "create_stroke" | "delete" | "move" | "resize" | "rotate" | "change_text"
-  | "change_style" | "change_points" | "change_binding" | "compound_change";
+  | "change_style" | "change_points" | "change_binding" | "out_of_scope_change" | "unclassified_change" | "compound_change";
 
 export type CompactElementState = {
   id: string;
@@ -129,11 +175,24 @@ export type CompactElementState = {
   fillStyle: string;
   strokeWidth: number;
   strokeStyle: string;
+  roughness: number;
+  roundness: unknown;
   opacity: number;
+  fontSize: number | null;
+  fontFamily: number | null;
+  textAlign: string | null;
+  verticalAlign: string | null;
+  lineHeight: number | null;
+  startArrowhead: string | null;
+  endArrowhead: string | null;
   groupIds: string[];
   containerId: string | null;
+  frameId: string | null;
+  boundElements: unknown;
   startBinding: unknown;
   endBinding: unknown;
+  locked: boolean;
+  link: string | null;
   isDeleted: boolean;
 };
 
@@ -160,8 +219,13 @@ export type ElementMutation = {
 };
 
 export type SessionExport = {
-  schemaVersion: "simeval-drawing-session-v3";
+  schemaVersion: "simeval-drawing-session-v4";
   exportedAt: string;
+  archive: {
+    fileName: string;
+    rootDirectory: string;
+    screenshotPolicy: "initial_action_phase_final_no_periodic";
+  };
   session: SessionMetadata;
   task: {
     instruction: string;
@@ -179,12 +243,18 @@ export type SessionExport = {
   thinkAloudChunks: ThinkAloudChunk[];
   validationErrors: string[];
   thinkAloudNotes: ThinkAloudNote[];
+  rationaleRecords: RationaleRecord[];
   agentTrajectory: AgentTrajectoryEntry[];
   pointerModalities: PointerModalityEvent[];
   snapshots: CanvasSnapshot[];
+  outcomeEvaluation: {
+    evaluationId: string;
+    artifactId: string;
+    status: "pending";
+  };
   finalArtifact: {
     sceneElements: readonly ExcalidrawElement[];
-    image: { mimeType: "image/png"; dataUrl: string };
+    image: { mimeType: "image/png"; fileName: string | null };
     audio: {
       available: boolean;
       fileName: string | null;

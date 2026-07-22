@@ -1,6 +1,8 @@
 # Data Format
 
-Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v3`입니다.
+Export ZIP의 `session.json` 최상위 `schemaVersion`은 `simeval-drawing-session-v4`입니다.
+
+ZIP 파일명은 actor, participant, task, seed, 시작 시각, 짧은 session ID를 포함합니다. ZIP 내부에는 같은 이름의 root directory가 만들어지며 `session.json`, `README.txt`, 선택된 snapshot PNG, 선택적 think-aloud WebM이 저장됩니다.
 
 ## Timeline 기준
 
@@ -8,17 +10,20 @@ Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v3`입니다.
 
 ## 주요 필드
 
-- `session`: 참가자, actor, task, seed, 입력 장치, 시작/종료 시각
+- `session`: 참가자, actor, task, seed, 입력 장치, 시작/종료 시각, study/condition, dataset ID, app/prompt/tool version
 - `task`: 제시문, phase별 제시문, seed와 초기 seed element ID
 - `actions`: artifact diff를 idle 단위로 묶은 action과 전후 snapshot 참조
 - `elementMutations`: Human mode의 매 Excalidraw `onChange`에서 기록한 element/property 단위 원본 변화
-- `thinkAloud`: Human audio transcript와 task 종료 후 응답
+- `thinkAloudChunks`: Human audio transcript와 word timestamp
+- `thinkAloudNotes`: task 종료 후 응답과 명시적 note
+- `rationaleRecords`: Human/Agent rationale의 공통 표현과 `startedAtMs`, `endedAtMs`, `availableAtMs`, provenance
 - `validationErrors`: export 직전 무결성 검사에서 발견된 오류. 오류가 있어도 raw JSON과 audio export는 계속 진행됨
-- `agentTrajectory`: 시간 예산, 판단 번호, 판단 요약, batch 내 각 tool call과 실행 결과
+- `agentTrajectory`: 시간 예산, 판단 번호, 관찰 snapshot 참조, 판단 요약, rationale, batch 내 각 tool call과 실행 결과
 - `phaseTransitions`: Adaptive Reframing에서 조건 공개 시각과 전후 snapshot
 - `pointerModalities`: 실제 pointerdown에서 감지한 mouse/pen/touch
 - `snapshots`: 초기, action 직후, 5초 주기, phase 경계, 최종 full scene
-- `finalArtifact`: 최종 scene element와 PNG data URL, 별도 audio 파일명
+- `outcomeEvaluation`: 별도 평가 데이터가 참조할 안정적인 evaluation/artifact ID
+- `finalArtifact`: 최종 scene element와 ZIP 내부 PNG/audio 파일명
 
 ## Action과 Snapshot
 
@@ -28,15 +33,19 @@ Export의 최상위 `schemaVersion`은 `simeval-drawing-session-v3`입니다.
 
 원본 scene을 보존하기 위해 snapshot은 full Excalidraw elements를 저장합니다. 분석 시에는 action의 compact diff를 먼저 읽고, 세부 시각 상태가 필요한 action에서만 연결된 snapshot을 로드하는 방식을 권장합니다.
 
+PNG는 세션 중 메모리에 누적하지 않습니다. Export 시 initial/action/phase-boundary/final snapshot을 하나씩 렌더링해 ZIP stream에 추가합니다. 5초 periodic snapshot은 scene JSON만 저장합니다. 각 렌더링된 snapshot은 `imageFileName`으로 ZIP 내부 PNG를 참조합니다.
+
 ## Audio
 
-음성은 10초 단위 chunk로 STT에 전송되고 metadata와 transcript가 `thinkAloud`에 기록됩니다. raw audio는 JSON에 중복 삽입하지 않고 별도 WebM 파일로 export합니다. STT 인증 또는 네트워크 오류가 발생해도 chunk 크기와 오류 정보는 남습니다.
+음성은 10초 단위 chunk로 STT에 전송되고 metadata와 transcript가 `thinkAloudChunks`에 기록됩니다. raw audio는 JSON에 중복 삽입하지 않고 ZIP의 `audio/think-aloud.webm`으로 저장합니다. STT 인증 또는 네트워크 오류가 발생해도 chunk 크기와 오류 정보는 남습니다.
 
 각 audio chunk는 녹음 flush 직후 고유 sequence를 예약하고 `pending` 상태로 먼저 배열에 들어갑니다. STT 응답은 완료 순서와 무관하게 chunk ID로 기존 항목을 갱신합니다. export 시에는 sequence 순으로 정렬하고 duplicate sequence를 별도로 검사합니다.
 
 ## Agent 종료 조건
 
-Agent 세션의 `session.agentConfig`에는 사용 모델, 전체 시간 예산과 finalization window가 저장됩니다. `session.completionReason`은 `agent_finish`, `time_budget`, `cancelled`, `agent_error`, `manual` 중 실제 종료 경로를 기록합니다. 최대 turn 수는 없으며, `agentTrajectory.decision`은 제한값이 아니라 시간순 판단 번호입니다.
+Agent 세션의 `session.agentConfig`에는 사용 모델, prompt/tool schema version과 hash, 전체 시간 예산, finalization window가 저장됩니다. `session.completionReason`은 `agent_finish`, `time_budget`, `cancelled`, `agent_error`, `manual` 중 실제 종료 경로를 기록합니다. 최대 turn 수는 없으며, `agentTrajectory.decision`은 제한값이 아니라 시간순 판단 번호입니다.
+
+각 decision은 `observationId`, `observationSnapshotId`, `observedAtMs`, request 시작/종료/기간을 기록합니다. Agent에게 전송된 PNG data URL은 세션 중 보관하지 않고, observation이 참조한 snapshot PNG를 export 시 재생성합니다.
 
 한 decision의 tool call은 `toolCallIndex`의 0-based 순서대로 동기 실행됩니다. 각 trajectory entry에는 `toolCallCount`, `toolExecutionId`, `executionStatus`, 실행 시작·종료·기간이 기록됩니다. 앞선 call이 실패하거나 exception을 발생시키면 후속 call은 실행하지 않고 `executionStatus: "skipped"`로 기록하며, 실패한 call의 index와 execution ID를 참조합니다. skipped call은 실제 artifact action을 만들지 않습니다. 실패한 batch 뒤에는 다음 decision cycle로 이동하여 scene summary와 screenshot을 새로 관찰합니다.
 

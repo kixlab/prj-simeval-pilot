@@ -18,6 +18,8 @@ export type PilotAgentApi = {
   addText: (x: number, y: number, text: string, style?: ShapeStyle & { fontSize?: number; width?: number }) => ToolOutput;
   moveObject: (objectId: string, x: number, y: number) => ToolOutput;
   resizeObject: (objectId: string, width: number, height: number) => ToolOutput;
+  rotateObject: (objectId: string, angleDegrees: number) => ToolOutput;
+  bindArrow: (arrowId: string, startElementId: string | null, endElementId: string | null) => ToolOutput;
   updateStyle: (objectId: string, style: ElementPatch) => ToolOutput;
   deleteObject: (objectId: string) => ToolOutput;
   getCanvasState: () => ToolOutput;
@@ -110,6 +112,14 @@ export function createPilotAgentApi({
     resizeObject: mutate((objectId, width, height) => instrumented.update_elements({
       description: "Resize object",
       updates: [{ id: objectId, patch: { width, height } }]
+    })),
+    rotateObject: mutate((objectId, angleDegrees) => instrumented.rotate_elements({
+      description: "Rotate object",
+      rotations: [{ id: objectId, angleDegrees }]
+    })),
+    bindArrow: mutate((arrowId, startElementId, endElementId) => instrumented.bind_elements({
+      description: "Bind arrow endpoints",
+      bindings: [{ arrowId, startElementId, endElementId }]
     })),
     updateStyle: mutate((objectId, style) => instrumented.update_elements({
       description: "Update object style",

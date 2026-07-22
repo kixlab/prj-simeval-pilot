@@ -7,6 +7,20 @@ import { runTimedAgent, type AgentTrajectoryEntry } from "./agent/timedAgent";
 import { summarizeElements, type SceneSummary } from "./agent/tools";
 import { createSeedScene } from "./data/seedScenes";
 import {
+  sessionArchiveBaseName,
+  snapshotImageFileName,
+  StreamingZipArchive
+} from "./data/exportArchive";
+import { buildRationaleRecords } from "./data/rationaleRecords";
+import {
+  agentPromptVersion,
+  agentToolSchemaVersion,
+  defaultConditionId,
+  defaultStudyId,
+  sessionSchemaVersion,
+  taskDefinitionVersion
+} from "./data/versionInfo";
+import {
   chooseSeed,
   instructionForTask,
   taskByType,
@@ -46,6 +60,11 @@ const recordingTimesliceMs = 10000;
 const defaultAgentTimeBudgetMinutes = 5;
 const agentFinalizationWindowMs = 30 * 1000;
 const enableAgentMode = import.meta.env.VITE_ENABLE_AGENT_MODE === "true";
+const configuredStudyId = import.meta.env.VITE_STUDY_ID || defaultStudyId;
+const configuredConditionId = import.meta.env.VITE_CONDITION_ID || defaultConditionId;
+const appVersion = import.meta.env.VITE_APP_VERSION || "unknown";
+const appCommit = import.meta.env.VITE_APP_COMMIT || "unknown";
+const agentPromptHash = import.meta.env.VITE_AGENT_PROMPT_HASH || "unknown";
 
 type SessionStatus = "setup" | "active" | "completed";
 type RecordingFinalizationStatus = "idle" | "recording" | "stopping" | "transcribing" | "ready_to_export" | "exported";
@@ -198,6 +217,10 @@ function App() {
   const [status, setStatus] = useState<SessionStatus>("setup");
   const [selectedActor, setSelectedActor] = useState<SessionActor | null>(enableAgentMode ? null : "human");
   const [participantId, setParticipantId] = useState("");
+  const [studyId, setStudyId] = useState(configuredStudyId);
+  const [conditionId, setConditionId] = useState(configuredConditionId);
+  const [assignmentId, setAssignmentId] = useState("");
+  const [matchedPairId, setMatchedPairId] = useState("");
   const [selectedTaskType, setSelectedTaskType] = useState<TaskType>("free_creation");
   const [selectedSeedId, setSelectedSeedId] = useState(taskDefinitions[0].seeds[0].id);
   const [randomizeSeed, setRandomizeSeed] = useState(true);
@@ -215,6 +238,7 @@ function App() {
   const [pendingTranscriptions, setPendingTranscriptions] = useState(0);
   const [recordingFinalizationStatus, setRecordingFinalizationStatus] = useState<RecordingFinalizationStatus>("idle");
   const [sessionExported, setSessionExported] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [isAgentRunning, setIsAgentRunning] = useState(false);
   const [agentTimeBudgetMinutes, setAgentTimeBudgetMinutes] = useState(defaultAgentTimeBudgetMinutes);
@@ -351,7 +375,7 @@ function App() {
     return new Blob(audioChunksRef.current, { type: mimeType });
   }, []);
 
-  const buildAudioMetadata = useCallback((sessionId: string): AudioExportMetadata => {
+  const buildAudioMetadata = useCallback((): AudioExportMetadata => {
     const audioBlob = createCombinedAudioBlob();
     if (!audioBlob) {
       return {
@@ -365,7 +389,7 @@ function App() {
     }
     return {
       available: true,
-      fileName: `drawing-${sessionId}.webm`,
+      fileName: "audio/think-aloud.webm",
       mimeType: audioBlob.type || "audio/webm",
       byteSize: audioBlob.size,
       chunkCount: audioChunksRef.current.length
@@ -643,8 +667,12 @@ function App() {
   }, [elapsedMs, flushFreeDrawStroke, flushHumanAction, status, timestampAt]);
 
   const startSession = useCallback(() => {
-    if (!api || !selectedActor || (selectedActor === "human" && !participantId.trim())) {
-      setMessage(!api ? "Canvas가 준비되지 않았습니다." : "Participant ID를 입력하세요.");
+    if (!api || !selectedActor || !studyId.trim() || !conditionId.trim() || (selectedActor === "human" && !participantId.trim())) {
+      setMessage(!api
+        ? "Canvas가 준비되지 않았습니다."
+        : !studyId.trim() || !conditionId.trim()
+          ? "Study ID와 Condition ID를 입력하세요."
+          : "Participant ID를 입력하세요.");
       return;
     }
     if (selectedActor === "agent" && !enableAgentMode) {
@@ -652,12 +680,8 @@ function App() {
       return;
     }
     const previousSession = sessionRef.current;
-    if (
-      previousSession &&
-      !sessionExported &&
-      buildAudioMetadata(previousSession.sessionId).available
-    ) {
-      setMessage("Export the previous session JSON/audio before starting a new session.");
+    if (previousSession && !sessionExported) {
+      setMessage("Export the previous session ZIP before starting a new session.");
       return;
     }
     const seed = chooseSeed(selectedTaskType, selectedSeedId, randomizeSeed);
@@ -665,6 +689,9 @@ function App() {
     const initialElements = selectedTaskType === "open_ended_interpretation" ? createSeedScene(seed.id) : [];
     const selectedAgentTimeBudgetMs = Math.max(1, agentTimeBudgetMinutes) * 60 * 1000;
     const sessionId = `drawing-${selectedTaskType}-${crypto.randomUUID()}`;
+    const artifactId = `${sessionId}:artifact`;
+    const trajectoryId = `${sessionId}:trajectory`;
+    const outcomeEvaluationId = `${sessionId}:outcome-evaluation`;
     const startedAt = new Date();
     const metadata: SessionMetadata = {
       sessionId,
@@ -680,11 +707,29 @@ function App() {
       endedAt: null,
       durationMs: null,
       completionReason: null,
+      study: {
+        studyId: studyId.trim(),
+        conditionId: conditionId.trim(),
+        assignmentId: assignmentId.trim() || null,
+        matchedPairId: matchedPairId.trim() || null
+      },
+      datasetIds: { artifactId, trajectoryId, outcomeEvaluationId },
+      versions: {
+        taskDefinitionVersion,
+        appVersion,
+        appCommit,
+        promptVersion: selectedActor === "agent" ? agentPromptVersion : null,
+        promptHash: selectedActor === "agent" ? agentPromptHash : null,
+        toolSchemaVersion: selectedActor === "agent" ? agentToolSchemaVersion : null
+      },
       agentConfig: selectedActor === "agent" ? {
         model: null,
         timeBudgetMs: selectedAgentTimeBudgetMs,
         finalizationWindowMs: agentFinalizationWindowMs,
-        terminationPolicy: "time_budget"
+        terminationPolicy: "time_budget",
+        promptVersion: agentPromptVersion,
+        promptHash: agentPromptHash,
+        toolSchemaVersion: agentToolSchemaVersion
       } : null
     };
 
@@ -747,7 +792,7 @@ function App() {
     setStatus("active");
     setMessage(selectedActor === "agent" ? "Agent session ready" : "Session recording active");
     captureSnapshot("initial", initialElements, initialPhase);
-  }, [agentTimeBudgetMinutes, api, buildAudioMetadata, captureSnapshot, inputDevice, participantId, randomizeSeed, resetCanvasForSession, selectedActor, selectedSeedId, selectedTask, selectedTaskType, sessionExported]);
+  }, [agentTimeBudgetMinutes, api, assignmentId, captureSnapshot, conditionId, inputDevice, matchedPairId, participantId, randomizeSeed, resetCanvasForSession, selectedActor, selectedSeedId, selectedTask, selectedTaskType, sessionExported, studyId]);
 
   const revealPhaseTwo = useCallback(() => {
     if (status !== "active" || selectedTaskType !== "adaptive_reframing" || phaseRef.current !== "phase_1") return;
@@ -1016,12 +1061,15 @@ function App() {
     setStatus("completed");
     setRecordingFinalizationStatus("ready_to_export");
     refreshPendingTranscriptions(finishingSessionId);
-    setMessage("Session completed. Export JSON and audio before starting the next session.");
+    setMessage("Session completed. Export the ZIP before starting the next session.");
   }, [appendThinkAloudNote, captureSnapshot, elapsedMs, flushFreeDrawStroke, flushHumanAction, getPendingCount, isRecording, postTaskResponse, refreshPendingTranscriptions, stopRecordingAndWait, timestampAt, waitForPendingTranscriptions]);
 
   const exportSession = useCallback(async () => {
-    if (!api || !sessionRef.current || status !== "completed" || isRecording || isAgentRunning || getPendingCount(sessionRef.current.sessionId) > 0) return;
+    if (!api || !sessionRef.current || status !== "completed" || isRecording || isAgentRunning || isExporting || getPendingCount(sessionRef.current.sessionId) > 0) return;
     const session = sessionRef.current;
+    setIsExporting(true);
+    try {
+    setMessage("Preparing session ZIP archive");
     flushFreeDrawStroke();
     const sortedThinkAloudChunks = [...thinkAloudChunksRef.current].sort((left, right) => left.sequence - right.sequence);
     thinkAloudChunksRef.current = sortedThinkAloudChunks;
@@ -1036,14 +1084,6 @@ function App() {
       validationErrors.push(error instanceof Error ? error.message : String(error));
     }
     const elements = api.getSceneElements();
-    const imageBlob = await exportToBlob({
-      elements,
-      appState: { ...api.getAppState(), exportBackground: true, viewBackgroundColor: "#ffffff" },
-      files: api.getFiles(),
-      mimeType: "image/png",
-      exportPadding: 24,
-      maxWidthOrHeight: 1800
-    });
     const task = taskByType(session.taskType);
     const instructionsByPhase = session.taskType === "adaptive_reframing"
       ? {
@@ -1052,10 +1092,61 @@ function App() {
         }
       : { single_phase: instructionForTask(session.taskType, session.seedLabel, "single_phase") };
     const audioBlob = createCombinedAudioBlob();
-    const audioMetadata = buildAudioMetadata(session.sessionId);
+    const audioMetadata = buildAudioMetadata();
+    const baseName = sessionArchiveBaseName(session);
+    const archiveFileName = `${baseName}.zip`;
+    const rootDirectory = baseName;
+    const archive = new StreamingZipArchive();
+    const imageFileNameBySnapshotId = new Map<string, string>();
+    const screenshots = snapshotsRef.current.filter(snapshot =>
+      snapshot.reason !== "periodic" && snapshot.elements.length > 0
+    );
+
+    for (const [index, snapshot] of screenshots.entries()) {
+      setMessage(`Rendering ZIP screenshot ${index + 1}/${screenshots.length}`);
+      const relativeFileName = snapshotImageFileName(snapshot);
+      const imageBlob = await exportToBlob({
+        elements: snapshot.elements,
+        appState: { ...api.getAppState(), exportBackground: true, viewBackgroundColor: "#ffffff" },
+        files: api.getFiles(),
+        mimeType: "image/png",
+        exportPadding: 24,
+        maxWidthOrHeight: 1800
+      });
+      await archive.addBlob(`${rootDirectory}/${relativeFileName}`, imageBlob);
+      imageFileNameBySnapshotId.set(snapshot.snapshotId, relativeFileName);
+    }
+
+    if (audioBlob && audioMetadata.fileName) {
+      await archive.addBlob(`${rootDirectory}/${audioMetadata.fileName}`, audioBlob);
+    }
+
+    const exportedSnapshots = snapshotsRef.current.map(snapshot => ({
+      ...snapshot,
+      imageFileName: imageFileNameBySnapshotId.get(snapshot.snapshotId)
+    }));
+    const exportedAgentTrajectory = agentTrajectoryRef.current.map(entry => ({
+      ...entry,
+      observationImageFileName: entry.observationSnapshotId
+        ? imageFileNameBySnapshotId.get(entry.observationSnapshotId)
+        : undefined
+    }));
+    const rationaleRecords = buildRationaleRecords({
+      sessionId: session.sessionId,
+      humanChunks: sortedThinkAloudChunks,
+      notes: thinkAloudNotesRef.current,
+      agentTrajectory: exportedAgentTrajectory
+    });
+    const finalSnapshot = [...exportedSnapshots].reverse().find(snapshot => snapshot.reason === "final");
+    const finalImageFileName = finalSnapshot?.imageFileName ?? null;
     const payload: SessionExport = {
-      schemaVersion: "simeval-drawing-session-v3",
+      schemaVersion: sessionSchemaVersion,
       exportedAt: new Date().toISOString(),
+      archive: {
+        fileName: archiveFileName,
+        rootDirectory,
+        screenshotPolicy: "initial_action_phase_final_no_periodic"
+      },
       session,
       task: {
         instruction: task.instruction,
@@ -1072,42 +1163,61 @@ function App() {
       thinkAloudChunks: sortedThinkAloudChunks,
       validationErrors,
       thinkAloudNotes: thinkAloudNotesRef.current,
-      agentTrajectory: agentTrajectoryRef.current,
+      rationaleRecords,
+      agentTrajectory: exportedAgentTrajectory,
       pointerModalities: pointerEventsRef.current,
-      snapshots: snapshotsRef.current,
+      snapshots: exportedSnapshots,
+      outcomeEvaluation: {
+        evaluationId: session.datasetIds.outcomeEvaluationId,
+        artifactId: session.datasetIds.artifactId,
+        status: "pending"
+      },
       finalArtifact: {
         sceneElements: cloneElements(elements),
-        image: { mimeType: "image/png", dataUrl: await blobToDataUrl(imageBlob) },
+        image: { mimeType: "image/png", fileName: finalImageFileName },
         audio: audioMetadata
       }
     };
-    if (audioBlob && audioMetadata.fileName) {
-      downloadBlob(audioMetadata.fileName, audioBlob);
-    }
-    downloadBlob(`drawing-${session.sessionId}.json`, new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
+    archive.addText(`${rootDirectory}/session.json`, JSON.stringify(payload, null, 2));
+    archive.addText(`${rootDirectory}/README.txt`, [
+      `SimEval session: ${session.sessionId}`,
+      `Actor: ${session.actorType}`,
+      `Participant: ${session.participantId}`,
+      `Task: ${session.taskType}`,
+      `Seed: ${session.seedId}`,
+      `Study / condition: ${session.study.studyId} / ${session.study.conditionId}`,
+      "",
+      "session.json contains raw event streams, scene snapshots, rationale timing, and file references.",
+      "PNG files are generated at export for initial, action, phase-boundary, and final snapshots.",
+      "Periodic snapshots remain as scene JSON only to control archive size.",
+      "Outcome ratings should reference the outcomeEvaluation.evaluationId in session.json."
+    ].join("\n"));
+    const archiveBlob = await archive.finish();
+    downloadBlob(archiveFileName, archiveBlob);
     exportedSessionIdsRef.current.add(session.sessionId);
     setSessionExported(true);
     setRecordingFinalizationStatus("exported");
     setMessage(validationErrors.length > 0
-      ? `Session exported with validation warning: ${validationErrors.join(" | ")}`
-      : audioBlob ? "Session JSON and audio downloaded" : "Session JSON downloaded; no audio was recorded");
-  }, [api, buildAudioMetadata, createCombinedAudioBlob, flushFreeDrawStroke, getPendingCount, isAgentRunning, isRecording, status]);
+      ? `ZIP exported with validation warning: ${validationErrors.join(" | ")}`
+      : `Session ZIP downloaded: ${archiveFileName}`);
+    } catch (error) {
+      setMessage(`ZIP export failed: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setIsExporting(false);
+    }
+  }, [api, buildAudioMetadata, createCombinedAudioBlob, flushFreeDrawStroke, getPendingCount, isAgentRunning, isExporting, isRecording, status]);
 
   const downloadAudio = useCallback(() => {
     if (!sessionRef.current || audioChunksRef.current.length === 0) return;
     const audioBlob = createCombinedAudioBlob();
     if (!audioBlob) return;
-    downloadBlob(`drawing-${sessionRef.current.sessionId}.webm`, audioBlob);
+    downloadBlob(`${sessionArchiveBaseName(sessionRef.current)}__think-aloud.webm`, audioBlob);
   }, [createCombinedAudioBlob]);
 
   const resetForNextSession = useCallback(() => {
     if (!api) return;
-    if (
-      sessionRef.current &&
-      !sessionExported &&
-      buildAudioMetadata(sessionRef.current.sessionId).available
-    ) {
-      setMessage("Export the previous session JSON/audio before starting a new session.");
+    if (sessionRef.current && !sessionExported) {
+      setMessage("Export the previous session ZIP before starting a new session.");
       return;
     }
     if (sessionRef.current && getPendingCount(sessionRef.current.sessionId) > 0) {
@@ -1126,12 +1236,16 @@ function App() {
     setSummary(emptySummary);
     setAgentTrajectory([]);
     setRecordingFinalizationStatus("idle");
-  }, [api, buildAudioMetadata, getPendingCount, resetCanvasForSession, sessionExported]);
+  }, [api, getPendingCount, resetCanvasForSession, sessionExported]);
 
-  const captureAgentScreenshot = useCallback(async () => {
-    if (!api) return undefined;
+  const captureAgentObservation = useCallback(async (decisionNumber: number) => {
+    const session = sessionRef.current;
+    if (!api || !session) throw new Error("Agent observation is unavailable.");
+    const observationId = `${session.sessionId}:observation:${decisionNumber}`;
+    const snapshotId = currentSnapshotIdRef.current || captureSnapshot("initial", api.getSceneElements());
+    const observedAtMs = elapsedMs();
     const elements = api.getSceneElements();
-    if (elements.length === 0) return undefined;
+    if (elements.length === 0) return { observationId, snapshotId, observedAtMs };
     const blob = await exportToBlob({
       elements,
       appState: { ...api.getAppState(), exportBackground: true, viewBackgroundColor: "#ffffff" },
@@ -1140,8 +1254,8 @@ function App() {
       exportPadding: 24,
       maxWidthOrHeight: 2400
     });
-    return blobToDataUrl(blob);
-  }, [api]);
+    return { observationId, snapshotId, observedAtMs, screenshotDataUrl: await blobToDataUrl(blob) };
+  }, [api, captureSnapshot, elapsedMs]);
 
   useEffect(() => {
     if (status !== "active") return;
@@ -1198,13 +1312,14 @@ function App() {
     setMessage("Agent is observing the canvas");
 
     void runTimedAgent({
+      sessionId: session.sessionId,
       tools: agentApi.tools,
       getInstruction: () => instructionForTask(
         sessionRef.current!.taskType,
         sessionRef.current!.seedLabel,
         phaseRef.current
       ),
-      captureScreenshot: captureAgentScreenshot,
+      captureObservation: captureAgentObservation,
       timeBudgetMs: session.agentConfig?.timeBudgetMs ?? defaultAgentTimeBudgetMinutes * 60 * 1000,
       finalizationWindowMs: session.agentConfig?.finalizationWindowMs ?? agentFinalizationWindowMs,
       signal: controller.signal,
@@ -1235,7 +1350,7 @@ function App() {
     });
 
     return () => controller.abort();
-  }, [captureAgentScreenshot, finishSession, status]);
+  }, [captureAgentObservation, finishSession, status]);
 
   useEffect(() => () => {
     clearActionTimer(actionTimerRef);
@@ -1256,9 +1371,8 @@ function App() {
   };
 
   const currentSessionPendingTranscriptions = getPendingCount(sessionMetadata?.sessionId);
-  const currentSessionHasAudio = audioChunksRef.current.length > 0;
-  const canStartNextSession = status === "completed" && currentSessionPendingTranscriptions === 0 && (sessionExported || !currentSessionHasAudio);
-  const canExportSession = status === "completed" && !isRecording && !isAgentRunning && currentSessionPendingTranscriptions === 0;
+  const canStartNextSession = status === "completed" && currentSessionPendingTranscriptions === 0 && sessionExported;
+  const canExportSession = status === "completed" && !isRecording && !isAgentRunning && !isExporting && currentSessionPendingTranscriptions === 0;
 
   return (
     <main className={`app-shell ${panelCollapsed ? "panel-collapsed" : ""}`}>
@@ -1305,6 +1419,25 @@ function App() {
                 <div className="setup-heading compact-heading">
                   <span className="eyebrow">{selectedActor ?? "human"} session setup</span>
                   <h1>{selectedActor === "agent" ? "Timed Agent Drawing" : "Drawing + Think-aloud"}</h1>
+                </div>
+
+                <div className="field-grid two-column">
+                  <label>
+                    <span>Study ID</span>
+                    <input value={studyId} onChange={event => setStudyId(event.target.value)} placeholder="simeval-pilot" />
+                  </label>
+                  <label>
+                    <span>Condition ID</span>
+                    <input value={conditionId} onChange={event => setConditionId(event.target.value)} placeholder="baseline" />
+                  </label>
+                  <label>
+                    <span>Assignment ID (optional)</span>
+                    <input value={assignmentId} onChange={event => setAssignmentId(event.target.value)} placeholder="A001" />
+                  </label>
+                  <label>
+                    <span>Matched pair ID (optional)</span>
+                    <input value={matchedPairId} onChange={event => setMatchedPairId(event.target.value)} placeholder="pair-task1-seed2-01" />
+                  </label>
                 </div>
 
                 {selectedActor === "human" ? (
@@ -1379,7 +1512,7 @@ function App() {
                   <span>Instruction</span>
                   <p>{selectedTask.instruction}</p>
                 </div>
-                <button className="primary-button start-button" disabled={!api || (selectedActor === "human" && !participantId.trim())} onClick={startSession}>
+                <button className="primary-button start-button" disabled={!api || !studyId.trim() || !conditionId.trim() || (selectedActor === "human" && !participantId.trim())} onClick={startSession}>
                   Start {selectedActor} session
                 </button>
                 <p className="status-line">{message}</p>
@@ -1446,7 +1579,7 @@ function App() {
             {status === "completed" && (
               <div className="export-actions">
                 <button className="primary-button" disabled={!canExportSession} onClick={() => void exportSession()}>
-                  {!canExportSession ? "Waiting for session processing" : "Download session JSON + audio"}
+                  {!canExportSession ? "Waiting for session processing" : "Download session ZIP"}
                 </button>
                 {sessionMetadata?.actorType === "human" && <button disabled={audioChunksRef.current.length === 0} onClick={downloadAudio}>Download audio</button>}
               </div>

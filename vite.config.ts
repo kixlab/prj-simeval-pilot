@@ -1,17 +1,31 @@
 import { SpeechClient } from "@google-cloud/speech";
+import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 import { timedAgentDecisionSchema } from "./src/agent/timedAgentProtocol";
+import { agentPromptVersion } from "./src/data/versionInfo";
 
 const agentSystemPrompt = `You are an AI creative agent operating Excalidraw in a timed research session. Work as a reflective visual designer responding to the assigned task and the artifact's current visible state.
 
 You are not constrained to one tool call per decision. Return every tool call that is useful for the current coherent design move in toolCalls, in execution order. There is no fixed turn count and no artificial maximum number of tool calls or elements. Use the available time to generate, inspect, revise, simplify, replace, reorganize, and refine the artifact. Do not follow a fixed phase pipeline and do not add steps merely to consume time.
 
-Available tools are clear_canvas, create_scene, get_scene, add_elements, update_elements, delete_elements, move_elements, replace_scene, sketch_path, free_draw, and get_scene_summary. Use sketch_path for angular or geometric paths and free_draw for smooth, organic, expressive, or irregular strokes. For text inside a shape, prefer labelText and labelFontSize. Give visual elements task-specific semanticRole values. Use exact element IDs from the scene summary for updates, movement, and deletion. Avoid full-scene replacement for local revisions.
+Available tools are clear_canvas, create_scene, get_scene, add_elements, update_elements, delete_elements, move_elements, rotate_elements, bind_elements, replace_scene, sketch_path, free_draw, and get_scene_summary. rotate_elements accepts absolute clockwise angles in degrees. bind_elements connects an existing arrow's endpoints to existing shapes; pass null for an endpoint to unbind it. Use sketch_path for angular or geometric paths and free_draw for smooth, organic, expressive, or irregular strokes. For text inside a shape, prefer labelText and labelFontSize. Give visual elements task-specific semanticRole values. Use exact element IDs from the scene summary for updates, movement, rotation, binding, and deletion. Avoid full-scene replacement for local revisions.
 
 The request states elapsed and remaining time. Before the finalization window, never return status finish. Continue considering the artifact; if no meaningful edit is currently justified, return continue with an empty toolCalls array rather than inventing work. When finalizationWindow is true, stop broad exploration, inspect composition and task coverage, perform any necessary cleanup or final revision, and return status finish. You may include final cleanup tool calls in the same finish decision. If the artifact is already complete, finish without unnecessary calls.
 
 agentThought and decisionRationale are concise externally observable decision summaries, not private chain-of-thought. Ground them in visible artifact evidence. Return an empty array for unused tool argument fields and neutral values for fields that do not apply.`;
+
+const packageVersion = (JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8")) as { version: string }).version;
+const appCommit = (() => {
+  try {
+    return execFileSync("git", ["rev-parse", "--short=12", "HEAD"], { encoding: "utf8" }).trim();
+  } catch {
+    return "unknown";
+  }
+})();
+const agentPromptHash = createHash("sha256").update(agentSystemPrompt).digest("hex");
 
 function readRequestBody(request: import("node:http").IncomingMessage) {
   return new Promise<string>((resolve, reject) => {
@@ -62,6 +76,13 @@ export default defineConfig(({ mode }) => {
   const agentApiEnabled = env.ENABLE_AGENT_API === "true" || env.VITE_ENABLE_AGENT_MODE === "true";
 
   return {
+    define: {
+      "import.meta.env.VITE_APP_VERSION": JSON.stringify(packageVersion),
+      "import.meta.env.VITE_APP_COMMIT": JSON.stringify(appCommit),
+      "import.meta.env.VITE_AGENT_PROMPT_VERSION": JSON.stringify(agentPromptVersion),
+      "import.meta.env.VITE_AGENT_PROMPT_HASH": JSON.stringify(agentPromptHash),
+      "process.env.NODE_ENV": JSON.stringify(mode === "production" ? "production" : "development")
+    },
     plugins: [
       react(),
       {
@@ -235,9 +256,6 @@ export default defineConfig(({ mode }) => {
     ],
     server: {
       allowedHosts: ["internal.kixlab.org"]
-    },
-    define: {
-      "process.env.NODE_ENV": JSON.stringify(mode === "production" ? "production" : "development")
     }
   };
 });

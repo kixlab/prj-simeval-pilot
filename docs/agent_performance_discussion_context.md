@@ -111,6 +111,8 @@ Agent는 남은 시간이 30초보다 많을 때 `finish`를 요청해도 종료
 - `update_elements`
 - `delete_elements`
 - `move_elements`
+- `rotate_elements`
+- `bind_elements`
 - `replace_scene`
 - `sketch_path`
 - `free_draw`

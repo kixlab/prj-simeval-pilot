@@ -3,8 +3,9 @@ import type { CompactElementState, ElementMutationOperation } from "../data/sess
 
 const trackedProperties = [
   "x", "y", "width", "height", "angle", "text", "originalText", "points",
-  "strokeColor", "backgroundColor", "fillStyle", "strokeWidth", "strokeStyle", "opacity",
-  "startBinding", "endBinding", "isDeleted"
+  "strokeColor", "backgroundColor", "fillStyle", "strokeWidth", "strokeStyle", "roughness", "roundness", "opacity",
+  "fontSize", "fontFamily", "textAlign", "verticalAlign", "lineHeight", "startArrowhead", "endArrowhead",
+  "groupIds", "containerId", "frameId", "boundElements", "startBinding", "endBinding", "locked", "link", "isDeleted"
 ] as const;
 
 function copyValue<T>(value: T): T {
@@ -47,11 +48,24 @@ export function compactElement(element: ExcalidrawElement): CompactElementState 
     fillStyle: element.fillStyle,
     strokeWidth: element.strokeWidth,
     strokeStyle: element.strokeStyle,
+    roughness: element.roughness,
+    roundness: copyValue(element.roundness),
     opacity: element.opacity,
+    fontSize: typeof candidate.fontSize === "number" ? candidate.fontSize : null,
+    fontFamily: typeof candidate.fontFamily === "number" ? candidate.fontFamily : null,
+    textAlign: typeof candidate.textAlign === "string" ? candidate.textAlign : null,
+    verticalAlign: typeof candidate.verticalAlign === "string" ? candidate.verticalAlign : null,
+    lineHeight: typeof candidate.lineHeight === "number" ? candidate.lineHeight : null,
+    startArrowhead: typeof candidate.startArrowhead === "string" ? candidate.startArrowhead : null,
+    endArrowhead: typeof candidate.endArrowhead === "string" ? candidate.endArrowhead : null,
     groupIds: [...element.groupIds],
     containerId: typeof candidate.containerId === "string" ? candidate.containerId : null,
+    frameId: typeof candidate.frameId === "string" ? candidate.frameId : null,
+    boundElements: copyValue(candidate.boundElements ?? null),
     startBinding: copyValue(candidate.startBinding ?? null),
     endBinding: copyValue(candidate.endBinding ?? null),
+    locked: element.locked,
+    link: element.link,
     isDeleted: element.isDeleted
   };
 }
@@ -67,9 +81,14 @@ function operationFor(properties: string[]): ElementMutationOperation {
   if (properties.some(property => property === "width" || property === "height")) categories.add("resize");
   if (properties.includes("angle")) categories.add("rotate");
   if (properties.some(property => property === "text" || property === "originalText")) categories.add("change_text");
-  if (properties.some(property => ["strokeColor", "backgroundColor", "fillStyle", "strokeWidth", "strokeStyle", "opacity"].includes(property))) categories.add("change_style");
+  if (properties.some(property => [
+    "strokeColor", "backgroundColor", "fillStyle", "strokeWidth", "strokeStyle", "roughness", "roundness", "opacity",
+    "fontSize", "fontFamily", "textAlign", "verticalAlign", "lineHeight", "startArrowhead", "endArrowhead"
+  ].includes(property))) categories.add("change_style");
   if (properties.includes("points")) categories.add("change_points");
-  if (properties.some(property => property === "startBinding" || property === "endBinding")) categories.add("change_binding");
+  if (properties.some(property => ["containerId", "boundElements", "startBinding", "endBinding"].includes(property))) categories.add("change_binding");
+  if (properties.some(property => ["groupIds", "frameId", "locked", "link"].includes(property))) categories.add("out_of_scope_change");
+  if (categories.size === 0) return "unclassified_change";
   return categories.size === 1 ? [...categories][0] : "compound_change";
 }
 

@@ -419,7 +419,9 @@ export function checkSceneCompletion(summary: SceneSummary, userInstruction: str
 export function classifySceneSemanticLabel(label: string, toolName: string, hadValidationError: boolean): SemanticLabel {
   if (hadValidationError) return "execution_repair";
   if (toolName === "replace_scene" && label === "revision") return "artifact_restoration";
-  if (toolName === "update_elements" || toolName === "move_elements") return label === "revision" ? "creative_revision" : label;
+  if (["update_elements", "move_elements", "rotate_elements", "bind_elements"].includes(toolName)) {
+    return label === "revision" ? "creative_revision" : label;
+  }
   if (toolName === "delete_elements") return label === "idea_pruning" ? "idea_pruning" : "validation_cleanup";
   if (toolName === "sketch_path" || toolName === "free_draw") return "sketch_detailing";
   if (label === "revision") return "creative_revision";
