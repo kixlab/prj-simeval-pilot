@@ -29,7 +29,7 @@ ZIP 파일명은 participant ID, task, seed, 시작 시각, 짧은 session ID를
 
 `elementMutations[]`는 후처리 전 원본 시간 스트림입니다. element마다 별도 항목을 만들며, 같은 callback에서 감지된 변화는 같은 `onChangeBatchId`와 서로 다른 `batchSequence`를 가집니다. `actions[]`는 기존 호환성을 위한 700ms idle-flush 단위 요약이므로 원본 변화 순서 분석에는 `elementMutations[]`를 사용합니다.
 
-각 `actions[]` 항목은 `beforeSnapshotId`와 `afterSnapshotId`를 가집니다. `artifactDiff`에는 추가, 수정, 삭제된 object ID가 들어갑니다. Task 2에서 초기 제공 요소가 대상이면 해당 ID가 `seedElementImpacts`에도 기록됩니다.
+각 `actions[]` 항목은 `beforeSnapshotId`와 `afterSnapshotId`를 가집니다. `beforeSnapshotId`는 pending action이 처음 시작될 때 고정되므로 action 도중 periodic snapshot이 생성되어도 바뀌지 않습니다. `artifactDiff`에는 추가, 수정, 삭제된 object ID가 들어갑니다. Task 2에서 초기 제공 요소가 대상이면 해당 ID가 `seedElementImpacts`에도 기록됩니다.
 
 원본 scene을 보존하기 위해 snapshot은 full Excalidraw elements를 저장합니다. 분석 시에는 action의 compact diff를 먼저 읽고, 세부 시각 상태가 필요한 action에서만 연결된 snapshot을 로드하는 방식을 권장합니다.
 
