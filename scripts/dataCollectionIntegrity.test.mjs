@@ -56,12 +56,11 @@ const session = {
   participantId: "P 001",
   taskType: "free_creation",
   seedId: "daily_object",
-  study: { studyId: "pilot-1", conditionId: "move-link" },
   startedAt: "2026-07-22T12:34:56.789Z",
   sessionId: "drawing-free_creation-12345678-abcd1234"
 };
 const baseName = archiveModule.sessionArchiveBaseName(session);
-assert.match(baseName, /^simeval__study-pilot-1__condition-move-link__human-p-001__task-free_creation__seed-daily_object__20260722T123456Z__abcd1234$/);
+assert.match(baseName, /^simeval__participant-p-001__task-free_creation__seed-daily_object__20260722T123456Z__abcd1234$/);
 assert.equal(archiveModule.snapshotImageFileName({ sequence: 3, reason: "action", actionSequence: 2 }),
   "screenshots/snapshot-0003__action__action-0002.png");
 
@@ -78,6 +77,7 @@ const agentSource = readFileSync(new URL("../src/agent/timedAgent.ts", import.me
 assert.match(appSource, /screenshotPolicy: "initial_action_phase_final_no_periodic"/);
 assert.match(appSource, /outcomeEvaluationId/);
 assert.match(appSource, /buildRationaleRecords/);
+assert.doesNotMatch(appSource, /Study ID|Condition ID|Assignment ID|Matched pair ID|Primary input device/);
 assert.match(agentSource, /observationSnapshotId/);
 assert.match(agentSource, /requestDurationMs/);
 

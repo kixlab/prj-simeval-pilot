@@ -69,8 +69,6 @@ GOOGLE_STT_MODEL=latest_long
 | `OPENAI_MODEL` | No | `gpt-5.1-mini` | OpenAI model used for structured agent decisions. |
 | `VITE_ENABLE_AGENT_MODE` | No | `false` | Client-side build flag that shows the Human/Agent picker and starts agent sessions. |
 | `ENABLE_AGENT_API` | No | `false` | Server-side flag for the agent decision endpoint. |
-| `VITE_STUDY_ID` | No | `simeval-pilot` | Default study identifier shown in session setup. |
-| `VITE_CONDITION_ID` | No | `unassigned` | Default experimental condition identifier shown in session setup. |
 | `GOOGLE_APPLICATION_CREDENTIALS` | STT only | Google ADC lookup | Absolute path to a Google Cloud service-account JSON file. |
 | `GOOGLE_STT_LANGUAGE_CODE` | No | `ko-KR` | Primary recognition language. |
 | `GOOGLE_STT_ALTERNATIVE_LANGUAGE_CODES` | No | `en-US` | Comma-separated alternative recognition languages. |
@@ -125,7 +123,7 @@ Open-ended Interpretation seed elements carry stable seed metadata. Actions that
 
 ## Human sessions
 
-Human sessions require a participant ID and optionally record the declared primary input device. The application collects:
+Human sessions require only a participant ID. The application collects:
 
 - `elementMutations`: synchronous element/property-level changes from every eligible Excalidraw callback
 - `actions`: 700 ms idle-flush artifact summaries retained for backward compatibility
@@ -202,7 +200,7 @@ Manual browser calls and autonomous execution use the same instrumented Excalidr
 
 Completed sessions download one archive named like:
 
-`simeval__study-pilot__condition-baseline__human-p001__task-free_creation__seed-daily_object__20260722T123456Z__abcd1234.zip`
+`simeval__participant-p001__task-free_creation__seed-daily_object__20260722T123456Z__abcd1234.zip`
 
 The archive has a matching root directory containing `session.json`, `README.txt`, selected `screenshots/*.png`, and `audio/think-aloud.webm` when audio is available. Snapshot PNGs are rendered sequentially only during export; periodic snapshots remain scene JSON only to limit archive size.
 
@@ -270,7 +268,7 @@ npm run build
 
 ## Tablet and touch input
 
-The interface supports mouse, touch, and pen input without disabling Excalidraw's native interaction behavior. On narrow screens, the task panel moves above the canvas. The declared primary device and observed pointer modalities are stored separately.
+The interface supports mouse, touch, and pen input without disabling Excalidraw's native interaction behavior. On narrow screens, the task panel moves above the canvas. Observed pointer modalities are detected and stored automatically.
 
 ## Security and data handling
 

@@ -3,7 +3,6 @@ import type { TaskPhase, TaskType } from "./tasks";
 import type { ArtifactActionEntry } from "../logging/artifactActions";
 import type { AgentTrajectoryEntry } from "../agent/timedAgent";
 
-export type InputDevice = "mouse" | "touch" | "stylus" | "mixed" | "unknown";
 export type SessionActor = "human" | "agent";
 
 export type SessionMetadata = {
@@ -15,17 +14,10 @@ export type SessionMetadata = {
   seedId: string;
   seedLabel: string;
   seedSelection: "manual" | "random";
-  inputDevice: InputDevice;
   startedAt: string;
   endedAt: string | null;
   durationMs: number | null;
   completionReason: string | null;
-  study: {
-    studyId: string;
-    conditionId: string;
-    assignmentId: string | null;
-    matchedPairId: string | null;
-  };
   datasetIds: {
     artifactId: string;
     trajectoryId: string;

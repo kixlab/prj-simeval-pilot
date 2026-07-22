@@ -244,6 +244,10 @@ button:disabled {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.participant-field {
+  width: min(100%, 440px);
+}
+
 label > span,
 .seed-select > span,
 .post-task-field > span {
@@ -281,8 +285,9 @@ textarea {
 
 .task-option {
   display: grid;
-  grid-template-columns: 20px 32px minmax(0, 1fr);
+  grid-template-columns: 58px minmax(0, 1fr);
   align-items: center;
+  column-gap: 14px;
   min-height: 74px;
   padding: 12px;
   border: 1px solid #d1d4cf;
@@ -296,9 +301,23 @@ textarea {
   box-shadow: inset 3px 0 #1768ac;
 }
 
-.task-option input {
+.task-option > span {
+  margin-bottom: 0;
+}
+
+.task-choice-marker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.task-choice-marker input {
+  flex: 0 0 auto;
   width: 18px;
+  height: 18px;
   min-height: 18px;
+  padding: 0;
   margin: 0;
 }
 
@@ -306,6 +325,7 @@ textarea {
   color: #1768ac;
   font-size: 17px;
   font-weight: 750;
+  line-height: 1;
 }
 
 .task-option strong,
@@ -314,7 +334,7 @@ textarea {
   overflow-wrap: anywhere;
 }
 
-.task-option > span:last-child {
+.task-copy {
   min-width: 0;
 }
 
