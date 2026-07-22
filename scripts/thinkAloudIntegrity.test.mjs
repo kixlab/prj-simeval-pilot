@@ -167,12 +167,12 @@ validate("session-a", [failedChunk]);
 const exportSessionId = "session-a";
 const audioMetadata = {
   available: true,
-  fileName: `drawing-${exportSessionId}.webm`,
+  fileName: "audio/think-aloud.webm",
   mimeType: "audio/webm;codecs=opus",
   byteSize: 256,
   chunkCount: 2
 };
-assert.equal(audioMetadata.fileName, "drawing-session-a.webm");
+assert.equal(audioMetadata.fileName, "audio/think-aloud.webm");
 assert.equal(audioMetadata.chunkCount, 2);
 validate(exportSessionId, [
   buildChunk({ sessionId: exportSessionId, chunkIndex: 1, chunkStartedAtMs: 0, chunkEndedAtMs: 10000, phaseAtStart: "single_phase", phaseAtEnd: "single_phase" }),

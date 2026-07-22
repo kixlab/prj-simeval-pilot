@@ -2,7 +2,7 @@
 
 SimEval Drawing Pilot is an Excalidraw-based research application for collecting and comparing human and AI-agent creative drawing processes. Human and agent sessions use the same tasks, seeds, canvas, artifact-action schema, snapshots, and final export format while retaining actor-specific process traces.
 
-The application currently exports `simeval-drawing-session-v3` session JSON files. Human sessions can also export a complete WebM think-aloud recording.
+The application exports `simeval-drawing-session-v4` ZIP archives containing session JSON, selected snapshot PNGs, and optional WebM think-aloud audio.
 
 ## Features
 
@@ -16,7 +16,7 @@ The application currently exports `simeval-drawing-session-v3` session JSON file
 - Agent batch interruption and re-observation after a tool failure
 - Initial, periodic, action, phase-boundary, and final scene snapshots
 - Mouse, pen, and touch modality logging
-- Final Excalidraw scene, PNG data URL, session JSON, and optional raw audio export
+- Human-readable ZIP export with session JSON, selected snapshot PNGs, and optional raw audio
 
 ## Requirements
 
@@ -69,6 +69,8 @@ GOOGLE_STT_MODEL=latest_long
 | `OPENAI_MODEL` | No | `gpt-5.1-mini` | OpenAI model used for structured agent decisions. |
 | `VITE_ENABLE_AGENT_MODE` | No | `false` | Client-side build flag that shows the Human/Agent picker and starts agent sessions. |
 | `ENABLE_AGENT_API` | No | `false` | Server-side flag for the agent decision endpoint. |
+| `VITE_STUDY_ID` | No | `simeval-pilot` | Default study identifier shown in session setup. |
+| `VITE_CONDITION_ID` | No | `unassigned` | Default experimental condition identifier shown in session setup. |
 | `GOOGLE_APPLICATION_CREDENTIALS` | STT only | Google ADC lookup | Absolute path to a Google Cloud service-account JSON file. |
 | `GOOGLE_STT_LANGUAGE_CODE` | No | `ko-KR` | Primary recognition language. |
 | `GOOGLE_STT_ALTERNATIVE_LANGUAGE_CODES` | No | `en-US` | Comma-separated alternative recognition languages. |
@@ -87,7 +89,7 @@ VITE_ENABLE_AGENT_MODE=false
 ENABLE_AGENT_API=false
 ```
 
-The application opens directly in Human setup mode, and `/api/agent-decision` returns `403`. Drawing, logging, raw audio recording, and JSON export remain available without OpenAI credentials.
+The application opens directly in Human setup mode, and `/api/agent-decision` returns `403`. Drawing, logging, raw audio recording, and ZIP export remain available without OpenAI credentials.
 
 ### Agent research and development
 
@@ -198,12 +200,13 @@ Manual browser calls and autonomous execution use the same instrumented Excalidr
 
 ## Export format
 
-Completed sessions download:
+Completed sessions download one archive named like:
 
-- `drawing-{sessionId}.json`
-- `drawing-{sessionId}.webm` when human audio is available
+`simeval__study-pilot__condition-baseline__human-p001__task-free_creation__seed-daily_object__20260722T123456Z__abcd1234.zip`
 
-The JSON schema version is `simeval-drawing-session-v3`. Important top-level fields include:
+The archive has a matching root directory containing `session.json`, `README.txt`, selected `screenshots/*.png`, and `audio/think-aloud.webm` when audio is available. Snapshot PNGs are rendered sequentially only during export; periodic snapshots remain scene JSON only to limit archive size.
+
+The JSON schema version is `simeval-drawing-session-v4`. Important top-level fields include:
 
 - `session`
 - `task`
@@ -212,13 +215,15 @@ The JSON schema version is `simeval-drawing-session-v3`. Important top-level fie
 - `elementMutations`
 - `thinkAloudChunks`
 - `thinkAloudNotes`
+- `rationaleRecords`
 - `agentTrajectory`
 - `pointerModalities`
 - `snapshots`
+- `outcomeEvaluation`
 - `validationErrors`
 - `finalArtifact`
 
-Think-aloud chunks are sorted by sequence before export, and duplicate sequences are detected separately. Validation errors are stored in `validationErrors`; they do not block raw session JSON or audio downloads.
+Think-aloud chunks are sorted by sequence before export, and duplicate sequences are detected separately. Validation errors are stored in `validationErrors`; they do not block the ZIP download.
 
 See [docs/data-format.md](docs/data-format.md) for field-level behavior and [docs/agent_performance_discussion_context.md](docs/agent_performance_discussion_context.md) for the current agent architecture and research discussion context.
 
@@ -248,6 +253,7 @@ npm run dev                    # Start Vite on 0.0.0.0
 npm run typecheck              # Run TypeScript checks
 npm run test:think-aloud       # Validate audio/STT chunk integrity
 npm run test:element-mutations # Validate Human element mutation ordering
+npm run test:data-collection   # Validate ZIP, rationale timing, and collection metadata
 npm run test:agent-batch       # Validate sequential Agent batch failure handling
 npm run build                  # Typecheck and create the production bundle
 ```

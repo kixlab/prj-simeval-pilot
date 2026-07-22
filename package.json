@@ -9,12 +9,14 @@
     "typecheck": "tsc --noEmit",
     "test:think-aloud": "node scripts/thinkAloudIntegrity.test.mjs",
     "test:element-mutations": "node scripts/elementMutationIntegrity.test.mjs",
+    "test:data-collection": "node scripts/dataCollectionIntegrity.test.mjs",
     "test:agent-batch": "node scripts/agentBatchIntegrity.test.mjs",
     "test:agent-transforms": "node scripts/agentTransformIntegrity.test.mjs"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.17.0",
     "@google-cloud/speech": "^7.5.0",
+    "fflate": "^0.8.3",
     "react": "^18.3.0",
     "react-dom": "^18.3.0"
   },

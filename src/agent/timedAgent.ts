@@ -5,6 +5,7 @@ import { setAgentToolExecutionContext } from "../logging/artifactActions";
 
 export type AgentTrajectoryEntry = {
   eventId: string;
+  sessionId: string;
   timestamp: string;
   elapsedMs: number;
   remainingMs: number;
@@ -19,6 +20,11 @@ export type AgentTrajectoryEntry = {
   toolCallIndex?: number;
   toolCallCount?: number;
   toolExecutionId?: string;
+  observationId?: string;
+  observationSnapshotId?: string;
+  observationImageFileName?: string;
+  observedAtMs?: number;
+  requestDurationMs?: number;
   executionStatus?: "success" | "failed" | "skipped";
   startedAtMs?: number;
   endedAtMs?: number;
@@ -144,17 +150,24 @@ async function requestDecision({
 }
 
 export async function runTimedAgent({
+  sessionId,
   tools,
   getInstruction,
-  captureScreenshot,
+  captureObservation,
   timeBudgetMs = 300_000,
   finalizationWindowMs = 30_000,
   signal,
   onLog
 }: {
+  sessionId: string;
   tools: AgentTools;
   getInstruction: () => string;
-  captureScreenshot: () => Promise<string | undefined>;
+  captureObservation: (decisionNumber: number) => Promise<{
+    observationId: string;
+    snapshotId: string;
+    screenshotDataUrl?: string;
+    observedAtMs: number;
+  }>;
   timeBudgetMs?: number;
   finalizationWindowMs?: number;
   signal: AbortSignal;
@@ -165,10 +178,11 @@ export async function runTimedAgent({
   const trajectory: AgentTrajectoryEntry[] = [];
   let decisionNumber = 0;
 
-  const append = (entry: Omit<AgentTrajectoryEntry, "eventId" | "timestamp">) => {
+  const append = (entry: Omit<AgentTrajectoryEntry, "eventId" | "sessionId" | "timestamp">) => {
     const complete: AgentTrajectoryEntry = {
       ...entry,
-      eventId: `agent-trajectory:${trajectory.length + 1}`,
+      eventId: `${sessionId}:agent-trajectory:${trajectory.length + 1}`,
+      sessionId,
       timestamp: new Date().toISOString()
     };
     trajectory.push(complete);
@@ -181,9 +195,11 @@ export async function runTimedAgent({
     const remainingMs = Math.max(0, Math.round(deadline - performance.now()));
     const summary = tools.get_scene_summary({}).sceneSummaryAfter;
     if (!summary) throw new Error("Canvas summary is unavailable.");
+    let observation: Awaited<ReturnType<typeof captureObservation>> | undefined;
 
     try {
-      const screenshotDataUrl = await captureScreenshot();
+      observation = await captureObservation(decisionNumber);
+      const decisionRequestedAtMs = Math.round(performance.now() - startedAt);
       const requestController = new AbortController();
       const abortRequest = () => requestController.abort();
       signal.addEventListener("abort", abortRequest, { once: true });
@@ -191,7 +207,7 @@ export async function runTimedAgent({
       const { decision, model } = await requestDecision({
         instruction: getInstruction(),
         sceneSummary: summary,
-        screenshotDataUrl,
+        screenshotDataUrl: observation.screenshotDataUrl,
         recentTrajectory: trajectory,
         elapsedMs,
         remainingMs,
@@ -200,9 +216,10 @@ export async function runTimedAgent({
       });
       window.clearTimeout(timeout);
       signal.removeEventListener("abort", abortRequest);
+      const decisionReceivedAtMs = Math.round(performance.now() - startedAt);
 
       append({
-        elapsedMs,
+        elapsedMs: decisionReceivedAtMs,
         remainingMs,
         decision: decisionNumber,
         decisionNumber,
@@ -211,6 +228,13 @@ export async function runTimedAgent({
         agentThought: decision.agentThought,
         decisionRationale: decision.decisionRationale,
         semanticLabel: decision.semanticLabel,
+        observationId: observation.observationId,
+        observationSnapshotId: observation.snapshotId,
+        observedAtMs: observation.observedAtMs,
+        startedAtMs: decisionRequestedAtMs,
+        endedAtMs: decisionReceivedAtMs,
+        durationMs: Math.max(0, decisionReceivedAtMs - decisionRequestedAtMs),
+        requestDurationMs: Math.max(0, decisionReceivedAtMs - decisionRequestedAtMs),
         success: true,
         message: `${decision.toolCalls.length} tool call(s) planned`
       });
@@ -340,6 +364,9 @@ export async function runTimedAgent({
         remainingMs: Math.max(0, Math.round(deadline - performance.now())),
         decision: decisionNumber,
         kind: aborted ? "finish" : "error",
+        observationId: observation?.observationId,
+        observationSnapshotId: observation?.snapshotId,
+        observedAtMs: observation?.observedAtMs,
         success: aborted,
         message: aborted ? "Time budget ended; current artifact was finalized." : error instanceof Error ? error.message : String(error)
       });
