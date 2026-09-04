@@ -6,6 +6,7 @@ import { isAbsolute } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 import { audraTaskPlugin } from "./src/audra/server/plugin";
+import { taskItemsPlugin } from "./src/tasks/server/plugin";
 import { timedAgentDecisionSchema } from "./src/agent/timedAgentProtocol";
 import { agentPromptVersion } from "./src/data/versionInfo";
 
@@ -109,6 +110,8 @@ export default defineConfig(({ mode }) => {
       react(),
       // Incomplete-shapes task API. Independent of the Excalidraw session endpoints.
       audraTaskPlugin({ appVersion: packageVersion, appCommit }),
+      // Read-only item endpoints for the two text tasks. Participant views only.
+      taskItemsPlugin(),
       {
         name: "simeval-google-stt",
         configureServer(server) {

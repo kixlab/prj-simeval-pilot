@@ -1,0 +1,29 @@
+{
+  "itemId": "mg-dev-fixture-01",
+  "source": "development",
+  "problem": "A framed photograph has to hang on the wall tonight, but the picture hook that came with it is missing and no shops are open.",
+  "objects": [
+    "a metal coat hanger",
+    "a roll of duct tape",
+    "a pair of pliers",
+    "a wooden ruler",
+    "a box of paper clips"
+  ],
+  "constraints": [
+    "Nothing may be nailed or screwed into the wall.",
+    "The photograph must stay level and stay up overnight."
+  ],
+  "answerKey": {
+    "solvability": "solvable",
+    "solutionType": "unconventional",
+    "goldSolution": [
+      "Cut a straight length from the coat hanger with the pliers.",
+      "Bend one end into a flat hook that matches the width of the frame's backing.",
+      "Tape the long side of the hook flat to the wall with several crossed strips of duct tape, spreading the load.",
+      "Rest the frame's wire on the hook and adjust until the ruler shows it level."
+    ],
+    "unsolvableJustification": null
+  },
+  "datasetRef": null,
+  "notes": "Development fixture written for interface work. Not a MacGyver benchmark item and not valid for data collection."
+}

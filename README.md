@@ -43,6 +43,32 @@ http://localhost:5173
 
 Vite reads `.env.local` when the server starts. Restart `npm run dev` after changing environment variables.
 
+### Entry point and modes
+
+`http://localhost:5173/` opens the task launcher: the participant chooses one
+of the three creativity tasks and is sent to that task's own screen. Each task
+is a separate mode with its own page, selected by `?mode=` (an equivalent path
+segment works too):
+
+| Mode | Screen |
+| --- | --- |
+| *(none)* or `launcher` | Task launcher |
+| `audra-incomplete-shapes` | AuDrA-style incomplete-shapes drawing task |
+| `macgyver-problem-solving` | Description page — the task is not built yet |
+| `cs4-creative-writing` | Description page — the task is not built yet |
+| `excalidraw-session` | The earlier Excalidraw session app described below |
+
+Tasks are declared in `src/tasks/catalog.ts` and routed by `src/tasks/routing.ts`.
+See [docs/task-launcher.md](docs/task-launcher.md). `?mode=audra-incomplete-shapes`
+is unchanged, including the host URL that `/api/audra/trial` issues for agent runs.
+
+Items for the two text tasks are data rather than code: add a JSON file under
+`data/tasks/<task>/items/` and name it in that task's `manifest.json`. CS4 runs
+three rounds in one session — 7, then 15, then 23 constraints. The files are not
+served, and `/api/tasks/:taskId/items` returns only what a solver may see: no
+MacGyver answer key, and no CS4 constraint from a round the participant has not
+reached. See [docs/task-items.md](docs/task-items.md) and `data/tasks/README.md`.
+
 > Free Draw + Text feasibility experiment: this branch enables Agent mode and `/api/agent-decision` directly in code. Both Human and Agent operations are restricted to free drawing and text creation. The two enable flags below are retained only for configuration compatibility.
 
 ## Environment configuration
@@ -254,6 +280,8 @@ Both API routes currently live in Vite development middleware. A static `dist/` 
 ```bash
 npm run dev                    # Start Vite on 0.0.0.0
 npm run typecheck              # Run TypeScript checks
+npm run test:task-launcher     # Validate the task catalog and mode routing
+npm run test:task-items        # Validate text-task item files, manifests, and what a solver may see
 npm run test:think-aloud       # Validate audio/STT chunk integrity
 npm run test:element-mutations # Validate Human element mutation ordering
 npm run test:data-collection   # Validate ZIP, rationale timing, and collection metadata
@@ -264,6 +292,8 @@ npm run build                  # Typecheck and create the production bundle
 Recommended pre-commit verification:
 
 ```bash
+npm run test:task-launcher
+npm run test:task-items
 npm run test:think-aloud
 npm run test:element-mutations
 npm run test:agent-batch

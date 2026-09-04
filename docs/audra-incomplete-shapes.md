@@ -19,9 +19,11 @@ npm run dev
 open 'http://localhost:5173/?mode=audra-incomplete-shapes'
 ```
 
-Anything other than `mode=audra-incomplete-shapes` loads the existing
-Excalidraw session app unchanged. The two modes share no canvas, toolbar, or
-scene state.
+`/` without a mode opens the task launcher, from which a participant picks
+this task; `?mode=audra-incomplete-shapes` remains the direct link and is what
+the agent host URL uses. The Excalidraw session app now lives at
+`?mode=excalidraw-session`. Every mode is a separate page and shares no canvas,
+toolbar, or scene state with the others. See [task-launcher.md](task-launcher.md).
 
 ## Architecture of the shared action reducer
 

@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-dev-fixture-01",
+  "source": "development",
+  "instruction": "Write a 500-word realistic story about a ferry worker who is asked for a crossing that no longer exists.",
+  "baseStory": "Mira had run the ferry counter at the harbour for eleven years, and she knew every regular by the sound of their footsteps on the wet boards. The winter timetable had just come into force, which meant four crossings a day instead of nine, and the queue that morning was three people long. One of them was a stranger with a canvas bag and a ticket for a village that the ferry no longer served. Mira explained the change twice. The stranger listened, nodded, and then asked whether anyone in the harbour still kept a boat. It was the sort of question that used to have an easy answer. Mira thought of her brother's skiff under its tarpaulin, of the engine she had not started since the funeral, and of the long grey water between here and the far shore. She told the stranger to come back at four. Then she closed the counter early, walked down to the slip, and pulled the tarpaulin back to see what eleven years of weather had done.",
+  "constraints": [
+    "The story is told in the third person, past tense.",
+    "The whole story takes place within a single day.",
+    "The harbour setting is never named directly.",
+    "Mira speaks fewer than fifty words of dialogue in total.",
+    "The stranger's destination is mentioned at least twice.",
+    "The weather changes at least once during the story.",
+    "The story ends without the crossing being completed.",
+    "A second named character appears before the halfway point.",
+    "The brother is referred to only through objects he left behind.",
+    "One paragraph is written entirely as a list of sounds.",
+    "The word 'water' appears no more than three times.",
+    "A radio broadcast interrupts a conversation.",
+    "Mira refuses an offer of payment.",
+    "The engine fails at least once before it starts.",
+    "The story includes a memory of a summer crossing.",
+    "The stranger carries something they will not explain.",
+    "A child watches from the slip without speaking.",
+    "The timetable is quoted verbatim at least once.",
+    "Someone lies about the tide.",
+    "The final paragraph contains exactly two sentences.",
+    "A gull appears at the beginning and again at the end.",
+    "The story mentions a price that has not changed in years.",
+    "The last line is spoken aloud by the stranger."
+  ],
+  "datasetRef": null,
+  "notes": "Development fixture written for interface work. Not a CS4 benchmark instance and not valid for data collection."
+}
