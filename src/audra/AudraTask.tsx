@@ -342,97 +342,111 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
     <div className="audra-shell">
       <section className="audra-stage">
         <p className="audra-instruction-banner">{taskInstruction}</p>
-        <div className="audra-canvas-frame">
-          <canvas
-            ref={canvasRef}
-            className={`audra-canvas audra-canvas--${tool}`}
-            style={{ touchAction: "none" }}
-            onPointerDown={onPointerDown}
-            onPointerMove={onPointerMove}
-            onPointerUp={endStroke}
-            onPointerCancel={endStroke}
-            onContextMenu={event => event.preventDefault()}
-          />
-          {backgroundError && <p className="audra-error">Starter image failed to load: {backgroundError}</p>}
-        </div>
-
-        <div className="audra-toolbar" role="toolbar" aria-label="Drawing tools">
-          <button
-            className={tool === "pencil" ? "audra-tool audra-tool--active" : "audra-tool"}
-            aria-pressed={tool === "pencil"}
-            onClick={() => setTool("pencil")}
-          >
-            Pencil
-          </button>
-          <button
-            className={tool === "eraser" ? "audra-tool audra-tool--active" : "audra-tool"}
-            aria-pressed={tool === "eraser"}
-            onClick={() => setTool("eraser")}
-          >
-            Eraser
-          </button>
-          <button className="audra-tool" onClick={onUndo} disabled={!trial.canUndo}>
-            Undo Last
-          </button>
-          {thinkAloud.isRecording && (
-            <span className="audra-recording" role="status">
-              ● recording
-              <span className="audra-meter" aria-hidden="true">
-                <span
-                  className="audra-meter-fill"
-                  style={{ width: `${Math.min(100, Math.round(thinkAloud.inputLevel * 300))}%` }}
-                />
-              </span>
-            </span>
-          )}
-        </div>
-
-        {thinkAloud.isRecording && thinkAloud.noInputSignal && (
-          // MediaRecorder produces valid audio from a dead microphone, so a
-          // silent input would otherwise be invisible until the data is analysed.
-          <p className="audra-warning" role="alert">
-            No sound is reaching the microphone. Check that the browser is allowed to use it in
-            your system settings and that the right input device is selected. You can keep
-            drawing — the drawing is recorded either way.
-          </p>
-        )}
-
-        <label className="audra-description">
-          <span>{descriptionPrompt}</span>
-          <input
-            type="text"
-            value={descriptionDraft}
-            maxLength={maxDescriptionLength}
-            onChange={event => setDescriptionDraft(event.target.value)}
-            onBlur={event => commitDescription(event.target.value)}
-            disabled={phase === "confirming"}
-          />
-        </label>
-
-        {notice && <p className="audra-notice">{notice}</p>}
-
-        {phase === "confirming" ? (
-          <div className="audra-confirm">
-            <p>Submit this drawing? It cannot be changed afterwards.</p>
-            <div className="audra-confirm-actions">
-              <button className="audra-primary" onClick={() => void confirmSubmit()}>
-                Yes, submit
-              </button>
-              <button className="audra-tool" onClick={() => setPhase("drawing")}>
-                Keep drawing
-              </button>
-            </div>
+        {/* Canvas and controls are one row on wide screens and stack on narrow
+            ones. The artboard is square, so on a short, wide window a stacked
+            layout would shrink the drawing surface to fit the controls under
+            it. */}
+        <div className="audra-workspace">
+          <div className="audra-canvas-frame">
+            <canvas
+              ref={canvasRef}
+              className={`audra-canvas audra-canvas--${tool}`}
+              style={{ touchAction: "none" }}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={endStroke}
+              onPointerCancel={endStroke}
+              onContextMenu={event => event.preventDefault()}
+            />
+            {backgroundError && (
+              <p className="audra-error">Starter image failed to load: {backgroundError}</p>
+            )}
           </div>
-        ) : (
-          <button className="audra-primary" onClick={requestSubmit} disabled={!trial.hasDrawingAttempt}>
-            Submit
-          </button>
-        )}
 
-        <p className="audra-meta">
-          Artboard {canonicalArtboard.width}x{canonicalArtboard.height} · stimulus {stimulus.stimulusId} (
-          {stimulus.source})
-        </p>
+          <div className="audra-controls">
+            <div className="audra-toolbar" role="toolbar" aria-label="Drawing tools">
+              <button
+                className={tool === "pencil" ? "audra-tool audra-tool--active" : "audra-tool"}
+                aria-pressed={tool === "pencil"}
+                onClick={() => setTool("pencil")}
+              >
+                Pencil
+              </button>
+              <button
+                className={tool === "eraser" ? "audra-tool audra-tool--active" : "audra-tool"}
+                aria-pressed={tool === "eraser"}
+                onClick={() => setTool("eraser")}
+              >
+                Eraser
+              </button>
+              <button className="audra-tool" onClick={onUndo} disabled={!trial.canUndo}>
+                Undo Last
+              </button>
+              {thinkAloud.isRecording && (
+                <span className="audra-recording" role="status">
+                  ● recording
+                  <span className="audra-meter" aria-hidden="true">
+                    <span
+                      className="audra-meter-fill"
+                      style={{ width: `${Math.min(100, Math.round(thinkAloud.inputLevel * 300))}%` }}
+                    />
+                  </span>
+                </span>
+              )}
+            </div>
+
+            {thinkAloud.isRecording && thinkAloud.noInputSignal && (
+              // MediaRecorder produces valid audio from a dead microphone, so a
+              // silent input would otherwise be invisible until the data is analysed.
+              <p className="audra-warning" role="alert">
+                No sound is reaching the microphone. Check that the browser is allowed to use it
+                in your system settings and that the right input device is selected. You can keep
+                drawing — the drawing is recorded either way.
+              </p>
+            )}
+
+            <label className="audra-description">
+              <span>{descriptionPrompt}</span>
+              <input
+                type="text"
+                value={descriptionDraft}
+                maxLength={maxDescriptionLength}
+                onChange={event => setDescriptionDraft(event.target.value)}
+                onBlur={event => commitDescription(event.target.value)}
+                disabled={phase === "confirming"}
+              />
+            </label>
+
+            {notice && <p className="audra-notice">{notice}</p>}
+
+            {phase === "confirming" ? (
+              <div className="audra-confirm">
+                <p>Submit this drawing? It cannot be changed afterwards.</p>
+                <div className="audra-confirm-actions">
+                  <button className="audra-primary" onClick={() => void confirmSubmit()}>
+                    Yes, submit
+                  </button>
+                  <button className="audra-tool" onClick={() => setPhase("drawing")}>
+                    Keep drawing
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                className="audra-primary"
+                onClick={requestSubmit}
+                disabled={!trial.hasDrawingAttempt}
+              >
+                Submit
+              </button>
+            )}
+
+            <p className="audra-meta">
+              Artboard {canonicalArtboard.width}x{canonicalArtboard.height} · stimulus{" "}
+              {stimulus.stimulusId} ({stimulus.source})
+            </p>
+          </div>
+        </div>
       </section>
     </div>
   );

@@ -2,11 +2,17 @@
    chrome beyond the instruction, the artboard, and the four allowed controls. */
 
 .audra-shell {
-  min-height: 100vh;
+  /* #root clips its overflow, so the shell scrolls itself rather than letting
+     a tall trial screen cut off the toolbar and the submit button. `safe`
+     keeps the top reachable when the content is taller than the viewport,
+     which plain centering would push out of scroll range. */
+  height: 100%;
+  min-height: 100%;
+  overflow-y: auto;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
+  align-items: safe center;
+  justify-content: safe center;
+  padding: 20px;
   background: #f4f4f2;
   color: #1a1a1a;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -77,8 +83,69 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  width: min(100%, 720px);
+  gap: 12px;
+  width: min(100%, 1120px);
+  /* Space the layout must leave for everything that is not the canvas.
+     Declared here, not on the workspace, because the agent host page uses the
+     same stage and canvas frame without a workspace wrapper. */
+  /* shell padding + instruction banner + the gap above the canvas */
+  --audra-canvas-chrome: 116px;
+  /* the above plus toolbar, description, submit, and meta, when stacked */
+  --audra-stacked-chrome: 292px;
+}
+
+/* Canvas beside its controls. The artboard is square, so its height follows
+   its width: on a wide, short window a single column would have to shrink the
+   drawing surface to make room for the controls underneath. The two numbers
+   below are the space the layout has to leave for everything that is not the
+   canvas. */
+.audra-workspace {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+}
+
+.audra-canvas-frame {
+  flex: 0 1 auto;
+  max-width: 100%;
+  width: clamp(240px, calc(100vh - var(--audra-canvas-chrome)), 720px);
+  width: clamp(240px, calc(100dvh - var(--audra-canvas-chrome)), 720px);
+}
+
+.audra-controls {
+  flex: 1 1 260px;
+  max-width: 340px;
+  /* Centred against the canvas so the two columns read as one block rather
+     than leaving the controls stranded at the top of a tall empty column. */
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* Stack on a narrow window, and on any window taller than it is wide: there a
+   full-width canvas beats a side column, because height is what the square
+   artboard is short of. */
+@media (max-width: 700px), (max-aspect-ratio: 5/4) {
+  .audra-workspace {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .audra-workspace .audra-canvas-frame {
+    width: clamp(240px, min(100%, calc(100vh - var(--audra-stacked-chrome))), 720px);
+    width: clamp(240px, min(100%, calc(100dvh - var(--audra-stacked-chrome))), 720px);
+  }
+
+  .audra-controls {
+    width: 100%;
+    max-width: 720px;
+    align-self: auto;
+    align-items: center;
+  }
 }
 
 .audra-instruction-banner {
@@ -86,10 +153,6 @@
   font-size: 16px;
   text-align: center;
   line-height: 1.4;
-}
-
-.audra-canvas-frame {
-  width: 100%;
 }
 
 .audra-canvas {
@@ -106,6 +169,8 @@
 
 .audra-toolbar {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
 }
 
@@ -134,10 +199,14 @@
   width: 100%;
 }
 
+.audra-controls .audra-primary {
+  width: 100%;
+}
+
 .audra-description span {
   display: block;
   font-size: 14px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .audra-primary {
