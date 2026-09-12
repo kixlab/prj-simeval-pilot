@@ -1,0 +1,279 @@
+/* Scoped to the macgyver-problem-solving mode: the problem, a judgement, and a
+   plain note area - nothing that shapes how the answer is written. */
+
+.mg-shell {
+  height: 100%;
+  min-height: 100%;
+  overflow-y: auto;
+  display: flex;
+  align-items: safe center;
+  justify-content: safe center;
+  padding: 20px;
+  background: #f4f4f2;
+  color: #1a1a1a;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-sizing: border-box;
+}
+
+.mg-card {
+  max-width: 560px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.mg-card h1 {
+  margin: 0 0 16px;
+  font-size: 22px;
+}
+
+.mg-list {
+  margin: 0 0 20px;
+  padding-left: 20px;
+  line-height: 1.7;
+  color: #444;
+}
+
+.mg-field {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.mg-field span {
+  display: block;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.mg-field input,
+.mg-field select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 11px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  font-family: inherit;
+  background: #fff;
+}
+
+.mg-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(100%, 860px);
+}
+
+.mg-problem {
+  background: #ffffff;
+  border: 1px solid #d4d4d0;
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+.mg-problem h2 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+.mg-problem p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.mg-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.mg-timer {
+  padding: 7px 12px;
+  border-radius: 6px;
+  background: #f0f4f8;
+  color: #2d3a48;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mg-timer strong {
+  font-size: 18px;
+}
+
+.mg-timer--final {
+  background: #fdf0e6;
+  color: #8a4b1f;
+}
+
+.mg-recording {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  color: #a13b2c;
+}
+
+.mg-meter {
+  display: inline-block;
+  width: 54px;
+  height: 6px;
+  margin-left: 8px;
+  border-radius: 3px;
+  background: #e2e2de;
+  overflow: hidden;
+}
+
+.mg-meter-fill {
+  display: block;
+  height: 100%;
+  background: #2f7d4f;
+  transition: width 90ms linear;
+}
+
+.mg-judgement {
+  margin: 0;
+  border: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 15px;
+}
+
+.mg-judgement legend {
+  width: 100%;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #444;
+}
+
+.mg-judgement label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.mg-memo span {
+  display: block;
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+/* A notepad: plain text, generous height, nothing that suggests a format. */
+.mg-memo textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: max(260px, 42vh);
+  resize: vertical;
+  padding: 14px 16px;
+  border: 1px solid #d4d4d0;
+  border-radius: 6px;
+  background: #fffef9;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1a1a1a;
+}
+
+.mg-memo textarea:focus {
+  outline: 2px solid #9db4cf;
+  outline-offset: 1px;
+}
+
+.mg-memo textarea[readonly] {
+  background: #f7f7f4;
+}
+
+.mg-primary {
+  align-self: flex-start;
+  padding: 11px 26px;
+  border: none;
+  border-radius: 6px;
+  background: #1a1a1a;
+  color: #ffffff;
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.mg-primary:disabled {
+  background: #b5b5b1;
+  cursor: not-allowed;
+}
+
+.mg-secondary {
+  padding: 11px 20px;
+  border: 1px solid #c8c8c4;
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.mg-confirm {
+  background: #ffffff;
+  border: 1px solid #d4d4d0;
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+.mg-confirm p {
+  margin: 0 0 12px;
+}
+
+.mg-confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.mg-notice,
+.mg-error {
+  margin: 0;
+  color: #a13b2c;
+  font-size: 14px;
+}
+
+.mg-warning {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #fdf0e6;
+  border: 1px solid #e6c9a8;
+  color: #8a4b1f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.mg-consent {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #555;
+  background: #f0f4f8;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin: 0 0 20px;
+}
+
+.mg-dev-notice {
+  font-size: 13px;
+  color: #8a6d1f;
+  background: #fdf6e3;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 0 0 20px;
+}
+
+.mg-meta {
+  margin: 0;
+  font-size: 12px;
+  color: #8a8a86;
+}

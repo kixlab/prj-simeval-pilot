@@ -19,6 +19,7 @@
     "test:audra-driver": "node scripts/audraDriverParserIntegrity.test.mjs",
     "test:agent-strategies": "node scripts/agentStrategyIntegrity.test.mjs",
     "test:text-tasks": "node scripts/textTaskEngineIntegrity.test.mjs",
+    "test:human-text": "node scripts/humanTextIntegrity.test.mjs",
     "cs4:import": "node scripts/importCs4.mjs",
     "agent:run": "node scripts/agentDriver.mjs",
     "agent:sweep": "node scripts/agentSweep.mjs",

@@ -54,7 +54,7 @@ segment works too):
 | --- | --- |
 | *(none)* or `launcher` | Task launcher |
 | `audra-incomplete-shapes` | AuDrA-style incomplete-shapes drawing task |
-| `macgyver-problem-solving` | Description page — the task is not built yet |
+| `macgyver-problem-solving` | Problem-solving task: the problem, a judgement, and a notepad answer ([docs/macgyver-task.md](docs/macgyver-task.md)) |
 | `cs4-creative-writing` | Description page — the task is not built yet |
 | `excalidraw-session` | The earlier Excalidraw session app described below |
 

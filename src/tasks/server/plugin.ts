@@ -15,6 +15,9 @@ import { participantView as cs4View, cs4Rounds } from "../cs4/item";
 import { cs4RevisionEngine } from "../cs4/revision";
 import { macgyverAnswerEngine } from "../macgyver/answer";
 import { participantView as macgyverView } from "../macgyver/item";
+import type { ThinkAloudChunk } from "../../audra/thinkAloud";
+import type { HumanMacGyverEvent } from "../macgyver/humanAnswer";
+import { writeHumanMacGyverBundle } from "./humanExport";
 import { directoryForTask, loadCs4Instances, loadMacGyverItems } from "./itemStore";
 import { writeTextBundle } from "./textExport";
 
@@ -46,7 +49,8 @@ export type TaskItemsPluginOptions = { appVersion?: string; appCommit?: string; 
 
 type AgentContext = { projectRoot: string; exportDir: string; appVersion: string; appCommit: string };
 
-const maxBodyBytes = 2 * 1024 * 1024;
+// A human export carries the think-aloud audio.
+const maxBodyBytes = 24 * 1024 * 1024;
 
 export function taskItemsPlugin(options: TaskItemsPluginOptions = {}): Plugin {
   return {
@@ -71,6 +75,7 @@ export function taskItemsPlugin(options: TaskItemsPluginOptions = {}): Plugin {
 
         try {
           if (collection === "agent") return await handleAgent(request, response, url, taskId, rest.join("/"), context);
+          if (collection === "human") return await handleHuman(request, response, taskId, rest.join("/"), context);
           if (request.method !== "GET") return send(response, 405, { ok: false, error: "GET only." });
           if (collection !== "items") {
             return send(response, 404, { ok: false, error: `Unknown endpoint: ${url.pathname}` });
@@ -258,6 +263,61 @@ async function handleAgent(
   }
 
   return send(response, 404, { ok: false, error: `Unknown agent endpoint: ${route}` });
+}
+
+/**
+ * POST /api/tasks/:taskId/human/export - a participant's trial. The log is
+ * replayed before anything is written, as on the drawing task.
+ */
+async function handleHuman(
+  request: IncomingMessage,
+  response: ServerResponse,
+  taskId: string,
+  route: string,
+  context: AgentContext
+) {
+  if (route !== "export" || request.method !== "POST") {
+    return send(response, 404, { ok: false, error: `Unknown endpoint: human/${route}` });
+  }
+  if (taskId !== "macgyver-problem-solving") {
+    return send(response, 404, { ok: false, error: `No participant screen exports ${taskId} yet.` });
+  }
+  const body = await readJson(request);
+  for (const field of ["sessionId", "trialId", "itemId", "actorId", "startedAt", "endedAt"]) {
+    if (typeof body[field] !== "string" || !body[field]) return send(response, 400, { ok: false, error: `${field} is required.` });
+  }
+  if (!Array.isArray(body.events)) return send(response, 400, { ok: false, error: "events must be an array." });
+  const item = loadMacGyverItems(context.projectRoot).items.find(candidate => candidate.itemId === body.itemId);
+  if (!item) return send(response, 400, { ok: false, error: `Unknown item: ${String(body.itemId)}` });
+
+  try {
+    const result = writeHumanMacGyverBundle(
+      {
+        sessionId: body.sessionId as string,
+        trialId: body.trialId as string,
+        itemId: item.itemId,
+        itemSource: item.source,
+        actorId: body.actorId as string,
+        events: body.events as HumanMacGyverEvent[],
+        finalText: typeof body.finalText === "string" ? body.finalText : null,
+        startedAt: body.startedAt as string,
+        endedAt: body.endedAt as string,
+        protocol:
+          body.protocol && typeof body.protocol === "object" && !Array.isArray(body.protocol)
+            ? (body.protocol as Record<string, unknown>)
+            : null,
+        thinkAloud: Array.isArray(body.thinkAloud) ? (body.thinkAloud as ThinkAloudChunk[]) : [],
+        audioBase64: typeof body.audioBase64 === "string" ? body.audioBase64 : null
+      },
+      context
+    );
+    return send(response, 200, { ok: true, ...result });
+  } catch (error) {
+    return send(response, 400, {
+      ok: false,
+      error: `The posted log could not be replayed: ${error instanceof Error ? error.message : String(error)}`
+    });
+  }
 }
 
 function requireTrial(trialId: string | null, taskId: string, response: ServerResponse): TextTrialRecord | null {

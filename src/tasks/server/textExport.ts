@@ -23,16 +23,24 @@ export type TextExportContext = {
   protocol?: Record<string, unknown> | null;
 };
 
-export function textBundleBaseName(record: TextTrialRecord, startedAt: string) {
+/** One naming scheme for every text-task bundle, human or agent. */
+export function bundleBaseNameFor(
+  parts: { taskId: string; actorType: "human" | "agent"; actorId: string; itemId: string; trialId: string },
+  startedAt: string
+) {
   const safe = (value: string) => value.replace(/[^\p{L}\p{N}_-]+/gu, "-").replace(/^-+|-+$/g, "") || "unknown";
   const stamp = startedAt.replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
   return [
-    shortTaskName[record.taskId] ?? safe(record.taskId),
-    `agent-${safe(record.actorId)}`,
-    `item-${safe(record.itemId)}`,
+    shortTaskName[parts.taskId] ?? safe(parts.taskId),
+    `${parts.actorType}-${safe(parts.actorId)}`,
+    `item-${safe(parts.itemId)}`,
     stamp,
-    record.trialId.split("-").at(-1) ?? "trial"
+    parts.trialId.split("-").at(-1) ?? "trial"
   ].join("__");
+}
+
+export function textBundleBaseName(record: TextTrialRecord, startedAt: string) {
+  return bundleBaseNameFor({ ...record, actorType: "agent" }, startedAt);
 }
 
 export function buildTextSession(record: TextTrialRecord, context: TextExportContext) {

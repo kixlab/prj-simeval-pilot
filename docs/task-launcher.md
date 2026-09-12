@@ -3,12 +3,11 @@
 The pilot collects three creativity tasks. A participant lands on the launcher,
 picks the task they were asked to do, and is handed to that task's own screen.
 
-> Two of the three tasks are **not implemented**. `macgyver-problem-solving`
-> and `cs4-creative-writing` currently resolve to a description page that states
-> what is decided and what is missing. Nothing on those pages records or exports
-> anything. Their agent environment is in place - agents can already run both
-> tasks through `scripts/agentDriver.mjs`, see [agent-strategies.md](agent-strategies.md) -
-> but the participant screens are not.
+> `cs4-creative-writing` has **no participant screen yet**: it resolves to a
+> description page that states what is decided and what is missing, and nothing
+> on that page records or exports anything. Its agent environment is in place -
+> agents run it through `scripts/agentDriver.mjs`, see
+> [agent-strategies.md](agent-strategies.md).
 
 ## Screens
 
@@ -16,7 +15,7 @@ picks the task they were asked to do, and is handed to that task's own screen.
 | --- | --- | --- |
 | *(none)* or `launcher` | Task launcher | Ready |
 | `audra-incomplete-shapes` | Incomplete-shapes drawing task (`src/audra`) | Ready |
-| `macgyver-problem-solving` | Description page | Planned |
+| `macgyver-problem-solving` | Problem-solving task with a notepad answer (`src/macgyver`), see [macgyver-task.md](macgyver-task.md) | Ready |
 | `cs4-creative-writing` | Description page | Planned |
 | `excalidraw-session` | The earlier Excalidraw session app (`src/App.tsx`) | Unchanged, not a study task |
 

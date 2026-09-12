@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import AudraMode from "./audra/AudraMode";
 import TaskLauncher from "./launcher/TaskLauncher";
+import MacGyverMode from "./macgyver/MacGyverMode";
 import TaskPlaceholder from "./launcher/TaskPlaceholder";
 import { readMode, resolveRoute } from "./tasks/routing";
 import "./style.css";
@@ -22,7 +23,8 @@ import "./style.css";
 // The catalog decides which tasks exist; this map decides which of them can
 // actually run.
 const taskScreens: Record<string, () => ReactElement> = {
-  "audra-incomplete-shapes": () => <AudraMode />
+  "audra-incomplete-shapes": () => <AudraMode />,
+  "macgyver-problem-solving": () => <MacGyverMode />
 };
 
 function screenFor(route: ReturnType<typeof resolveRoute>): ReactElement {

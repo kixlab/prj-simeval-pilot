@@ -60,7 +60,7 @@ const catalog: readonly TaskDefinition[] = [
     summary:
       "Decide whether a real-world problem can be solved with the objects at hand, then write the solution or say why there is none.",
     modality: "text",
-    status: "planned",
+    status: "available",
     outputs: [
       "A solvable / unsolvable judgement",
       "A step-by-step solution, or a justification for calling the problem unsolvable",
@@ -73,7 +73,6 @@ const catalog: readonly TaskDefinition[] = [
       "Scoring: feasibility / safety / effectiveness by the multi-agent judge, plus a pairwise novelty judge."
     ],
     remaining: [
-      "The five pilot items are loaded, and the agent environment runs them under all three strategies; the participant screen, think-aloud capture, and the human export bundle still have to be built.",
       "The licence position for using the released MacGyver items has not been recorded yet."
     ],
     reference: "Tian et al. (2024), MacGyver: Are Large Language Models Creative Problem Solvers?"
