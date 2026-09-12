@@ -1,26 +1,27 @@
 import { useEffect, useMemo, useState } from "react";
-import { fetchMacGyverItem, fetchTaskItemList, type TaskItemList } from "../tasks/itemClient";
-import type { MacGyverItemView } from "../tasks/macgyver/item";
+import type { Cs4InstanceView } from "../tasks/cs4/item";
+import { fetchCs4Round, fetchTaskItemList, type TaskItemList } from "../tasks/itemClient";
 import { formatClock, isTimed, timingFromQuery } from "../tasks/timing";
 import { newId } from "../textTasks/shared";
 import "../textTasks/textTask.css";
-import MacGyverTask from "./MacGyverTask";
+import Cs4Task from "./Cs4Task";
 
-const taskId = "macgyver-problem-solving";
+const taskId = "cs4-creative-writing";
 
 /**
- * Entry point for the `macgyver-problem-solving` mode: participant id, item,
- * then the task. `?item=` preselects an item; `?timeLimitSec=` /
- * `?finalizeWindowSec=` override src/tasks/taskTiming.json for one session.
+ * Entry point for the `cs4-creative-writing` mode: participant id, instance,
+ * then the three-round session. `?item=` preselects an instance;
+ * `?timeLimitSec=` / `?finalizeWindowSec=` override src/tasks/taskTiming.json
+ * (per round) for one session.
  */
-export function MacGyverMode() {
+export function Cs4Mode() {
   const query = useMemo(() => new URLSearchParams(window.location.search), []);
   const [participantId, setParticipantId] = useState(query.get("participant") ?? "");
   const [items, setItems] = useState<TaskItemList | null>(null);
   const [itemChoice, setItemChoice] = useState(query.get("item") ?? "");
   const [error, setError] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
-  const [trial, setTrial] = useState<{ sessionId: string; trialId: string; item: MacGyverItemView } | null>(null);
+  const [session, setSession] = useState<{ sessionId: string; trialId: string; firstRound: Cs4InstanceView } | null>(null);
   const { timing, overridden, problems } = useMemo(() => timingFromQuery(taskId, query), [query]);
 
   useEffect(() => {
@@ -32,20 +33,20 @@ export function MacGyverMode() {
         setItemChoice(current => current || list.pilotSubset[0] || list.itemIds[0] || "");
       })
       .catch((reason: Error) => {
-        if (!cancelled) setError(`Items could not be loaded: ${reason.message}`);
+        if (!cancelled) setError(`Instances could not be loaded: ${reason.message}`);
       });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  if (trial) {
+  if (session) {
     return (
-      <MacGyverTask
-        sessionId={trial.sessionId}
-        trialId={trial.trialId}
+      <Cs4Task
+        sessionId={session.sessionId}
+        trialId={session.trialId}
         actorId={participantId.trim()}
-        item={trial.item}
+        firstRound={session.firstRound}
         timing={timing}
         timingOverridden={overridden}
       />
@@ -58,13 +59,13 @@ export function MacGyverMode() {
   return (
     <div className="tt-shell">
       <section className="tt-card">
-        <h1>Problem solving task</h1>
+        <h1>Story revision task</h1>
         <label className="tt-field">
           <span>Participant ID</span>
           <input value={participantId} onChange={event => setParticipantId(event.target.value)} placeholder="p001" />
         </label>
         <label className="tt-field">
-          <span>Problem</span>
+          <span>Story</span>
           <select value={itemChoice} onChange={event => setItemChoice(event.target.value)} disabled={!items}>
             {ordered.map(id => (
               <option key={id} value={id}>
@@ -76,7 +77,7 @@ export function MacGyverMode() {
         </label>
         <p className="tt-meta">
           {isTimed(timing)
-            ? `Time limit ${formatClock(timing.timeLimitSec * 1000)}, Submit open for the last ${formatClock(timing.finalizeWindowSec * 1000)}`
+            ? `${formatClock(timing.timeLimitSec * 1000)} per round, Finish round open for the last ${formatClock(timing.finalizeWindowSec * 1000)}`
             : "Untimed"}
           {overridden ? " (set by this link, not the configured default)" : ""}
         </p>
@@ -92,10 +93,10 @@ export function MacGyverMode() {
           onClick={async () => {
             setStarting(true);
             try {
-              const item = await fetchMacGyverItem(itemChoice);
-              setTrial({ sessionId: newId("session"), trialId: newId("trial"), item });
+              const firstRound = await fetchCs4Round(itemChoice, 1);
+              setSession({ sessionId: newId("session"), trialId: newId("trial"), firstRound });
             } catch (reason) {
-              setError(`The problem could not be loaded: ${reason instanceof Error ? reason.message : String(reason)}`);
+              setError(`The story could not be loaded: ${reason instanceof Error ? reason.message : String(reason)}`);
               setStarting(false);
             }
           }}
@@ -107,4 +108,4 @@ export function MacGyverMode() {
   );
 }
 
-export default MacGyverMode;
+export default Cs4Mode;

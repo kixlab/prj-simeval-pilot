@@ -14,6 +14,7 @@ import {
 import type { AudraTrialState } from "./reducer";
 import { loadStimulusImage, renderTrial } from "./render";
 import { descriptionPrompt, taskInstruction, type Stimulus } from "./stimulus";
+import { koreanDuration } from "../textTasks/shared";
 import { useAudraTrial } from "./useAudraTrial";
 import { useThinkAloud } from "./useThinkAloud";
 
@@ -32,6 +33,23 @@ function spokenDuration(seconds: number) {
   if (seconds % 60 === 0) return `${seconds / 60} minute${seconds === 60 ? "" : "s"}`;
   return `${formatClock(seconds * 1000)} (minutes:seconds)`;
 }
+
+// Korean shown under the English on request. The English stays the instruction
+// of record, as it is the only text an agent sees.
+const ko = {
+  instruction: "시작 선들을 하나의 창의적인 그림의 일부로 사용하세요. 최대한 창의적으로 그려 보세요.",
+  list: [
+    "캔버스에는 이미 네 개의 시작 선이 있습니다. 이 선들은 옮기거나 지울 수 없습니다.",
+    "네 개의 시작 선 모두가 그림의 일부가 되어야 합니다.",
+    "연필, 지우개, 마지막 획 취소(Undo Last)만 사용할 수 있습니다.",
+    "그림을 마친 뒤 무엇을 그렸는지 적게 됩니다."
+  ],
+  timed: (limit: number, window: number) =>
+    `시간은 ${koreanDuration(limit)}입니다. 시간 내내 그림을 계속 그려 주세요. 제출(Submit)은 마지막 ${koreanDuration(window)}에만 할 수 있습니다. 시간이 끝나면 그때까지의 그림이 그대로 저장됩니다.`,
+  consent:
+    "그림을 그리는 동안 생각을 소리 내어 말해 주세요. 목소리는 연구를 위해 녹음되어 그림과 함께 저장됩니다. 마이크에 문제가 있어도 그림을 그리고 제출하는 데는 지장이 없습니다.",
+  description: "무엇을 그렸나요?"
+};
 
 export type AudraTaskProps = {
   sessionId: string;
@@ -58,6 +76,17 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, timing, timin
   // its first observation - not when the page loads.
   const [clockStartedAtEpochMs, setClockStartedAtEpochMs] = useState<number | null>(null);
   const [nowEpochMs, setNowEpochMs] = useState(() => Date.now());
+  const [showKorean, setShowKorean] = useState(false);
+  // Kept beside the canonical log rather than in it: that log is the one the
+  // agent's reducer replays, and an agent has no translation to toggle.
+  const koreanTogglesRef = useRef<{ atMs: number; visible: boolean }[]>([]);
+
+  const toggleKorean = useCallback(() => {
+    setShowKorean(visible => {
+      koreanTogglesRef.current.push({ atMs: Date.now() - startedAtEpochMs, visible: !visible });
+      return !visible;
+    });
+  }, [startedAtEpochMs]);
 
   const trial = useAudraTrial({
     sessionId,
@@ -302,7 +331,13 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, timing, timin
               overridden: timingOverridden,
               endedBy,
               clockStartedAtMs: clockStartedAtEpochMs == null ? null : clockStartedAtEpochMs - startedAtEpochMs,
-              activeMs: clockStartedAtEpochMs == null ? null : endedAtEpochMs - clockStartedAtEpochMs
+              activeMs: clockStartedAtEpochMs == null ? null : endedAtEpochMs - clockStartedAtEpochMs,
+              translation: {
+                language: "ko",
+                available: true,
+                everShown: koreanTogglesRef.current.some(toggle => toggle.visible),
+                toggles: koreanTogglesRef.current
+              }
             },
             thinkAloud: thinkAloudChunksRef.current,
             audioBase64: audio ? await blobToBase64(audio) : null,
@@ -370,7 +405,13 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, timing, timin
       <div className="audra-shell">
         <section className="audra-instructions">
           <h1>Drawing task</h1>
-          <p className="audra-instruction-text">{taskInstruction}</p>
+          <button type="button" className="audra-toggle audra-toggle--block" onClick={toggleKorean} aria-pressed={showKorean}>
+            {showKorean ? "한국어 번역 숨기기" : "한국어 번역 보기"}
+          </button>
+          <p className="audra-instruction-text">
+            {taskInstruction}
+            {showKorean && <span className="audra-ko">{ko.instruction}</span>}
+          </p>
           <ul className="audra-instruction-list">
             <li>The canvas already contains four starting lines. They cannot be moved or erased.</li>
             <li>All four starting lines must be part of your drawing.</li>
@@ -384,6 +425,14 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, timing, timin
               </li>
             )}
           </ul>
+          {showKorean && (
+            <ul className="audra-instruction-list audra-ko">
+              {ko.list.map(line => (
+                <li key={line}>{line}</li>
+              ))}
+              {timed && <li>{ko.timed(timing.timeLimitSec, timing.finalizeWindowSec)}</li>}
+            </ul>
+          )}
           {stimulus.source === "development" && (
             <p className="audra-dev-notice">
               Development fixture — not an official CAP/MTCI stimulus.
@@ -392,6 +441,7 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, timing, timin
           <p className="audra-consent">
             Please think aloud while you draw. Your voice is recorded for the study and stored
             with your drawing. A microphone problem will not stop you from drawing or submitting.
+            {showKorean && <span className="audra-ko">{ko.consent}</span>}
           </p>
           {thinkAloud.error && <p className="audra-error">{thinkAloud.error}</p>}
           <button
@@ -432,7 +482,15 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, timing, timin
   return (
     <div className="audra-shell">
       <section className="audra-stage">
-        <p className="audra-instruction-banner">{taskInstruction}</p>
+        <div className="audra-banner-row">
+          <p className="audra-instruction-banner">
+            {taskInstruction}
+            {showKorean && <span className="audra-ko">{ko.instruction}</span>}
+          </p>
+          <button type="button" className="audra-toggle" onClick={toggleKorean} aria-pressed={showKorean}>
+            {showKorean ? "한국어 번역 숨기기" : "한국어 번역 보기"}
+          </button>
+        </div>
         {/* Canvas and controls are one row on wide screens and stack on narrow
             ones. The artboard is square, so on a short, wide window a stacked
             layout would shrink the drawing surface to fit the controls under
@@ -508,7 +566,10 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, timing, timin
             )}
 
             <label className="audra-description">
-              <span>{descriptionPrompt}</span>
+              <span>
+                {descriptionPrompt}
+                {showKorean && ` (${ko.description})`}
+              </span>
               <input
                 type="text"
                 value={descriptionDraft}

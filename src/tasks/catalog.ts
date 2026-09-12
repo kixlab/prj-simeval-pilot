@@ -85,7 +85,7 @@ const catalog: readonly TaskDefinition[] = [
     summary:
       "Revise one roughly 500-word story through rounds of constraints that keep accumulating.",
     modality: "text",
-    status: "planned",
+    status: "available",
     outputs: [
       "One revised story per constraint round",
       "The full revision history across rounds",
@@ -97,8 +97,7 @@ const catalog: readonly TaskDefinition[] = [
       "Scoring: LitBench pairwise preference as the primary outcome, CS4 constraint satisfaction as the validity check, CS4 coherence as secondary."
     ],
     remaining: [
-      "The 50 official story-based instances are loaded (pilot subset: the ten from the earlier CS4 pilot), and the agent environment runs the three rounds under all three strategies.",
-      "The revision editor, think-aloud capture, and the human export bundle still have to be built."
+      "The Korean translations of the ten pilot instances are machine translations and still need a human review."
     ],
     reference:
       "Atmakuru et al. (2024), CS4; Fein et al. (2026), LitBench."

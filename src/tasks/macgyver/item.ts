@@ -40,7 +40,11 @@ export type MacGyverItem = {
   /** Where the item sits in the released dataset, for traceability. */
   datasetRef: string | null;
   notes: string | null;
+  /** Reading aids from data/tasks/macgyver/translations/<language>.json; the English problem stays the stimulus. */
+  translations?: { ko?: MacGyverTranslation };
 };
+
+export type MacGyverTranslation = { problem: string; source: string; machine: boolean };
 
 /** Exactly what a participant or an agent is shown. */
 export type MacGyverItemView = Omit<MacGyverItem, "answerKey">;

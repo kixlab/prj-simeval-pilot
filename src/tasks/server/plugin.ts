@@ -16,8 +16,9 @@ import { cs4RevisionEngine } from "../cs4/revision";
 import { macgyverAnswerEngine } from "../macgyver/answer";
 import { participantView as macgyverView } from "../macgyver/item";
 import type { ThinkAloudChunk } from "../../audra/thinkAloud";
+import type { HumanCs4Event } from "../cs4/humanRevision";
 import type { HumanMacGyverEvent } from "../macgyver/humanAnswer";
-import { writeHumanMacGyverBundle } from "./humanExport";
+import { writeHumanCs4Bundle, writeHumanMacGyverBundle } from "./humanExport";
 import { directoryForTask, loadCs4Instances, loadMacGyverItems } from "./itemStore";
 import { writeTextBundle } from "./textExport";
 
@@ -279,36 +280,42 @@ async function handleHuman(
   if (route !== "export" || request.method !== "POST") {
     return send(response, 404, { ok: false, error: `Unknown endpoint: human/${route}` });
   }
-  if (taskId !== "macgyver-problem-solving") {
-    return send(response, 404, { ok: false, error: `No participant screen exports ${taskId} yet.` });
-  }
   const body = await readJson(request);
   for (const field of ["sessionId", "trialId", "itemId", "actorId", "startedAt", "endedAt"]) {
     if (typeof body[field] !== "string" || !body[field]) return send(response, 400, { ok: false, error: `${field} is required.` });
   }
   if (!Array.isArray(body.events)) return send(response, 400, { ok: false, error: "events must be an array." });
-  const item = loadMacGyverItems(context.projectRoot).items.find(candidate => candidate.itemId === body.itemId);
-  if (!item) return send(response, 400, { ok: false, error: `Unknown item: ${String(body.itemId)}` });
+  const common = {
+    sessionId: body.sessionId as string,
+    trialId: body.trialId as string,
+    actorId: body.actorId as string,
+    finalText: typeof body.finalText === "string" ? body.finalText : null,
+    startedAt: body.startedAt as string,
+    endedAt: body.endedAt as string,
+    protocol:
+      body.protocol && typeof body.protocol === "object" && !Array.isArray(body.protocol)
+        ? (body.protocol as Record<string, unknown>)
+        : null,
+    thinkAloud: Array.isArray(body.thinkAloud) ? (body.thinkAloud as ThinkAloudChunk[]) : [],
+    audioBase64: typeof body.audioBase64 === "string" ? body.audioBase64 : null
+  };
 
   try {
-    const result = writeHumanMacGyverBundle(
-      {
-        sessionId: body.sessionId as string,
-        trialId: body.trialId as string,
-        itemId: item.itemId,
-        itemSource: item.source,
-        actorId: body.actorId as string,
-        events: body.events as HumanMacGyverEvent[],
-        finalText: typeof body.finalText === "string" ? body.finalText : null,
-        startedAt: body.startedAt as string,
-        endedAt: body.endedAt as string,
-        protocol:
-          body.protocol && typeof body.protocol === "object" && !Array.isArray(body.protocol)
-            ? (body.protocol as Record<string, unknown>)
-            : null,
-        thinkAloud: Array.isArray(body.thinkAloud) ? (body.thinkAloud as ThinkAloudChunk[]) : [],
-        audioBase64: typeof body.audioBase64 === "string" ? body.audioBase64 : null
-      },
+    if (taskId === "macgyver-problem-solving") {
+      const item = loadMacGyverItems(context.projectRoot).items.find(candidate => candidate.itemId === body.itemId);
+      if (!item) return send(response, 400, { ok: false, error: `Unknown item: ${String(body.itemId)}` });
+      const result = writeHumanMacGyverBundle(
+        { ...common, itemId: item.itemId, itemSource: item.source, events: body.events as HumanMacGyverEvent[] },
+        context
+      );
+      return send(response, 200, { ok: true, ...result });
+    }
+    // The replay starts from the instance's own base story, read from disk.
+    const instance = loadCs4Instances(context.projectRoot).items.find(candidate => candidate.instanceId === body.itemId);
+    if (!instance) return send(response, 400, { ok: false, error: `Unknown item: ${String(body.itemId)}` });
+    const result = writeHumanCs4Bundle(
+      { ...common, itemId: instance.instanceId, itemSource: instance.source, events: body.events as HumanCs4Event[] },
+      instance,
       context
     );
     return send(response, 200, { ok: true, ...result });

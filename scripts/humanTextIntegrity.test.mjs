@@ -136,4 +136,66 @@ assert.deepEqual(
   assert.equal(summarizeHumanProcess(log.events).pastes, 1);
 }
 
+// A translation toggle is a process marker: counted, but it changes nothing.
+{
+  const log = logBuilder();
+  log.type("Tie the stakes");
+  log.events.push({ eventIndex: log.events.length, timestampMs: 9_999, eventType: "translation_toggle", payload: { visible: true } });
+  assert.equal(replayHumanEvents(log.events).text, "Tie the stakes");
+  assert.equal(summarizeHumanProcess(log.events).translationToggles, 1);
+}
+
+// --- CS4: one story revised freely through the rounds ------------------------------
+
+const cs4 = await loadTsBundle(new URL("../src/tasks/cs4/humanRevision.ts", import.meta.url).pathname);
+{
+  const base = "The ferry left. Mira waved.\n\nThe gulls stayed.";
+  const events = [];
+  let text = base;
+  let clock = 0;
+  const push = (eventType, payload) => events.push({ eventIndex: events.length, timestampMs: (clock += 100), eventType, payload });
+  const type = next => {
+    const edit = cs4.textDiff(text, next);
+    if (edit) push("text_edit", { ...edit, source: "typing" });
+    text = next;
+  };
+
+  // Round 1: revise a sentence, then submit.
+  type("The ferry left late. Mira waved.\n\nThe gulls stayed.");
+  push("pause", {});
+  push("round_submit", {});
+  // Round 2: add a sentence; the clock runs out.
+  type("The ferry left late. Mira waved. She smiled.\n\nThe gulls stayed.");
+  push("round_end", { cause: "time_limit" });
+  // Round 3: delete a sentence, then submit.
+  type("The ferry left late. Mira waved. She smiled.");
+  push("round_submit", {});
+
+  const state = cs4.replayHumanCs4Events(base, events);
+  assert.equal(state.complete, true);
+  assert.equal(state.text, text);
+  assert.deepEqual(
+    state.results.map(result => [result.round, result.stage, result.endedBy, result.sentences]),
+    [[1, 7, "submitted", 3], [2, 15, "time_limit", 4], [3, 23, "submitted", 3]],
+    "each round's story is kept, with how the round ended"
+  );
+
+  const changes = cs4.sentenceChangesFromEvents(base, events).map(({ round, change, sentence, text: now, previous }) => ({ round, change, sentence, now, previous }));
+  assert.deepEqual(changes, [
+    { round: 1, change: "revised", sentence: 1, now: "The ferry left late.", previous: "The ferry left." },
+    { round: 2, change: "added", sentence: 3, now: "She smiled.", previous: null },
+    { round: 3, change: "deleted", sentence: 4, now: null, previous: "The gulls stayed." }
+  ]);
+
+  // A finished session is final; a tampered log and a bad cause are refused.
+  assert.equal(cs4.applyHumanCs4Event(state, { eventIndex: 99, timestampMs: 1e6, eventType: "pause", payload: {} }).ok, false);
+  const tampered = structuredClone(events);
+  tampered[0].payload.removed = "#";
+  assert.throws(() => cs4.replayHumanCs4Events(base, tampered), /does not match/);
+  const fresh = cs4.initialHumanCs4State(base);
+  assert.equal(cs4.applyHumanCs4Event(fresh, { eventIndex: 0, timestampMs: 0, eventType: "round_end", payload: { cause: "boredom" } }).ok, false);
+  // The replay starts from the base story, so a log for another story fails.
+  assert.throws(() => cs4.replayHumanCs4Events("A different story.", events));
+}
+
 console.log("human text integrity tests passed");

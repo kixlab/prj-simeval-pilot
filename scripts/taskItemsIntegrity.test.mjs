@@ -82,6 +82,26 @@ if (sample) {
 }
 
 // ---------------------------------------------------------------------------
+// Translations: every one loaded, and a CS4 translation cut to its round so it
+// cannot leak a later round's constraints either.
+
+for (const instance of cs.items.filter(item => item.translations?.ko)) {
+  const ko = instance.translations.ko;
+  assert.equal(ko.constraints.length, instance.constraints.length);
+  for (const round of cs4Rounds(instance)) {
+    const view = cs4View(instance, round.round);
+    assert.deepEqual(view.translations.ko.constraints, ko.constraints.slice(0, round.stage));
+    const serialized = JSON.stringify(view);
+    for (const later of ko.constraints.slice(round.stage)) {
+      if (ko.constraints.slice(0, round.stage).includes(later)) continue;
+      assert.equal(serialized.includes(later), false, `${instance.instanceId} round ${round.round} leaks a later translated constraint`);
+    }
+  }
+}
+assert.ok(cs.items.some(item => item.translations?.ko), "the CS4 pilot instances carry Korean translations");
+assert.ok(mg.items.filter(item => item.translations?.ko).length >= 5, "the MacGyver pilot items carry Korean translations");
+
+// ---------------------------------------------------------------------------
 // A MacGyver participant view never carries the answer key.
 
 for (const item of mg.items) {

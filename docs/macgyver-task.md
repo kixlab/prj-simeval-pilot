@@ -21,14 +21,18 @@ Agents run the same items through `scripts/agentDriver.mjs --task macgyver`; see
   `?item=` preselects an item, `?participant=` prefills the id.
 - Submitting needs a judgement and some text - the same guard an agent's
   `submit_answer` meets.
+- A "한국어 번역 보기" toggle shows the Korean problem (from the earlier
+  MacGyver pilot, `data/tasks/macgyver/translations/ko.json`) and Korean
+  instructions under the English. The English stays the problem of record - it
+  is all an agent sees.
 
 ## What is recorded
 
 Every change to the note is one `text_edit` event holding the smallest
 replacement that produced it (`start`, `removed`, `inserted`, and whether it was
 typed or pasted), so the log replays to the exact final text. A `pause` event
-closes each burst of typing (700 ms without a keystroke); `judgement_set` and
-`submit` complete the log. The server replays the posted log before writing
+closes each burst of typing (700 ms without a keystroke); `judgement_set`,
+`translation_toggle` (Korean shown or hidden), and `submit` complete the log. The server replays the posted log before writing
 anything and refuses one that does not reproduce.
 
 ## How it lines up with an agent

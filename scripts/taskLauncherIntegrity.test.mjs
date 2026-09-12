@@ -6,7 +6,7 @@ const catalog = await loadTsBundle(new URL("../src/tasks/catalog.ts", import.met
 const { readMode, resolveRoute, excalidrawModeName, launcherModeName } = routing;
 const { listTasks, taskByMode, taskById, taskHref } = catalog;
 
-const implemented = new Set(["audra-incomplete-shapes", "macgyver-problem-solving"]);
+const implemented = new Set(["audra-incomplete-shapes", "macgyver-problem-solving", "cs4-creative-writing"]);
 const route = (mode, modes = implemented) => resolveRoute(mode, modes);
 
 // ---------------------------------------------------------------------------

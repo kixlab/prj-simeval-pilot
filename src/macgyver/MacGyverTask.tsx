@@ -11,27 +11,27 @@ import {
 } from "../tasks/macgyver/humanAnswer";
 import type { MacGyverItemView } from "../tasks/macgyver/item";
 import { formatClock, isTimed, remainingMs, submitOpen, type TaskTiming } from "../tasks/timing";
+import { blobToBase64, consentKo, koreanDuration, pauseAfterMs, spokenDuration } from "../textTasks/shared";
 
 type Phase = "instructions" | "writing" | "confirming" | "submitted" | "time_up";
 
 type EndedBy = "submitted" | "time_limit";
 
-// Typing that stops for this long closes an edit burst: the boundary at which
-// the memo's lines are read as steps. The same idle window as the Excalidraw
-// session's human action log.
-const pauseAfterMs = 700;
-
-async function blobToBase64(blob: Blob) {
-  const bytes = new Uint8Array(await blob.arrayBuffer());
-  let binary = "";
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary);
-}
-
-function spokenDuration(seconds: number) {
-  if (seconds % 60 === 0) return `${seconds / 60} minute${seconds === 60 ? "" : "s"}`;
-  return `${formatClock(seconds * 1000)} (minutes:seconds)`;
-}
+const ko = {
+  instructions: [
+    "실제 상황의 문제를 읽고, 문제에 적힌 것만으로 해결할 수 있는지 판단하세요.",
+    "해결할 수 있다면 어떻게 할지 단계를 적고, 해결할 수 없다면 그 이유를 적으세요.",
+    "메모장에 쓰듯 자유롭게 적으면 됩니다. 한 줄에 한 단계씩 쓰면 좋지만 형식은 자유입니다.",
+    "다른 자료를 찾아보지 마세요."
+  ],
+  timed: (limit: number, window: number) =>
+    `시간은 ${koreanDuration(limit)}입니다. 시간 내내 계속 작업해 주세요. 제출(Submit)은 마지막 ${koreanDuration(window)}에만 할 수 있습니다. 시간이 끝나면 그때까지 쓴 답이 그대로 저장됩니다.`,
+  judgement: "주어진 것만으로 이 문제를 해결할 수 있나요?",
+  solvable: "예, 해결할 수 있다",
+  unsolvable: "아니요, 해결할 수 없다",
+  memoSolvable: "해결을 위해 할 일을 단계별로 적으세요.",
+  memoUnsolvable: "해결할 수 없는 이유를 적으세요."
+};
 
 export type MacGyverTaskProps = {
   sessionId: string;
@@ -50,6 +50,7 @@ export function MacGyverTask({ sessionId, trialId, actorId, item, timing, timing
   const [startedAtEpochMs] = useState(() => Date.now());
   const [clockStartedAtEpochMs, setClockStartedAtEpochMs] = useState<number | null>(null);
   const [nowEpochMs, setNowEpochMs] = useState(() => Date.now());
+  const [showKorean, setShowKorean] = useState(false);
 
   const eventsRef = useRef<HumanMacGyverEvent[]>([]);
   // The log's own copy of the answer, updated synchronously so consecutive
@@ -58,6 +59,7 @@ export function MacGyverTask({ sessionId, trialId, actorId, item, timing, timing
   const pauseTimerRef = useRef<number | null>(null);
   const pastedRef = useRef(false);
   const endingRef = useRef(false);
+  const koreanShownRef = useRef(false);
   const thinkAloudChunksRef = useRef<unknown[]>([]);
 
   const elapsedMs = useCallback(() => Math.max(0, Date.now() - startedAtEpochMs), [startedAtEpochMs]);
@@ -71,6 +73,7 @@ export function MacGyverTask({ sessionId, trialId, actorId, item, timing, timing
   });
   thinkAloudChunksRef.current = thinkAloud.chunks as unknown[];
 
+  const translation = item.translations?.ko ?? null;
   const timed = isTimed(timing);
   const clockElapsedMs = clockStartedAtEpochMs == null ? 0 : nowEpochMs - clockStartedAtEpochMs;
   const timeLeftMs = remainingMs(timing, clockElapsedMs);
@@ -110,6 +113,17 @@ export function MacGyverTask({ sessionId, trialId, actorId, item, timing, timing
   useEffect(() => () => {
     if (pauseTimerRef.current != null) window.clearTimeout(pauseTimerRef.current);
   }, []);
+
+  /** Showing or hiding the Korean text is part of the process record while the trial runs. */
+  const toggleKorean = useCallback(() => {
+    const visible = !showKorean;
+    setShowKorean(visible);
+    if (visible) koreanShownRef.current = true;
+    if (phase === "writing" || phase === "confirming") {
+      flushPause();
+      record("translation_toggle", { language: "ko", visible });
+    }
+  }, [flushPause, phase, record, showKorean]);
 
   const onTextChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -165,7 +179,9 @@ export function MacGyverTask({ sessionId, trialId, actorId, item, timing, timing
               overridden: timingOverridden,
               endedBy,
               clockStartedAtMs: clockStartedAtEpochMs == null ? null : clockStartedAtEpochMs - startedAtEpochMs,
-              activeMs: clockStartedAtEpochMs == null ? null : endedAtEpochMs - clockStartedAtEpochMs
+              activeMs: clockStartedAtEpochMs == null ? null : endedAtEpochMs - clockStartedAtEpochMs,
+              // Agents see the English only; a participant may also have read Korean.
+              translation: { language: "ko", available: translation != null, everShown: koreanShownRef.current }
             },
             thinkAloud: thinkAloudChunksRef.current,
             audioBase64: audio ? await blobToBase64(audio) : null,
@@ -178,7 +194,7 @@ export function MacGyverTask({ sessionId, trialId, actorId, item, timing, timing
         setExportStatus(`Export failed: ${error instanceof Error ? error.message : String(error)}`);
       }
     },
-    [actorId, clockStartedAtEpochMs, item.itemId, sessionId, startedAtEpochMs, thinkAloud, timed, timing, timingOverridden, trialId]
+    [actorId, clockStartedAtEpochMs, item.itemId, sessionId, startedAtEpochMs, thinkAloud, timed, timing, timingOverridden, translation, trialId]
   );
 
   const requestSubmit = useCallback(() => {
@@ -226,12 +242,19 @@ export function MacGyverTask({ sessionId, trialId, actorId, item, timing, timing
     if (timed && (phase === "writing" || phase === "confirming") && timeLeftMs <= 0) void endByTime();
   }, [endByTime, phase, timeLeftMs, timed]);
 
+  const koreanButton = (
+    <button type="button" className="tt-toggle" onClick={toggleKorean} aria-pressed={showKorean}>
+      {showKorean ? "한국어 번역 숨기기" : "한국어 번역 보기"}
+    </button>
+  );
+
   if (phase === "instructions") {
     return (
-      <div className="mg-shell">
-        <section className="mg-card">
+      <div className="tt-shell">
+        <section className="tt-card">
           <h1>Problem solving task</h1>
-          <ul className="mg-list">
+          {koreanButton}
+          <ul className="tt-list">
             <li>You will read a practical problem. Decide whether it can be solved using only what the problem describes.</li>
             <li>If it can, write the steps you would take. If it cannot, explain why.</li>
             <li>Write in the note area the way you would in a notepad - one step per line works well, but any layout is fine.</li>
@@ -243,16 +266,25 @@ export function MacGyverTask({ sessionId, trialId, actorId, item, timing, timing
               </li>
             )}
           </ul>
-          {item.source === "development" && (
-            <p className="mg-dev-notice">Development fixture - not a MacGyver benchmark item.</p>
+          {showKorean && (
+            <ul className="tt-list tt-ko">
+              {ko.instructions.map(line => (
+                <li key={line}>{line}</li>
+              ))}
+              {timed && <li>{ko.timed(timing.timeLimitSec, timing.finalizeWindowSec)}</li>}
+            </ul>
           )}
-          <p className="mg-consent">
+          {item.source === "development" && (
+            <p className="tt-dev-notice">Development fixture - not a MacGyver benchmark item.</p>
+          )}
+          <p className="tt-consent">
             Please think aloud while you work. Your voice is recorded for the study and stored with your
             answer. A microphone problem will not stop you from answering or submitting.
+            {showKorean && <span className="tt-ko">{consentKo}</span>}
           </p>
-          {thinkAloud.error && <p className="mg-error">{thinkAloud.error}</p>}
+          {thinkAloud.error && <p className="tt-error">{thinkAloud.error}</p>}
           <button
-            className="mg-primary"
+            className="tt-primary"
             onClick={async () => {
               // A refused or broken microphone must never cost the participant the trial.
               await thinkAloud.start();
@@ -271,15 +303,15 @@ export function MacGyverTask({ sessionId, trialId, actorId, item, timing, timing
 
   if (phase === "submitted" || phase === "time_up") {
     return (
-      <div className="mg-shell">
-        <section className="mg-card">
+      <div className="tt-shell">
+        <section className="tt-card">
           <h1>{phase === "submitted" ? "Submitted" : "Time is up"}</h1>
           <p>
             {phase === "submitted"
               ? "Thank you. Your answer has been recorded and can no longer be changed."
               : "Thank you. Your answer has been recorded as it was when time ran out."}
           </p>
-          {exportStatus && <p className="mg-meta">{exportStatus}</p>}
+          {exportStatus && <p className="tt-meta">{exportStatus}</p>}
         </section>
       </div>
     );
@@ -288,62 +320,63 @@ export function MacGyverTask({ sessionId, trialId, actorId, item, timing, timing
   const locked = phase !== "writing";
 
   return (
-    <div className="mg-shell">
-      <section className="mg-stage">
-        <article className="mg-problem">
-          <h2>Problem</h2>
-          <p>{item.problem}</p>
-        </article>
-
-        <div className="mg-status">
+    <div className="tt-shell">
+      <section className="tt-stage">
+        <div className="tt-status">
           {timed && (
-            <span className={canSubmitNow ? "mg-timer mg-timer--final" : "mg-timer"} role="timer">
+            <span className={canSubmitNow ? "tt-timer tt-timer--final" : "tt-timer"} role="timer">
               <strong>{formatClock(timeLeftMs)}</strong> left
               {canSubmitNow ? " · finish your answer and submit" : ` · Submit opens in the last ${formatClock(timing.finalizeWindowSec * 1000)}`}
             </span>
           )}
           {thinkAloud.isRecording && (
-            <span className="mg-recording" role="status">
+            <span className="tt-recording" role="status">
               ● recording
-              <span className="mg-meter" aria-hidden="true">
-                <span className="mg-meter-fill" style={{ width: `${Math.min(100, Math.round(thinkAloud.inputLevel * 300))}%` }} />
+              <span className="tt-meter" aria-hidden="true">
+                <span className="tt-meter-fill" style={{ width: `${Math.min(100, Math.round(thinkAloud.inputLevel * 300))}%` }} />
               </span>
             </span>
           )}
+          {koreanButton}
         </div>
 
+        <article className="tt-panel">
+          <h2>Problem</h2>
+          <p>{item.problem}</p>
+          {showKorean && translation && (
+            <>
+              <p className="tt-ko">{translation.problem}</p>
+              <p className="tt-ko-note">한국어 번역은 이해를 돕기 위한 것입니다. 기준이 되는 문제는 영어 원문입니다.</p>
+            </>
+          )}
+        </article>
+
         {thinkAloud.isRecording && thinkAloud.noInputSignal && (
-          <p className="mg-warning" role="alert">
+          <p className="tt-warning" role="alert">
             No sound is reaching the microphone. Check that the browser may use it and that the right input
             device is selected. You can keep writing - your answer is recorded either way.
           </p>
         )}
 
-        <fieldset className="mg-judgement" disabled={locked}>
-          <legend>Can this problem be solved with what it describes?</legend>
+        <fieldset className="tt-judgement" disabled={locked}>
+          <legend>
+            Can this problem be solved with what it describes?
+            {showKorean && <span className="tt-ko">{ko.judgement}</span>}
+          </legend>
           <label>
-            <input
-              type="radio"
-              name="judgement"
-              checked={answer.judgement === "solvable"}
-              onChange={() => chooseJudgement("solvable")}
-            />
-            Yes, it can be solved
+            <input type="radio" name="judgement" checked={answer.judgement === "solvable"} onChange={() => chooseJudgement("solvable")} />
+            Yes, it can be solved{showKorean && ` (${ko.solvable})`}
           </label>
           <label>
-            <input
-              type="radio"
-              name="judgement"
-              checked={answer.judgement === "unsolvable"}
-              onChange={() => chooseJudgement("unsolvable")}
-            />
-            No, it cannot be solved
+            <input type="radio" name="judgement" checked={answer.judgement === "unsolvable"} onChange={() => chooseJudgement("unsolvable")} />
+            No, it cannot be solved{showKorean && ` (${ko.unsolvable})`}
           </label>
         </fieldset>
 
-        <label className="mg-memo">
+        <label className="tt-memo">
           <span>
             {answer.judgement === "unsolvable" ? "Why can it not be solved?" : "Your answer - the steps you would take"}
+            {showKorean && <span className="tt-ko">{answer.judgement === "unsolvable" ? ko.memoUnsolvable : ko.memoSolvable}</span>}
           </span>
           <textarea
             value={answer.text}
@@ -357,27 +390,27 @@ export function MacGyverTask({ sessionId, trialId, actorId, item, timing, timing
           />
         </label>
 
-        {notice && <p className="mg-notice">{notice}</p>}
+        {notice && <p className="tt-notice">{notice}</p>}
 
         {phase === "confirming" ? (
-          <div className="mg-confirm">
+          <div className="tt-confirm">
             <p>Submit this answer? It cannot be changed afterwards.</p>
-            <div className="mg-confirm-actions">
-              <button className="mg-primary" onClick={() => void confirmSubmit()}>
+            <div className="tt-confirm-actions">
+              <button className="tt-primary" onClick={() => void confirmSubmit()}>
                 Yes, submit
               </button>
-              <button className="mg-secondary" onClick={() => setPhase("writing")}>
+              <button className="tt-secondary" onClick={() => setPhase("writing")}>
                 Keep working
               </button>
             </div>
           </div>
         ) : (
-          <button className="mg-primary" onClick={requestSubmit} disabled={!canSubmitNow}>
+          <button className="tt-primary" onClick={requestSubmit} disabled={!canSubmitNow}>
             Submit
           </button>
         )}
 
-        <p className="mg-meta">
+        <p className="tt-meta">
           item {item.itemId} ({item.source})
         </p>
       </section>

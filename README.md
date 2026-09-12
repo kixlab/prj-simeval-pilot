@@ -55,7 +55,7 @@ segment works too):
 | *(none)* or `launcher` | Task launcher |
 | `audra-incomplete-shapes` | AuDrA-style incomplete-shapes drawing task |
 | `macgyver-problem-solving` | Problem-solving task: the problem, a judgement, and a notepad answer ([docs/macgyver-task.md](docs/macgyver-task.md)) |
-| `cs4-creative-writing` | Description page — the task is not built yet |
+| `cs4-creative-writing` | Story revision task: three rounds of accumulating constraints over one notepad story ([docs/cs4-task.md](docs/cs4-task.md)) |
 | `excalidraw-session` | The earlier Excalidraw session app described below |
 
 Tasks are declared in `src/tasks/catalog.ts` and routed by `src/tasks/routing.ts`.
@@ -68,6 +68,10 @@ three rounds in one session — 7, then 15, then 23 constraints. The files are n
 served, and `/api/tasks/:taskId/items` returns only what a solver may see: no
 MacGyver answer key, and no CS4 constraint from a round the participant has not
 reached. See [docs/task-items.md](docs/task-items.md) and `data/tasks/README.md`.
+
+Every participant screen has a "한국어 번역 보기" toggle that shows Korean under
+the English; the English stays the text of record, since it is all an agent sees.
+Translations live in `data/tasks/<task>/translations/ko.json`.
 
 Agents run on all three tasks through one driver, `scripts/agentDriver.mjs`
 (`--task audra | macgyver | cs4`), under three action strategies (one-shot,

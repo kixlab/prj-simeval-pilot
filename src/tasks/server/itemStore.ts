@@ -137,12 +137,67 @@ function loadDirectory<T>(
   return { taskId, directory, manifest, items, pilot, errors };
 }
 
+type TranslationFile = { source: string; machine: boolean; entries: Record<string, Record<string, unknown>> };
+
+/**
+ * Reads `translations/<language>.json` beside the items, if there is one.
+ * Translations live apart from the benchmark files so a re-import never drops
+ * them; every entry is checked against the item it names.
+ */
+function readTranslations(directory: string, language: string, errors: string[]): TranslationFile | null {
+  const path = join(directory, "translations", `${language}.json`);
+  if (!existsSync(path)) return null;
+  const raw = readJson(path) as Record<string, unknown>;
+  const where = `translations/${language}.json`;
+  if (raw.language !== language) errors.push(`${where}: language should be "${language}".`);
+  if (typeof raw.source !== "string" || !raw.source.trim()) errors.push(`${where}: source must say where the translation came from.`);
+  if (typeof raw.machine !== "boolean") errors.push(`${where}: machine must be true or false.`);
+  const entries = raw.items && typeof raw.items === "object" ? (raw.items as Record<string, Record<string, unknown>>) : {};
+  return { source: String(raw.source ?? ""), machine: raw.machine === true, entries };
+}
+
+const isText = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
+
+function attach<T>(
+  loaded: LoadedItems<T>,
+  idOf: (item: T) => string,
+  language: string,
+  build: (entry: Record<string, unknown>, item: T, file: TranslationFile) => unknown | string
+): LoadedItems<T> {
+  const errors = [...loaded.errors];
+  const file = loaded.directory ? readTranslations(loaded.directory, language, errors) : null;
+  if (!file) return loaded;
+  const byId = new Map(loaded.items.map(item => [idOf(item), item]));
+  const translated = new Map<string, unknown>();
+  for (const [id, entry] of Object.entries(file.entries)) {
+    const item = byId.get(id);
+    if (!item) {
+      errors.push(`translations/${language}.json names "${id}", which is not an item.`);
+      continue;
+    }
+    const built = build(entry, item, file);
+    if (typeof built === "string") errors.push(`translations/${language}.json, ${id}: ${built}`);
+    else translated.set(id, built);
+  }
+  const withTranslation = (item: T) =>
+    translated.has(idOf(item))
+      ? ({ ...item, translations: { [language]: translated.get(idOf(item)) } } as T)
+      : item;
+  return {
+    ...loaded,
+    items: loaded.items.map(withTranslation),
+    pilot: loaded.pilot.map(withTranslation),
+    errors
+  };
+}
+
 export function loadMacGyverItems(projectRoot: string) {
-  const loaded = loadDirectory<MacGyverItem>(
-    projectRoot,
-    "macgyver-problem-solving",
+  const loaded = attach(
+    loadDirectory<MacGyverItem>(projectRoot, "macgyver-problem-solving", item => item.itemId, parseMacGyverItem),
     item => item.itemId,
-    parseMacGyverItem
+    "ko",
+    (entry, _item, file) =>
+      isText(entry.problem) ? { problem: entry.problem, source: file.source, machine: file.machine } : "problem must be a non-empty string."
   );
   // The pilot subset has a fixed composition; report a mismatch only once the
   // subset is populated, so an empty repository stays quiet.
@@ -154,11 +209,19 @@ export function loadMacGyverItems(projectRoot: string) {
 }
 
 export function loadCs4Instances(projectRoot: string) {
-  return loadDirectory<Cs4Instance>(
-    projectRoot,
-    "cs4-creative-writing",
+  return attach(
+    loadDirectory<Cs4Instance>(projectRoot, "cs4-creative-writing", instance => instance.instanceId, parseCs4Instance),
     instance => instance.instanceId,
-    parseCs4Instance
+    "ko",
+    (entry, instance, file) => {
+      if (!isText(entry.instruction)) return "instruction must be a non-empty string.";
+      const constraints = entry.constraints;
+      if (!Array.isArray(constraints) || !constraints.every(isText)) return "constraints must be non-empty strings.";
+      if (constraints.length !== instance.constraints.length) {
+        return `constraints must align one for one with the instance's ${instance.constraints.length}, not ${constraints.length}.`;
+      }
+      return { instruction: entry.instruction, constraints, source: file.source, machine: file.machine };
+    }
   );
 }
 

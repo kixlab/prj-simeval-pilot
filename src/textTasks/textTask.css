@@ -1,7 +1,7 @@
-/* Scoped to the macgyver-problem-solving mode: the problem, a judgement, and a
-   plain note area - nothing that shapes how the answer is written. */
+/* Shared by the participant text screens (MacGyver, CS4): the task text, a
+   plain note area, and nothing that shapes how the answer is written. */
 
-.mg-shell {
+.tt-shell {
   height: 100%;
   min-height: 100%;
   overflow-y: auto;
@@ -15,40 +15,40 @@
   box-sizing: border-box;
 }
 
-.mg-card {
-  max-width: 560px;
+.tt-card {
+  max-width: 600px;
   background: #ffffff;
   border-radius: 12px;
   padding: 32px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
-.mg-card h1 {
+.tt-card h1 {
   margin: 0 0 16px;
   font-size: 22px;
 }
 
-.mg-list {
+.tt-list {
   margin: 0 0 20px;
   padding-left: 20px;
   line-height: 1.7;
   color: #444;
 }
 
-.mg-field {
+.tt-field {
   display: block;
   margin-bottom: 16px;
 }
 
-.mg-field span {
+.tt-field span {
   display: block;
   font-size: 13px;
   color: #555;
   margin-bottom: 6px;
 }
 
-.mg-field input,
-.mg-field select {
+.tt-field input,
+.tt-field select {
   width: 100%;
   box-sizing: border-box;
   padding: 9px 11px;
@@ -59,41 +59,65 @@
   background: #fff;
 }
 
-.mg-stage {
+.tt-stage {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  width: min(100%, 860px);
+  width: min(100%, 880px);
 }
 
-.mg-problem {
+.tt-stage--wide {
+  width: min(100%, 1180px);
+}
+
+.tt-panel {
   background: #ffffff;
   border: 1px solid #d4d4d0;
   border-radius: 8px;
   padding: 16px 20px;
 }
 
-.mg-problem h2 {
+.tt-panel h2 {
   margin: 0 0 8px;
   font-size: 14px;
   font-weight: 600;
   color: #555;
 }
 
-.mg-problem p {
+.tt-panel p {
   margin: 0;
   font-size: 16px;
   line-height: 1.6;
 }
 
-.mg-status {
+/* A translation sits under the English it translates, quieter than it. */
+.tt-ko {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #5a5a56;
+}
+
+.tt-ko-note {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #8a8a86;
+}
+
+.tt-status {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
 }
 
-.mg-timer {
+.tt-round {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.tt-timer {
   padding: 7px 12px;
   border-radius: 6px;
   background: #f0f4f8;
@@ -102,23 +126,23 @@
   font-variant-numeric: tabular-nums;
 }
 
-.mg-timer strong {
+.tt-timer strong {
   font-size: 18px;
 }
 
-.mg-timer--final {
+.tt-timer--final {
   background: #fdf0e6;
   color: #8a4b1f;
 }
 
-.mg-recording {
+.tt-recording {
   display: inline-flex;
   align-items: center;
   font-size: 13px;
   color: #a13b2c;
 }
 
-.mg-meter {
+.tt-meter {
   display: inline-block;
   width: 54px;
   height: 6px;
@@ -128,14 +152,29 @@
   overflow: hidden;
 }
 
-.mg-meter-fill {
+.tt-meter-fill {
   display: block;
   height: 100%;
   background: #2f7d4f;
   transition: width 90ms linear;
 }
 
-.mg-judgement {
+.tt-toggle {
+  margin-left: auto;
+  padding: 6px 12px;
+  border: 1px solid #c8c8c4;
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.tt-card .tt-toggle {
+  margin: 0 0 16px;
+}
+
+.tt-judgement {
   margin: 0;
   border: none;
   padding: 0;
@@ -145,21 +184,21 @@
   font-size: 15px;
 }
 
-.mg-judgement legend {
+.tt-judgement legend {
   width: 100%;
   margin-bottom: 6px;
   font-size: 14px;
   color: #444;
 }
 
-.mg-judgement label {
+.tt-judgement label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
 }
 
-.mg-memo span {
+.tt-memo span {
   display: block;
   font-size: 14px;
   color: #444;
@@ -167,7 +206,7 @@
 }
 
 /* A notepad: plain text, generous height, nothing that suggests a format. */
-.mg-memo textarea {
+.tt-memo textarea {
   display: block;
   width: 100%;
   box-sizing: border-box;
@@ -183,16 +222,65 @@
   color: #1a1a1a;
 }
 
-.mg-memo textarea:focus {
+.tt-memo textarea:focus {
   outline: 2px solid #9db4cf;
   outline-offset: 1px;
 }
 
-.mg-memo textarea[readonly] {
+.tt-memo textarea[readonly] {
   background: #f7f7f4;
 }
 
-.mg-primary {
+.tt-memo--story textarea {
+  min-height: max(420px, 62vh);
+}
+
+.tt-wordcount {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #666;
+}
+
+/* CS4: constraints beside the story on a wide screen, above it on a narrow one. */
+.tt-cs4-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 2fr) 3fr;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .tt-cs4-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tt-constraints {
+  margin: 0;
+  padding-left: 22px;
+  max-height: 62vh;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.tt-constraints li {
+  margin-bottom: 8px;
+}
+
+.tt-new {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: #fdf0e6;
+  color: #8a4b1f;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.tt-primary {
   align-self: flex-start;
   padding: 11px 26px;
   border: none;
@@ -204,12 +292,12 @@
   cursor: pointer;
 }
 
-.mg-primary:disabled {
+.tt-primary:disabled {
   background: #b5b5b1;
   cursor: not-allowed;
 }
 
-.mg-secondary {
+.tt-secondary {
   padding: 11px 20px;
   border: 1px solid #c8c8c4;
   border-radius: 6px;
@@ -219,30 +307,30 @@
   cursor: pointer;
 }
 
-.mg-confirm {
+.tt-confirm {
   background: #ffffff;
   border: 1px solid #d4d4d0;
   border-radius: 8px;
   padding: 16px 20px;
 }
 
-.mg-confirm p {
+.tt-confirm p {
   margin: 0 0 12px;
 }
 
-.mg-confirm-actions {
+.tt-confirm-actions {
   display: flex;
   gap: 10px;
 }
 
-.mg-notice,
-.mg-error {
+.tt-notice,
+.tt-error {
   margin: 0;
   color: #a13b2c;
   font-size: 14px;
 }
 
-.mg-warning {
+.tt-warning {
   margin: 0;
   padding: 10px 12px;
   border-radius: 6px;
@@ -253,7 +341,7 @@
   line-height: 1.5;
 }
 
-.mg-consent {
+.tt-consent {
   font-size: 13px;
   line-height: 1.6;
   color: #555;
@@ -263,7 +351,7 @@
   margin: 0 0 20px;
 }
 
-.mg-dev-notice {
+.tt-dev-notice {
   font-size: 13px;
   color: #8a6d1f;
   background: #fdf6e3;
@@ -272,7 +360,7 @@
   margin: 0 0 20px;
 }
 
-.mg-meta {
+.tt-meta {
   margin: 0;
   font-size: 12px;
   color: #8a8a86;

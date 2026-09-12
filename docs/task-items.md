@@ -43,6 +43,28 @@ stores its 23 constraints once, in order, and a round takes a prefix — so the
 rounds are cumulative by construction and a file cannot express a
 non-cumulative set. The stages live in `cs4ConstraintStages`.
 
+## Translations
+
+`data/tasks/<task>/translations/ko.json` holds Korean for the participant
+screens' "한국어 번역 보기" toggle, kept apart from the items so an item file
+stays the benchmark text and nothing else:
+
+```json
+{ "language": "ko", "machine": false, "source": "…", "items": { "<itemId>": { … } } }
+```
+
+- MacGyver: `{ "problem": "…" }`, taken from the earlier MacGyver pilot's
+  `prompt_ko` (human-written).
+- CS4: `{ "instruction": "…", "constraints": ["…", …] }`, one Korean line per
+  English constraint and in the same order. These are machine translations, not
+  yet reviewed (`"machine": true`), and the screen says so.
+
+The loader attaches a translation to its item and refuses one for an unknown
+item or, for CS4, with a constraint count that differs from the instance's. A
+CS4 round slices the Korean constraints exactly as it slices the English, so the
+integrity test checks that no round's view carries a later round's constraint in
+either language. The agent never receives a translation.
+
 ## MacGyver pilot subset
 
 `pilotSubset` in the manifest lists the items the study runs, in order.

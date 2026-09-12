@@ -1,4 +1,7 @@
+import { alignUnits, applyTextEdit, summarizeTextEdits } from "../humanText";
 import type { Judgement } from "./answer";
+
+export { textDiff, type TextEdit } from "../humanText";
 
 /**
  * A participant's MacGyver answer: a judgement and a free-text memo, written
@@ -12,7 +15,7 @@ import type { Judgement } from "./answer";
  *
  * Pure, so the browser, the server's replay check, and the tests share it.
  */
-export type HumanMacGyverEventType = "text_edit" | "pause" | "judgement_set" | "submit";
+export type HumanMacGyverEventType = "text_edit" | "pause" | "judgement_set" | "translation_toggle" | "submit";
 
 export type HumanMacGyverEvent = {
   /** Position in the log; a replay refuses a gap or a reordering. */
@@ -31,25 +34,8 @@ export type HumanMacGyverState = {
 
 export const humanMemoLimits = { maxChars: 10000 } as const;
 
-export type TextEdit = { start: number; removed: string; inserted: string };
-
 export function initialHumanState(): HumanMacGyverState {
   return { text: "", judgement: null, submitted: false };
-}
-
-/** The smallest single replacement that turns one text into the other. */
-export function textDiff(before: string, after: string): TextEdit | null {
-  if (before === after) return null;
-  let start = 0;
-  const shorter = Math.min(before.length, after.length);
-  while (start < shorter && before[start] === after[start]) start += 1;
-  let endBefore = before.length;
-  let endAfter = after.length;
-  while (endBefore > start && endAfter > start && before[endBefore - 1] === after[endAfter - 1]) {
-    endBefore -= 1;
-    endAfter -= 1;
-  }
-  return { start, removed: before.slice(start, endBefore), inserted: after.slice(start, endAfter) };
 }
 
 type Result = { ok: true; state: HumanMacGyverState } | { ok: false; error: string };
@@ -58,21 +44,12 @@ export function applyHumanEvent(state: HumanMacGyverState, event: HumanMacGyverE
   if (state.submitted) return { ok: false, error: "The answer has been submitted; nothing can change it now." };
   switch (event.eventType) {
     case "text_edit": {
-      const { start, removed, inserted } = event.payload as Partial<TextEdit>;
-      if (!Number.isInteger(start) || typeof removed !== "string" || typeof inserted !== "string") {
-        return { ok: false, error: `Edit ${event.eventIndex} needs start, removed and inserted.` };
-      }
-      const at = start as number;
-      if (at < 0 || state.text.slice(at, at + removed.length) !== removed) {
-        return { ok: false, error: `Edit ${event.eventIndex} does not match the text it claims to change.` };
-      }
-      const text = state.text.slice(0, at) + inserted + state.text.slice(at + removed.length);
-      if (text.length > humanMemoLimits.maxChars) {
-        return { ok: false, error: `The answer is limited to ${humanMemoLimits.maxChars} characters.` };
-      }
-      return { ok: true, state: { ...state, text } };
+      const edited = applyTextEdit(state.text, event.payload, event.eventIndex, humanMemoLimits.maxChars);
+      return edited.ok ? { ok: true, state: { ...state, text: edited.text } } : edited;
     }
     case "pause":
+    case "translation_toggle":
+      // Process markers: they change nothing in the answer.
       return { ok: true, state };
     case "judgement_set": {
       const value = event.payload.value;
@@ -127,54 +104,6 @@ export type StepChange = {
   previous: string | null;
 };
 
-type AlignedChange = Omit<StepChange, "eventIndex" | "timestampMs">;
-
-/**
- * Line-level alignment of two step lists (longest common subsequence). Within
- * a run of unmatched lines, a removed line paired with an added one is a
- * revision; the rest are additions or deletions.
- */
-function alignSteps(before: readonly string[], after: readonly string[]): AlignedChange[] {
-  const rows = before.length;
-  const columns = after.length;
-  const common = Array.from({ length: rows + 1 }, () => new Array<number>(columns + 1).fill(0));
-  for (let i = rows - 1; i >= 0; i -= 1) {
-    for (let j = columns - 1; j >= 0; j -= 1) {
-      common[i][j] = before[i] === after[j] ? common[i + 1][j + 1] + 1 : Math.max(common[i + 1][j], common[i][j + 1]);
-    }
-  }
-  const changes: AlignedChange[] = [];
-  let removed: Array<[number, string]> = [];
-  let added: Array<[number, string]> = [];
-  const flush = () => {
-    const pairs = Math.min(removed.length, added.length);
-    for (let k = 0; k < pairs; k += 1) {
-      changes.push({ change: "revised", step: added[k][0] + 1, text: added[k][1], previous: removed[k][1] });
-    }
-    for (const [index, line] of added.slice(pairs)) changes.push({ change: "added", step: index + 1, text: line, previous: null });
-    for (const [index, line] of removed.slice(pairs)) changes.push({ change: "deleted", step: index + 1, text: null, previous: line });
-    removed = [];
-    added = [];
-  };
-  let i = 0;
-  let j = 0;
-  while (i < rows || j < columns) {
-    if (i < rows && j < columns && before[i] === after[j]) {
-      flush();
-      i += 1;
-      j += 1;
-    } else if (j < columns && (i >= rows || common[i][j + 1] >= common[i + 1][j])) {
-      added.push([j, after[j]]);
-      j += 1;
-    } else {
-      removed.push([i, before[i]]);
-      i += 1;
-    }
-  }
-  flush();
-  return changes;
-}
-
 /**
  * Step-level changes between consecutive pauses - the moves an agent's
  * add_step / revise_step / delete_step are compared with. Text typed after the
@@ -186,8 +115,8 @@ export function stepChangesFromEvents(events: readonly HumanMacGyverEvent[]): St
   const changes: StepChange[] = [];
   const settle = (event: HumanMacGyverEvent) => {
     const steps = stepsFromText(state.text);
-    for (const change of alignSteps(settled, steps)) {
-      changes.push({ eventIndex: event.eventIndex, timestampMs: event.timestampMs, ...change });
+    for (const { change, position, text, previous } of alignUnits(settled, steps)) {
+      changes.push({ eventIndex: event.eventIndex, timestampMs: event.timestampMs, change, step: position, text, previous });
     }
     settled = steps;
   };
@@ -203,13 +132,8 @@ export function stepChangesFromEvents(events: readonly HumanMacGyverEvent[]): St
 }
 
 export function summarizeHumanProcess(events: readonly HumanMacGyverEvent[]) {
-  const edits = events.filter(event => event.eventType === "text_edit");
   return {
-    edits: edits.length,
-    charsInserted: edits.reduce((sum, event) => sum + String(event.payload.inserted ?? "").length, 0),
-    charsRemoved: edits.reduce((sum, event) => sum + String(event.payload.removed ?? "").length, 0),
-    pastes: edits.filter(event => event.payload.source === "paste").length,
-    pauses: events.filter(event => event.eventType === "pause").length,
+    ...summarizeTextEdits(events),
     judgementChanges: events.filter(event => event.eventType === "judgement_set").length
   };
 }

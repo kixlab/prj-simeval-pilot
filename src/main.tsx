@@ -2,6 +2,7 @@ import { StrictMode, type ReactElement } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import AudraMode from "./audra/AudraMode";
+import Cs4Mode from "./cs4/Cs4Mode";
 import TaskLauncher from "./launcher/TaskLauncher";
 import MacGyverMode from "./macgyver/MacGyverMode";
 import TaskPlaceholder from "./launcher/TaskPlaceholder";
@@ -24,7 +25,8 @@ import "./style.css";
 // actually run.
 const taskScreens: Record<string, () => ReactElement> = {
   "audra-incomplete-shapes": () => <AudraMode />,
-  "macgyver-problem-solving": () => <MacGyverMode />
+  "macgyver-problem-solving": () => <MacGyverMode />,
+  "cs4-creative-writing": () => <Cs4Mode />
 };
 
 function screenFor(route: ReturnType<typeof resolveRoute>): ReactElement {

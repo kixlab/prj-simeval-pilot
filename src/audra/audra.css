@@ -155,6 +155,37 @@
   line-height: 1.4;
 }
 
+.audra-banner-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 14px;
+}
+
+/* A translation sits under the English it translates, quieter than it. */
+.audra-ko {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #5a5a56;
+}
+
+.audra-toggle {
+  padding: 5px 11px;
+  border: 1px solid #c8c8c4;
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.audra-toggle--block {
+  margin: 0 0 14px;
+}
+
 .audra-canvas {
   display: block;
   width: 100%;

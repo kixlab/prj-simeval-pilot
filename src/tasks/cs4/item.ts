@@ -40,6 +40,16 @@ export type Cs4Instance = {
   constraints: readonly string[];
   datasetRef: string | null;
   notes: string | null;
+  /** Reading aids from data/tasks/cs4/translations/<language>.json; the English text stays the stimulus. */
+  translations?: { ko?: Cs4Translation };
+};
+
+export type Cs4Translation = {
+  instruction: string;
+  /** Aligned with `constraints`, one for one. */
+  constraints: readonly string[];
+  source: string;
+  machine: boolean;
 };
 
 export type Cs4Round = {
@@ -72,25 +82,44 @@ export function cs4Rounds(instance: Cs4Instance): readonly Cs4Round[] {
  * rather than merely unrendered, so a round cannot leak the next one through
  * the page source or a network response.
  */
-export type Cs4InstanceView = Omit<Cs4Instance, "constraints"> & {
+export type Cs4InstanceView = Omit<Cs4Instance, "constraints" | "translations"> & {
   round: number;
   stage: number;
   totalRounds: number;
   constraints: readonly string[];
   newConstraints: readonly string[];
+  /** Cut to the round like the constraints themselves, so a translation cannot leak a later round. */
+  translations?: {
+    ko?: Omit<Cs4Translation, "constraints"> & { constraints: readonly string[]; newConstraints: readonly string[] };
+  };
 };
 
 export function participantView(instance: Cs4Instance, round: number): Cs4InstanceView {
   const rounds = cs4Rounds(instance);
   const current = rounds[Math.min(Math.max(round, 1), rounds.length) - 1];
-  const { constraints: _all, ...rest } = instance;
+  const { constraints: _all, translations, ...rest } = instance;
+  const previousStage = current.stage - current.newConstraints.length;
+  const ko = translations?.ko;
   return {
     ...rest,
     round: current.round,
     stage: current.stage,
     totalRounds: rounds.length,
     constraints: current.constraints,
-    newConstraints: current.newConstraints
+    newConstraints: current.newConstraints,
+    ...(ko
+      ? {
+          translations: {
+            ko: {
+              instruction: ko.instruction,
+              constraints: ko.constraints.slice(0, current.stage),
+              newConstraints: ko.constraints.slice(previousStage, current.stage),
+              source: ko.source,
+              machine: ko.machine
+            }
+          }
+        }
+      : {})
   };
 }
 
