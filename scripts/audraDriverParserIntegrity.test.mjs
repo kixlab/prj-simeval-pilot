@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { extractToolCall } from "./audraToolCallParser.mjs";
+import { extractReasoning, extractToolCall, stripThinkTags } from "./audraToolCallParser.mjs";
 
 // Replies shaped the way 2B-class vision models actually answer.
 
@@ -91,6 +91,19 @@ for (const reply of [
   assert.equal(result.call.tool, "insert_image");
   assert.equal(result.call.points, undefined);
   assert.equal(result.call.href, undefined, "unknown fields must not be forwarded");
+}
+
+// Thinking models whose chat template opens <think> in the prompt reply with
+// only the closing tag. The trace is still captured, and its braces never
+// become the tool call.
+{
+  const reply = 'The arch could be a lantern {maybe}.\n</think>\n{"tool":"draw_stroke","points":[[1,2],[3,4]]}';
+  assert.deepEqual(extractReasoning(reply).thinkBlocks, ["The arch could be a lantern {maybe}."]);
+  assert.equal(stripThinkTags(reply), '{"tool":"draw_stroke","points":[[1,2],[3,4]]}');
+  assert.equal(extractToolCall(stripThinkTags(reply)).ok, true);
+  // A complete span is left as it is.
+  assert.deepEqual(extractReasoning("<think>a</think> b").thinkBlocks, ["a"]);
+  assert.equal(stripThinkTags("no thinking here"), "no thinking here");
 }
 
 console.log("audra driver parser integrity tests passed");

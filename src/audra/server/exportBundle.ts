@@ -48,6 +48,7 @@ export type ExportRequest = {
   agentRun?: Record<string, unknown> | null;
   runStats?: Record<string, unknown> | null;
   rejections?: unknown[];
+  protocol?: Record<string, unknown> | null;
   thinkAloud?: readonly ThinkAloudChunk[];
   /** Archival think-aloud audio, base64. Written verbatim; never transcoded. */
   audioBase64?: string | null;

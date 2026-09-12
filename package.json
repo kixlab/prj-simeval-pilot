@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit",
     "test:task-launcher": "node scripts/taskLauncherIntegrity.test.mjs",
     "test:task-items": "node scripts/taskItemsIntegrity.test.mjs",
+    "test:task-timing": "node scripts/taskTimingIntegrity.test.mjs",
     "test:think-aloud": "node scripts/thinkAloudIntegrity.test.mjs",
     "test:element-mutations": "node scripts/elementMutationIntegrity.test.mjs",
     "test:data-collection": "node scripts/dataCollectionIntegrity.test.mjs",
@@ -16,12 +17,20 @@
     "test:agent-transforms": "node scripts/agentTransformIntegrity.test.mjs",
     "test:audra": "node scripts/audraCanonicalIntegrity.test.mjs",
     "test:audra-driver": "node scripts/audraDriverParserIntegrity.test.mjs",
-    "audra:agent": "node scripts/audraAgentDriver.mjs",
+    "test:agent-strategies": "node scripts/agentStrategyIntegrity.test.mjs",
+    "test:text-tasks": "node scripts/textTaskEngineIntegrity.test.mjs",
+    "cs4:import": "node scripts/importCs4.mjs",
+    "agent:run": "node scripts/agentDriver.mjs",
+    "agent:sweep": "node scripts/agentSweep.mjs",
+    "agent:matrix": "node scripts/agentMatrix.mjs",
+    "test:agent-matrix": "node scripts/agentMatrixIntegrity.test.mjs",
+    "audra:agent": "node scripts/agentDriver.mjs --task audra",
     "test:audra-export": "node scripts/audraExportIntegrity.test.mjs",
     "test:audra-scoring-image": "node scripts/audraScoringImageIntegrity.test.mjs",
     "audra:verify": "node scripts/audraVerifyBundle.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.125.0",
     "@excalidraw/excalidraw": "^0.17.0",
     "@google-cloud/speech": "^7.5.0",
     "@resvg/resvg-js": "^2.6.2",
@@ -33,8 +42,8 @@
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.2.0",
+    "esbuild": "^0.18.20",
     "typescript": "^5.5.0",
-    "vite": "^4.5.0",
-    "esbuild": "^0.18.20"
+    "vite": "^4.5.0"
   }
 }

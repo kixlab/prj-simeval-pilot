@@ -52,6 +52,8 @@ export type BundleContext = {
   agentRun?: Record<string, unknown> | null;
   runStats?: Record<string, unknown> | null;
   rejections?: unknown[];
+  /** Time limit and how the trial ended, recorded the same way for both actors. */
+  protocol?: Record<string, unknown> | null;
   /** Human process trace. Kept beside the event log, never inside it. */
   thinkAloud?: readonly ThinkAloudChunk[];
   audioFileName?: string | null;
@@ -129,6 +131,7 @@ export function buildSessionJson(context: BundleContext) {
           validationErrors: validateThinkAloudChunks(context.thinkAloud)
         }
       : null,
+    protocol: context.protocol ?? null,
     agentRun: context.agentRun ?? null,
     runStats: context.runStats ?? null,
     rejections: context.rejections ?? []

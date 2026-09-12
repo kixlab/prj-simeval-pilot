@@ -69,6 +69,12 @@ served, and `/api/tasks/:taskId/items` returns only what a solver may see: no
 MacGyver answer key, and no CS4 constraint from a round the participant has not
 reached. See [docs/task-items.md](docs/task-items.md) and `data/tasks/README.md`.
 
+Agents run on all three tasks through one driver, `scripts/agentDriver.mjs`
+(`--task audra | macgyver | cs4`), under three action strategies (one-shot,
+single, multi) with a five-minute limit per trial or per CS4 round. The limits
+live in `src/tasks/taskTiming.json`, which the human screens read too. See
+[docs/agent-strategies.md](docs/agent-strategies.md).
+
 > Free Draw + Text feasibility experiment: this branch enables Agent mode and `/api/agent-decision` directly in code. Both Human and Agent operations are restricted to free drawing and text creation. The two enable flags below are retained only for configuration compatibility.
 
 ## Environment configuration

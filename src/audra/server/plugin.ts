@@ -246,6 +246,11 @@ function send(response: ServerResponse, statusCode: number, payload: unknown) {
   response.end(JSON.stringify(payload));
 }
 
+/** The trial's time limit and how it ended, as the client reports it; an object or nothing. */
+function readProtocol(value: unknown) {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+}
+
 type ExportContext = AudraPluginOptions & {
   projectRoot: string;
   publicDir: string;
@@ -281,7 +286,8 @@ async function handleExport(request: IncomingMessage, response: ServerResponse, 
       appCommit: context.appCommit,
       agentRun: record.agentRun as unknown as Record<string, unknown>,
       runStats: record.runStats as unknown as Record<string, unknown>,
-      rejections: record.rejections
+      rejections: record.rejections,
+      protocol: readProtocol(body.protocol)
     };
   } else {
     const stimulus = stimulusById(typeof body.stimulusId === "string" ? body.stimulusId : "");
@@ -317,7 +323,8 @@ async function handleExport(request: IncomingMessage, response: ServerResponse, 
       appCommit: context.appCommit,
       thinkAloud: Array.isArray(body.thinkAloud) ? body.thinkAloud : undefined,
       audioBase64: typeof body.audioBase64 === "string" ? body.audioBase64 : null,
-      audioMimeType: typeof body.audioMimeType === "string" ? body.audioMimeType : null
+      audioMimeType: typeof body.audioMimeType === "string" ? body.audioMimeType : null,
+      protocol: readProtocol(body.protocol)
     };
   }
 

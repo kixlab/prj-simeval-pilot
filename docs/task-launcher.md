@@ -6,7 +6,9 @@ picks the task they were asked to do, and is handed to that task's own screen.
 > Two of the three tasks are **not implemented**. `macgyver-problem-solving`
 > and `cs4-creative-writing` currently resolve to a description page that states
 > what is decided and what is missing. Nothing on those pages records or exports
-> anything.
+> anything. Their agent environment is in place - agents can already run both
+> tasks through `scripts/agentDriver.mjs`, see [agent-strategies.md](agent-strategies.md) -
+> but the participant screens are not.
 
 ## Screens
 

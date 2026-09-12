@@ -1,4 +1,5 @@
-// Tolerant reader for small vision-language model replies.
+// Tolerant reader for small vision-language model replies on the
+// incomplete-shapes task.
 //
 // 2B-class models wrap JSON in prose, fence it, and reach for key names the
 // prompt never mentioned. Repairing that here keeps the *server* contract
@@ -6,7 +7,10 @@
 // Every repair is counted, because leniency the driver grants an agent is
 // assistance a human participant does not get.
 
-/** Small vision models emit prose, code fences, and loose key names. Repairs are counted. */
+import { extractCall, extractCallBatch, readThought, readToolName } from "./agentReplyParser.mjs";
+
+export { extractReasoning, stripThinkTags } from "./agentReplyParser.mjs";
+
 /**
  * Coerces only genuine numbers and numeric strings. Plain `Number()` would turn
  * null, "", [] and true into 0 and silently fabricate a coordinate the model
@@ -21,87 +25,21 @@ function toCoordinate(value) {
   return null;
 }
 
-/**
- * Pulls the model's reasoning out of one reply.
- *
- * Three channels, because open-weight servers expose thinking differently:
- *   - `reasoning_content` on the message (vLLM with --reasoning-parser, and
- *     DeepSeek-style APIs)
- *   - <think>...</think> spans inside the content (Qwen3 and friends when the
- *     parser is off, so the tags arrive verbatim)
- *   - a `thought` field the prompt asks for, which is all a non-reasoning model
- *     such as Gemma or InternVL can give
- *
- * The trace is process data about the actor, like a human think-aloud. It is
- * kept out of the canvas event log and out of every exported image.
- */
-export function extractReasoning(content, message = {}) {
-  const thinkBlocks = [];
-  const pattern = /<(think|thinking|reasoning)>([\s\S]*?)<\/\1>/gi;
-  let match;
-  while ((match = pattern.exec(content ?? "")) != null) {
-    const text = match[2].trim();
-    if (text) thinkBlocks.push(text);
-  }
-  const reasoningContent =
-    typeof message.reasoning_content === "string" && message.reasoning_content.trim()
-      ? message.reasoning_content.trim()
-      : typeof message.reasoning === "string" && message.reasoning.trim()
-        ? message.reasoning.trim()
-        : null;
-  return {
-    reasoningContent,
-    thinkBlocks,
-    // Where the trace came from, so a mixed-model dataset stays interpretable.
-    channels: [
-      reasoningContent ? "reasoning_content" : null,
-      thinkBlocks.length > 0 ? "think_tags" : null
-    ].filter(Boolean)
-  };
-}
-
-/** Removes think spans so they are never mistaken for the tool call itself. */
-export function stripThinkTags(content) {
-  return (content ?? "").replace(/<(think|thinking|reasoning)>[\s\S]*?<\/\1>/gi, "").trim();
-}
-
-export function extractToolCall(text) {
+/** Normalizes one already-parsed call object into the canonical call shape. */
+export function normalizeAudraCall(parsed) {
   const repairs = [];
-  let candidate = text.trim();
-
-  const fenced = /```(?:json)?\s*([\s\S]*?)```/i.exec(candidate);
-  if (fenced) {
-    candidate = fenced[1].trim();
-    repairs.push("stripped_code_fence");
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return { ok: false, error: "Reply was not an object.", repairs };
   }
 
-  const start = candidate.indexOf("{");
-  const end = candidate.lastIndexOf("}");
-  if (start === -1 || end === -1 || end <= start) return { ok: false, error: "No JSON object in the reply." };
-  if (start > 0 || end < candidate.length - 1) repairs.push("trimmed_surrounding_prose");
-  candidate = candidate.slice(start, end + 1);
-
-  let parsed;
-  try {
-    parsed = JSON.parse(candidate);
-  } catch (error) {
-    return { ok: false, error: `Unparseable JSON: ${error.message}`, repairs };
-  }
-  if (!parsed || typeof parsed !== "object") return { ok: false, error: "Reply was not an object.", repairs };
-
-  // Accept the aliases these models reach for instead of `tool`.
-  let tool = parsed.tool ?? parsed.action ?? parsed.name ?? parsed.function;
-  if (parsed.tool == null && tool != null) repairs.push("aliased_tool_key");
-  if (typeof tool !== "string") return { ok: false, error: "Missing tool name.", repairs };
-  tool = tool.trim();
+  const tool = readToolName(parsed, repairs);
+  if (!tool) return { ok: false, error: "Missing tool name.", repairs };
 
   const call = { tool };
 
   // The prompted rationale. Non-reasoning models have no other channel, so it
   // is read from several key names and kept beside the call rather than in it.
-  const thought = parsed.thought ?? parsed.reasoning ?? parsed.rationale ?? parsed.explanation;
-  const promptedThought = typeof thought === "string" && thought.trim() ? thought.trim() : null;
-  if (promptedThought && parsed.thought == null) repairs.push("aliased_thought_key");
+  const promptedThought = readThought(parsed, repairs);
   if (tool === "set_description") {
     const text = parsed.text ?? parsed.description ?? parsed.arguments?.text;
     if (parsed.text == null && text != null) repairs.push("aliased_text_key");
@@ -143,4 +81,14 @@ export function extractToolCall(text) {
     if (typeof width === "number" && Number.isFinite(width)) call.width = width;
   }
   return { ok: true, call, repairs, promptedThought };
+}
+
+/** Reads exactly one tool call. A reply holding several is a failure, not a choice. */
+export function extractToolCall(text) {
+  return extractCall(text, normalizeAudraCall);
+}
+
+/** Reads an ordered list of tool calls; see extractCallBatch. */
+export function extractToolCallBatch(text) {
+  return extractCallBatch(text, normalizeAudraCall);
 }

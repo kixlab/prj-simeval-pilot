@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { formatClock, isTimed, remainingMs, submitOpen, type TaskTiming } from "../tasks/timing";
 import { canonicalArtboard, eraserWidth, maxDescriptionLength, pencilWidth } from "./artboard";
 import { eraseFromStrokes, type ForegroundStroke } from "./eraser";
 import type { StrokePoint } from "./events";
@@ -10,12 +11,15 @@ import {
   toArtboardPoint,
   type HumanTool
 } from "./humanInput";
+import type { AudraTrialState } from "./reducer";
 import { loadStimulusImage, renderTrial } from "./render";
 import { descriptionPrompt, taskInstruction, type Stimulus } from "./stimulus";
 import { useAudraTrial } from "./useAudraTrial";
 import { useThinkAloud } from "./useThinkAloud";
 
-type TrialPhase = "instructions" | "drawing" | "confirming" | "submitted";
+type TrialPhase = "instructions" | "drawing" | "confirming" | "submitted" | "time_up";
+
+type EndedBy = "submitted" | "time_limit";
 
 async function blobToBase64(blob: Blob) {
   const bytes = new Uint8Array(await blob.arrayBuffer());
@@ -24,15 +28,24 @@ async function blobToBase64(blob: Blob) {
   return btoa(binary);
 }
 
+function spokenDuration(seconds: number) {
+  if (seconds % 60 === 0) return `${seconds / 60} minute${seconds === 60 ? "" : "s"}`;
+  return `${formatClock(seconds * 1000)} (minutes:seconds)`;
+}
+
 export type AudraTaskProps = {
   sessionId: string;
   trialId: string;
   actorId: string;
   stimulus: Stimulus;
+  /** The clock this trial runs under; see src/tasks/taskTiming.json. */
+  timing: TaskTiming;
+  /** Whether the session overrode the configured timing; recorded with the trial. */
+  timingOverridden?: boolean;
   onSubmitted?: (payload: { trialId: string }) => void;
 };
 
-export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }: AudraTaskProps) {
+export function AudraTask({ sessionId, trialId, actorId, stimulus, timing, timingOverridden = false, onSubmitted }: AudraTaskProps) {
   const [phase, setPhase] = useState<TrialPhase>("instructions");
   const [tool, setTool] = useState<HumanTool>("pencil");
   const [descriptionDraft, setDescriptionDraft] = useState("");
@@ -41,6 +54,10 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
   const [background, setBackground] = useState<HTMLImageElement | null>(null);
   const [backgroundError, setBackgroundError] = useState<string | null>(null);
   const [exportStatus, setExportStatus] = useState<string | null>(null);
+  // The clock starts when the participant presses Start, as an agent's does at
+  // its first observation - not when the page loads.
+  const [clockStartedAtEpochMs, setClockStartedAtEpochMs] = useState<number | null>(null);
+  const [nowEpochMs, setNowEpochMs] = useState(() => Date.now());
 
   const trial = useAudraTrial({
     sessionId,
@@ -54,6 +71,9 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
   const thinkAloudChunksRef = useRef<unknown[]>([]);
   const trialStateRef = useRef(trial.state);
   trialStateRef.current = trial.state;
+  const descriptionDraftRef = useRef(descriptionDraft);
+  descriptionDraftRef.current = descriptionDraft;
+  const endingRef = useRef(false);
 
   const thinkAloud = useThinkAloud({
     sessionId,
@@ -69,6 +89,11 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
   const livePointsRef = useRef<StrokePoint[]>([]);
   const activePointerRef = useRef<number | null>(null);
 
+  const timed = isTimed(timing);
+  const clockElapsedMs = clockStartedAtEpochMs == null ? 0 : nowEpochMs - clockStartedAtEpochMs;
+  const timeLeftMs = remainingMs(timing, clockElapsedMs);
+  const canSubmitNow = submitOpen(timing, clockElapsedMs);
+
   useEffect(() => {
     let cancelled = false;
     loadStimulusImage(stimulus)
@@ -82,6 +107,13 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
       cancelled = true;
     };
   }, [stimulus]);
+
+  // The countdown ticks only while the participant can still act.
+  useEffect(() => {
+    if (!timed || (phase !== "drawing" && phase !== "confirming")) return;
+    const interval = window.setInterval(() => setNowEpochMs(Date.now()), 250);
+    return () => window.clearInterval(interval);
+  }, [phase, timed]);
 
   const strokeWidth = tool === "pencil" ? pencilWidth.default : eraserWidth.default;
 
@@ -229,12 +261,61 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
 
   const commitDescription = useCallback(
     (text: string) => {
-      if (text === trial.state.description) return;
-      trial.dispatch(
+      if (text === trialStateRef.current.description) return trialStateRef.current;
+      const result = trial.dispatch(
         controlDraft("description_update", { ...context, timestampMs: trial.elapsedMs() }, text)
       );
+      return result.ok ? result.state : trialStateRef.current;
     },
     [context, trial]
+  );
+
+  /**
+   * Hands the final log to the server, which writes the export bundle. The
+   * trial is already final when this runs; a failure here cannot alter it.
+   */
+  const exportTrial = useCallback(
+    async (finalState: AudraTrialState, endedBy: EndedBy) => {
+      const endedAtEpochMs = Date.now();
+      try {
+        setExportStatus("Finishing the audio recording…");
+        await thinkAloud.stop();
+        const audio = thinkAloud.audioBlob();
+        setExportStatus("Saving…");
+        const response = await fetch("/api/audra/export", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId,
+            trialId,
+            stimulusId: stimulus.stimulusId,
+            actorType: "human",
+            actorId,
+            events: finalState.events,
+            startedAt: new Date(startedAtEpochMs).toISOString(),
+            endedAt: new Date(endedAtEpochMs).toISOString(),
+            // The same block an agent run records, so the two can be compared.
+            protocol: {
+              scope: "trial",
+              timeLimitSec: timing.timeLimitSec,
+              finalizeWindowSec: timed ? timing.finalizeWindowSec : null,
+              overridden: timingOverridden,
+              endedBy,
+              clockStartedAtMs: clockStartedAtEpochMs == null ? null : clockStartedAtEpochMs - startedAtEpochMs,
+              activeMs: clockStartedAtEpochMs == null ? null : endedAtEpochMs - clockStartedAtEpochMs
+            },
+            thinkAloud: thinkAloudChunksRef.current,
+            audioBase64: audio ? await blobToBase64(audio) : null,
+            audioMimeType: audio?.type ?? null
+          })
+        });
+        const payload = await response.json();
+        setExportStatus(payload.ok ? `Saved to ${payload.baseName}` : `Export failed: ${payload.error}`);
+      } catch (error) {
+        setExportStatus(`Export failed: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+    [actorId, clockStartedAtEpochMs, sessionId, startedAtEpochMs, stimulus.stimulusId, thinkAloud, timed, timing, timingOverridden, trialId]
   );
 
   const requestSubmit = useCallback(() => {
@@ -242,51 +323,47 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
       setNotice("Draw something using the starting lines before submitting.");
       return;
     }
+    if (!submitOpen(timing, Date.now() - (clockStartedAtEpochMs ?? Date.now()))) {
+      setNotice(`Keep drawing. Submit opens in the last ${spokenDuration(timing.finalizeWindowSec)}.`);
+      return;
+    }
     commitDescription(descriptionDraft);
     setPhase("confirming");
-  }, [commitDescription, descriptionDraft, trial.hasDrawingAttempt]);
+  }, [clockStartedAtEpochMs, commitDescription, descriptionDraft, timing, trial.hasDrawingAttempt]);
 
   const confirmSubmit = useCallback(async () => {
+    if (endingRef.current) return;
     const result = trial.dispatch(controlDraft("submit", { ...context, timestampMs: trial.elapsedMs() }));
     if (!result.ok) {
       setNotice(result.error);
       setPhase("drawing");
       return;
     }
+    endingRef.current = true;
     setPhase("submitted");
     onSubmitted?.({ trialId });
+    await exportTrial(result.state, "submitted");
+  }, [context, exportTrial, onSubmitted, trial, trialId]);
 
-    // The trial is already final at this point. Handing the log to the server
-    // writes the export bundle; it cannot alter the drawing, and a failure here
-    // leaves the submitted state untouched.
-    try {
-      setExportStatus("Finishing the audio recording…");
-      await thinkAloud.stop();
-      const audio = thinkAloud.audioBlob();
-      setExportStatus("Saving…");
-      const response = await fetch("/api/audra/export", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId,
-          trialId,
-          stimulusId: stimulus.stimulusId,
-          actorType: "human",
-          actorId,
-          events: result.state.events,
-          startedAt: new Date(startedAtEpochMs).toISOString(),
-          endedAt: new Date().toISOString(),
-          thinkAloud: thinkAloudChunksRef.current,
-          audioBase64: audio ? await blobToBase64(audio) : null,
-          audioMimeType: audio?.type ?? null
-        })
-      });
-      const payload = await response.json();
-      setExportStatus(payload.ok ? `Saved to ${payload.baseName}` : `Export failed: ${payload.error}`);
-    } catch (error) {
-      setExportStatus(`Export failed: ${error instanceof Error ? error.message : String(error)}`);
-    }
-  }, [actorId, context, onSubmitted, sessionId, startedAtEpochMs, stimulus.stimulusId, thinkAloud, trial, trialId]);
+  /**
+   * Time is up. Nothing is submitted on the participant's behalf, as nothing is
+   * for an agent: the canvas locks and the drawing is saved as it stands. A
+   * stroke still in progress is cut off rather than recorded; a typed answer is
+   * the participant's own and is committed rather than lost.
+   */
+  const endByTime = useCallback(async () => {
+    if (endingRef.current) return;
+    endingRef.current = true;
+    activePointerRef.current = null;
+    livePointsRef.current = [];
+    const finalState = commitDescription(descriptionDraftRef.current);
+    setPhase("time_up");
+    await exportTrial(finalState, "time_limit");
+  }, [commitDescription, exportTrial]);
+
+  useEffect(() => {
+    if (timed && (phase === "drawing" || phase === "confirming") && timeLeftMs <= 0) void endByTime();
+  }, [endByTime, phase, timeLeftMs, timed]);
 
   if (phase === "instructions") {
     return (
@@ -299,6 +376,13 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
             <li>All four starting lines must be part of your drawing.</li>
             <li>You have a pencil, an eraser, and Undo Last. Nothing else.</li>
             <li>Afterwards you will be asked what you drew.</li>
+            {timed && (
+              <li>
+                You have {spokenDuration(timing.timeLimitSec)}. Keep working on the drawing for the whole
+                time; Submit opens in the last {spokenDuration(timing.finalizeWindowSec)}. When time runs
+                out, the drawing is saved as it is.
+              </li>
+            )}
           </ul>
           {stimulus.source === "development" && (
             <p className="audra-dev-notice">
@@ -316,6 +400,9 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
               // A refused or broken microphone must never cost the participant
               // the trial, so the error is surfaced and the trial starts anyway.
               await thinkAloud.start();
+              const now = Date.now();
+              setClockStartedAtEpochMs(now);
+              setNowEpochMs(now);
               setPhase("drawing");
             }}
           >
@@ -326,12 +413,16 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
     );
   }
 
-  if (phase === "submitted") {
+  if (phase === "submitted" || phase === "time_up") {
     return (
       <div className="audra-shell">
         <section className="audra-instructions">
-          <h1>Submitted</h1>
-          <p>Thank you. Your drawing has been recorded and can no longer be changed.</p>
+          <h1>{phase === "submitted" ? "Submitted" : "Time is up"}</h1>
+          <p>
+            {phase === "submitted"
+              ? "Thank you. Your drawing has been recorded and can no longer be changed."
+              : "Thank you. Your drawing has been recorded as it was when time ran out."}
+          </p>
           {exportStatus && <p className="audra-meta">{exportStatus}</p>}
         </section>
       </div>
@@ -364,6 +455,17 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
           </div>
 
           <div className="audra-controls">
+            {timed && (
+              <p className={canSubmitNow ? "audra-timer audra-timer--final" : "audra-timer"} role="timer">
+                <strong>{formatClock(timeLeftMs)}</strong> left
+                <span className="audra-timer-hint">
+                  {canSubmitNow
+                    ? " · finish your answer and submit"
+                    : ` · Submit opens in the last ${formatClock(timing.finalizeWindowSec * 1000)}`}
+                </span>
+              </p>
+            )}
+
             <div className="audra-toolbar" role="toolbar" aria-label="Drawing tools">
               <button
                 className={tool === "pencil" ? "audra-tool audra-tool--active" : "audra-tool"}
@@ -435,7 +537,7 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
               <button
                 className="audra-primary"
                 onClick={requestSubmit}
-                disabled={!trial.hasDrawingAttempt}
+                disabled={!trial.hasDrawingAttempt || !canSubmitNow}
               >
                 Submit
               </button>
@@ -443,7 +545,7 @@ export function AudraTask({ sessionId, trialId, actorId, stimulus, onSubmitted }
 
             <p className="audra-meta">
               Artboard {canonicalArtboard.width}x{canonicalArtboard.height} · stimulus{" "}
-              {stimulus.stimulusId} ({stimulus.source})
+              {stimulus.stimulusId} ({stimulus.source}) · pencil {strokeWidth === pencilWidth.default ? pencilWidth.default : strokeWidth}
             </p>
           </div>
         </div>

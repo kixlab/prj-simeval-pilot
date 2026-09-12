@@ -68,7 +68,8 @@ makes replay and the export bundle deterministic.
 | `src/audra/server/png.ts` | RGB PNG encoder, required by AuDrA's preprocessing |
 | `src/audra/server/exportBundle.ts` | Writes a bundle to disk; replays posted logs |
 | `src/audra/server/` | Authoritative trial registry and HTTP endpoints |
-| `scripts/audraAgentDriver.mjs` | Model-agnostic agent driver, plus a mock trajectory |
+| `scripts/agentDriver.mjs` | The shared agent driver (`--task audra`); see [agent-strategies.md](agent-strategies.md) |
+| `scripts/agentTasks/audra.mjs` | This task's prompt, tools, and mock trajectory for the driver |
 | `scripts/audraToolCallParser.mjs` | Tolerant reader for small-model replies |
 
 ### Coordinate system
@@ -185,25 +186,35 @@ isolation is the backstop.
 
 ### Running an agent
 
+This task runs under the shared agent driver. The action strategies, the
+five-minute limit, the providers and their trace kinds, and what each run
+records are described once, for every task, in
+[agent-strategies.md](agent-strategies.md).
+
 ```bash
 npm run dev                       # terminal 1
 
-# scripted trajectory - verifies the whole loop with no GPU
-node scripts/audraAgentDriver.mjs --driver mock --actor-id mock-1
+# canned replies - verifies the whole loop with no model
+node scripts/agentDriver.mjs --task audra --provider mock --strategy multi --actor-id mock-1
 
 # a local open-weight model behind any OpenAI-compatible server
-node scripts/audraAgentDriver.mjs \
+node scripts/agentDriver.mjs --task audra \
+  --provider local --strategy single \
   --endpoint http://127.0.0.1:8000/v1/chat/completions \
-  --model Qwen3-VL-2B-Instruct \
+  --model Qwen3-VL-2B-Thinking \
   --actor-id qwen3vl2b-run1 \
   --temperature 0.7 --top-p 0.9 --seed 1234 \
-  --observation-size 768 --max-turns 24 \
+  --observation-size 768 \
   --out runs/
+
+# every strategy against one model, interleaved, with a summary table
+npm run agent:sweep -- --task audra --provider openai --repeats 2
 ```
 
 The driver is a client like any other: the app server validates everything it
-sends. `--driver mock` replaces the model with a fixed trajectory, which is the
-fastest way to check the loop after a change.
+sends. `--provider mock` replaces the model with a fixed drawing, cut into
+replies to fit each strategy, which is the fastest way to check the loop after
+a change.
 
 Small vision models rarely emit clean JSON, so
 `scripts/audraToolCallParser.mjs` accepts fenced blocks, surrounding prose, key
@@ -270,6 +281,15 @@ or pressure.
 - During the trial only Pencil, Eraser, Undo Last, the description field, and
   Submit are present.
 - Submit opens an explicit confirmation before the trial ends.
+- The trial is timed like an agent's: the limit comes from
+  `src/tasks/taskTiming.json` (5 minutes, Submit open for the final minute), and
+  the clock starts at Start. A countdown stays on screen. When time runs out the
+  canvas locks, a stroke in progress is cut off, a typed answer is committed, and
+  the drawing is exported as it stands - nothing is submitted on the
+  participant's behalf. `?timeLimitSec=` / `?finalizeWindowSec=` override one
+  session; `session.json` records the `protocol` block, including whether the
+  timing was overridden and whether the trial ended by `submitted` or
+  `time_limit`.
 - Submission is refused without at least one visible mark. This rule is
   enforced in the reducer (`no_drawing_attempt`) and the refusal is recorded, so
   it is available as a behavioural signal rather than only a UI guard.
@@ -342,6 +362,7 @@ These are real and should be reported alongside any comparison.
 ```
 npm run test:audra          # canonical layer
 npm run test:audra-driver   # tolerant reply parser
+npm run test:agent-strategies  # one-shot / single / multi protocols, every task
 npm run test:audra-export   # bundle contents and determinism
 npm run test:audra-scoring-image  # RGB scoring PNG
 ```
@@ -383,19 +404,34 @@ and captures it from every channel an open-weight server might use:
 Think spans are stripped before the tool call is read, so a stray brace inside
 reasoning can never be parsed as the action.
 
-Each turn is written to `<trialId>.reasoning.jsonl`:
+Each model reply is written to `<trialId>.reasoning.jsonl` as one record,
+whatever the strategy. The calls it held and the revision range they moved the
+canvas through tie the trace to the marks it was about; call geometry stays in
+the run log and the event log.
 
 ```jsonc
 {
-  "trialId": "trial-…", "actorType": "agent", "actorId": "qwen3vl2b-run1",
-  "model": "Qwen3-VL-2B-Instruct", "turn": 3,
-  "tool": "draw_stroke", "accepted": true, "revision": 3,
-  "promptedThought": "The zigzag can be a folded paper shade.",
-  "reasoningContent": null, "thinkBlocks": [], "channels": [],
-  "finishReason": "stop", "usage": { "prompt_tokens": 1204, "completion_tokens": 88 },
+  "trialId": "trial-…", "actorType": "agent", "actorId": "qwen3vl2b-multi-r1",
+  "provider": "local", "model": "Qwen3-VL-2B-Thinking", "servedBy": "Qwen3-VL-2B-Thinking",
+  "fallbackRan": false, "strategy": "multi", "turn": 3,
+  "revisionBefore": 4, "revisionAfter": 6,
+  "calls": [
+    { "index": 0, "tool": "draw_stroke", "pointCount": 9, "status": "accepted", "revision": 5 },
+    { "index": 1, "tool": "draw_stroke", "pointCount": 4, "status": "accepted", "revision": 6 },
+    { "index": 2, "tool": "draw_stroke", "pointCount": 3, "status": "rejected", "code": "out_of_bounds" },
+    { "index": 3, "tool": "undo_last", "pointCount": null, "status": "skipped", "skipReason": "earlier_call_rejected" }
+  ],
+  "parseError": null,
+  "traceKind": "raw", "reasoningContent": null,
+  "thinkBlocks": ["The zigzag can be a folded paper shade …"], "channels": ["think_tags"],
+  "promptedThought": null,
+  "finishReason": "stop", "usage": { "prompt_tokens": 1204, "completion_tokens": 388 },
   "latencyMs": 1830, "rawReply": "…"
 }
 ```
+
+`traceKind` is `raw` for a model's own thinking, `summary` for a hosted
+provider's summary of it, and `none` when the reply carried neither.
 
 The trace is **process data about the actor**, like a human think-aloud. It is
 kept out of the canonical event log and out of every exported image, so it can

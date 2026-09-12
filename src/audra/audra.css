@@ -309,3 +309,28 @@
   font-size: 13px;
   line-height: 1.5;
 }
+
+.audra-timer {
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #f0f4f8;
+  color: #2d3a48;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.audra-timer strong {
+  font-size: 18px;
+}
+
+.audra-timer--final {
+  background: #fdf0e6;
+  color: #8a4b1f;
+}
+
+.audra-timer-hint {
+  font-size: 13px;
+}

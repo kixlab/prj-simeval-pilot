@@ -73,8 +73,8 @@ const catalog: readonly TaskDefinition[] = [
       "Scoring: feasibility / safety / effectiveness by the multi-agent judge, plus a pairwise novelty judge."
     ],
     remaining: [
-      "The five pilot items are not chosen yet; the item format and loader are in place and validated.",
-      "The participant screen, text-task session logging, think-aloud capture, and the export bundle still have to be built."
+      "The five pilot items are loaded, and the agent environment runs them under all three strategies; the participant screen, think-aloud capture, and the human export bundle still have to be built.",
+      "The licence position for using the released MacGyver items has not been recorded yet."
     ],
     reference: "Tian et al. (2024), MacGyver: Are Large Language Models Creative Problem Solvers?"
   },
@@ -98,8 +98,8 @@ const catalog: readonly TaskDefinition[] = [
       "Scoring: LitBench pairwise preference as the primary outcome, CS4 constraint satisfaction as the validity check, CS4 coherence as secondary."
     ],
     remaining: [
-      "No instances are loaded yet; the instance format, the three rounds, and the loader are in place and validated.",
-      "The revision editor, text-task session logging, think-aloud capture, and the export bundle still have to be built."
+      "The 50 official story-based instances are loaded (pilot subset: the ten from the earlier CS4 pilot), and the agent environment runs the three rounds under all three strategies.",
+      "The revision editor, think-aloud capture, and the human export bundle still have to be built."
     ],
     reference:
       "Atmakuru et al. (2024), CS4; Fein et al. (2026), LitBench."

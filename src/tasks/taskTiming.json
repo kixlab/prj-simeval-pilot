@@ -1,0 +1,8 @@
+{
+  "_comment": "Time limits for every task, for human participants and agents alike. The human screens and scripts/agentDriver.mjs both read this file, so one edit changes both; restart the dev server afterwards. One session can override it: ?timeLimitSec=&finalizeWindowSec= on a human task URL, --time-limit-sec / --finalize-window-sec on the driver. timeLimitSec 0 means untimed. The finishing call (Submit) opens only for the final finalizeWindowSec seconds. scope 'round' puts a fresh clock on every CS4 round.",
+  "tasks": {
+    "audra-incomplete-shapes": { "timeLimitSec": 300, "finalizeWindowSec": 60, "scope": "trial" },
+    "macgyver-problem-solving": { "timeLimitSec": 300, "finalizeWindowSec": 60, "scope": "trial" },
+    "cs4-creative-writing": { "timeLimitSec": 300, "finalizeWindowSec": 60, "scope": "round" }
+  }
+}

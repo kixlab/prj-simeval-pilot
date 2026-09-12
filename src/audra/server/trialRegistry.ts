@@ -32,6 +32,11 @@ export type AgentRunMetadata = {
   decodingParameters: Record<string, unknown> | null;
   seed: number | null;
   driver: string | null;
+  /** Action protocol the driver ran under: one-shot, single, or multi. */
+  strategy: string | null;
+  /** The run's time limit and final window; 0 means untimed. */
+  timeLimitSec: number | null;
+  finalizeWindowSec: number | null;
 };
 
 export type RejectionRecord = {
@@ -104,7 +109,10 @@ export function createTrial(input: {
       checkpoint: input.agentRun?.checkpoint ?? null,
       decodingParameters: input.agentRun?.decodingParameters ?? null,
       seed: input.agentRun?.seed ?? null,
-      driver: input.agentRun?.driver ?? null
+      driver: input.agentRun?.driver ?? null,
+      strategy: input.agentRun?.strategy ?? null,
+      timeLimitSec: input.agentRun?.timeLimitSec ?? null,
+      finalizeWindowSec: input.agentRun?.finalizeWindowSec ?? null
     },
     runStats: {
       toolCallCount: 0,

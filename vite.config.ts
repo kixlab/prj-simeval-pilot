@@ -110,8 +110,8 @@ export default defineConfig(({ mode }) => {
       react(),
       // Incomplete-shapes task API. Independent of the Excalidraw session endpoints.
       audraTaskPlugin({ appVersion: packageVersion, appCommit }),
-      // Read-only item endpoints for the two text tasks. Participant views only.
-      taskItemsPlugin(),
+      // Item endpoints and agent trials for the two text tasks. Participant views only.
+      taskItemsPlugin({ appVersion: packageVersion, appCommit }),
       {
         name: "simeval-google-stt",
         configureServer(server) {

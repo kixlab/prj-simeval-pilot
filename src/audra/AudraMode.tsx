@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { formatClock, isTimed, timingFromQuery } from "../tasks/timing";
 import AgentTrialHost from "./AgentTrialHost";
 import "./audra.css";
 import AudraTask from "./AudraTask";
@@ -13,6 +14,10 @@ function newId(prefix: string) {
  * Entry point for the `audra-incomplete-shapes` mode. Deliberately separate
  * from the Excalidraw session app: this mode shares no canvas, no toolbar, and
  * no scene state with it.
+ *
+ * The time limit comes from src/tasks/taskTiming.json, the file the agent
+ * driver reads too; `?timeLimitSec=` / `?finalizeWindowSec=` override it for one
+ * session.
  */
 export function AudraMode() {
   const query = useMemo(() => new URLSearchParams(window.location.search), []);
@@ -21,6 +26,10 @@ export function AudraMode() {
     query.get("stimulus") ?? developmentStimulus.stimulusId
   );
   const [trial, setTrial] = useState<{ sessionId: string; trialId: string } | null>(null);
+  const { timing, overridden, problems } = useMemo(
+    () => timingFromQuery("audra-incomplete-shapes", query),
+    [query]
+  );
 
   const stimulus = stimulusById(stimulusChoice) ?? developmentStimulus;
 
@@ -53,6 +62,17 @@ export function AudraMode() {
               ))}
             </select>
           </label>
+          <p className="audra-meta">
+            {isTimed(timing)
+              ? `Time limit ${formatClock(timing.timeLimitSec * 1000)}, Submit open for the last ${formatClock(timing.finalizeWindowSec * 1000)}`
+              : "Untimed"}
+            {overridden ? " (set by this link, not the configured default)" : ""}
+          </p>
+          {problems.map(problem => (
+            <p key={problem} className="audra-error">
+              {problem}
+            </p>
+          ))}
           <button
             className="audra-primary"
             disabled={participantId.trim().length === 0}
@@ -71,6 +91,8 @@ export function AudraMode() {
       trialId={trial.trialId}
       actorId={participantId.trim()}
       stimulus={stimulus}
+      timing={timing}
+      timingOverridden={overridden}
     />
   );
 }
