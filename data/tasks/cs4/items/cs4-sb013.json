@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb013",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words from the perspective of a president who wakes up from a wild party in a foreign country, finding himself amidst a humorous yet high-stakes international incident involving former KGB agents and CIA officials, as they scramble to manage the chaotic aftermath.",
+  "baseStory": "As soon as I cracked open one eye, the throbbing echo of last night’s revelry clanged against my skull. I was in a lavish bedroom decorated in a gaudy Rococo style, clearly not my presidential suite. This was not how I anticipated my morning in Moscow.\n\nBlearily, I tried reassembling pieces of the previous night. Despite a fuzzy memory, scenes of high-ranking officials chuckling and chugging vodka emerged, followed by a recollection of an uncanny arm wrestling match. Brilliant!\n\nIt started as an effort to foster international diplomacy between Russia and the United States, but the soiree quickly snowballed into a night fueled by copious bottles of the Kremlin’s finest reserves. As the president, I was at the heart of the festivities.\n\nA sharp knock at the door snapped my attention. I tried to raise myself from the silk sheets but winced at the woeful protestations of my body.\n\n\"Mr. President,\" a stern reply came from the other side. \"It's urgent!\" Once opened, standing before me was Agent Thompson, a veteran CIA official, his eyebrow arched in mild amusement at the sight of my modern-art disheveled state.\n\nAs he filled me in, the incident took shape. In our vodka-infused camaraderie, the conversation took an unexpected detour to the clandestine operations of Russia and America. A former KGB agent, his chest puffed out with patriotic bravado, decided to reveal classified information. Unlucky for him, the very CIA operatives he was now laughing with were recording each slurred word. Is this an international incident or an episode of Archer? \n\nPresently, an anxious knot of CIA and ex-KGB officials in hastily fastened suits joined us, attempting to contain the chaos stemming from last night's indiscretion.\n\nCondensing our frantic discussions of plausible deniability and damage control, I noticed my trusted Russian translator, Masha. Instead of translating our words, she was busily translating our fears into hilarious pantomimes for her deaf brother, Dima. Watching Dima's laughter bounce off the gilded walls lightened the tension-filled room. \n\nAmidst all this, I learned the KGB stalwart's classified reveal was obsolete; it was decommissioned years ago. The valuable nugget from last night’s revelry was an old anecdote about a false flag operation in ‘86. The spy world's equivalent of ghost stories around a campfire.\n\nMasha's signing, her brother's laughter, the increasingly humorous punitive options we were considering - a thought struck me. This was a complete farce, an elaborate game of personalized charades. We were trapped in a Cold War hangover, nursing relics of paranoia amidst roaring laughter.\n\nI called everyone’s attention and proposed an outrageous plan. We would announce a joint uncovering of an obsolete covert operation, putting a momentary spotlight on a time the world chose not to repeat. It was risky, bold, and just absurd enough to work. The room fell silent before erupting into laughter. The tension broken, and even Thompson chuckled.\n\nHours later, our announcement fueled an international buzz, raising questions, speculation, but importantly, it diffused the tensions born in that Rococo room. As both nations laughed at the absurdity of this old yarn, Dima’s laugh echoed in my ears, reminding me of the power of humor in the face of brewing turmoil.\n\nBack in my presidential suite, I slumped on the bed, reflecting on the wild party and the rollercoaster ride of the aftermath. Where vodka had failed, laughter became our diplomat, connecting ex-KGB agents, CIA officials, and a muddled president amidst a wild cross-cultural frenzy.",
+  "constraints": [
+    "The story should have a continuous flow of dialogue and action, keeping the pacing quick and frenetic.",
+    "The president asks 'Alex' the former KGB agent for a ride, but gets refused.",
+    "There should be various people including officials also passed out around the room.",
+    "The story begins with the president waking up to a hangover.",
+    "The CIA agents start securing sensitive material from the room.",
+    "The president tries to call for help using the director's phone.",
+    "The rescuers arrive and knock on the door.",
+    "The rest of the officials engage in conversation about their dilemma.",
+    "There should be a significant clue that indicates their location (e.g., beer can with foreign language).",
+    "The president wakes up his fellow official (CIA director) to discuss the situation and find a way out.",
+    "The narrative should include use of coarse language.",
+    "The president wakes up more Americans officials.",
+    "The room has functioning electronics, like a television.",
+    "The group is ushered into unmarked Russian cars.",
+    "The story should contain a level of self-deprecating humor from the American officials.",
+    "There must be signs of a wild party, like broken furniture around.",
+    "The narrative should include strands of dark humour.",
+    "The story should be written predominantly in first-person, from the point of view of the president.",
+    "Introduction of a former KGB agent named \"Alex.\"",
+    "The group picks up more officials on the way to their extraction point.",
+    "The story involves high-level international intrigue with both humorous and serious elements.",
+    "The president realizes he isn't in the White House.",
+    "The story should include tongue-in-cheek references to real-life international relations."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 14 (sb013); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

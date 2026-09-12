@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb044",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about two characters waking up injured and disoriented in a dark, empty room, forced to cooperate despite their past conflicts and mutual hostility to understand their mysterious situation.",
+  "baseStory": "The room was shrouded in an unsettling darkness, oppressive and penetrating. It coldly welcomed Jack and Amanda, who woke up with throbbing heads and scrambled memories. Their bodies hurt, their senses were unsettled, disorientation clouding their minds. A lingering and reciprocated hostility hung in the still air between them.\n\nJack was a former FBI agent; hard-hitting, no-nonsense and direct. He was used to getting himself out of tight spots. Amanda was a seasoned defense attorney; eloquent, strategic, sharp-witted. Jack believed in justice at any cost, whereas Amanda saw the justice system as an algorithm that could be manipulated. Together, they clashed like fire and water. \n\nTheir past encounters had been tumultuous. Amanda successfully overturned Jack's high-profile cases multiple times, freeing criminals through legal loopholes. This bred contempt between the two, to say the least.  \n\nNow, they woke up in the same dark room, disoriented and in pain. They did not recall how they got there, and the last thing either could remember was going about their normal days. \n\nJack grunted, his voice echoing in the emptiness, \"Amanda?\"\nAmanda grumbled, \"I was afraid you'd be here too, Jack.\" \nShe tried to stand but winced, bracing herself against the wall. They were hurt but there was no time to ponder over injuries. \n\nJack's investigative instincts began to kick in. He could tell they were in a large room by the way their voices echoed. He felt the walls — cold, damp, probably concrete. \n\nBehind the veil of darkness and their mutual resentment, they both understood that cooperation was vital-if they were to get out. \n\n\"If we stop undermining each other long enough, maybe we can find a way out,\" Jack suggested grudgingly. \n\"For once, I agree, Agent Jack\", Amanda retorted.\n\nBoth of them began slowly moving around the room, keeping contact with the wall. Jack's fingers brushed over something metallic— a vent, big enough to crawl through. He signaled Amanda, who begrudgingly felt for the opening.\n\n\"So, we crawl through this unpleasantness then,\" Amanda muttered, the distaste evident in her voice. \n\nThey took turns, Jack going on further ahead and navigating, using his years of field experience. Amanda followed, suppressing her fears and discomfort. The cold, hostile atmosphere was slowly replaced by mutual trust, a sense of camaraderie forming between them.\n\nAfter what felt like hours, they emerged from the vent into a dimly lit, abandoned warehouse. Looking around, they found no sign of anyone else.\n\nExhausted, wounded but alive they made their way out of the warehouse. The first crack of dawn was breaking as they limped towards the security of civilization.\n\nBeyond their debilitating injuries, they couldn't help but appreciate the fact that despite the hostility, they managed to cooperate and break free. It wasn’t cordial, it wasn’t ideal, but it was human persistence, against odds they hadn’t faced before.\n\nFrom that day on, Jack and Amanda still challenged one another, maintaining their veneer of hostility. But beneath it all, they shared an unspoken bond, a connection that only they understood, borne from a dark room and an escape that required every ounce of their patience and resilience.",
+  "constraints": [
+    "Rourke disappears from the protagonist's sight.",
+    "The characters' movements should be hindered due to their injuries.",
+    "The setting of the story is in a largely empty, large room.",
+    "Both characters are disoriented and don't remember how they got there.",
+    "The characters' past hostility is evident in their interactions.",
+    "Rourke eventually gains consciousness after being slapped.",
+    "Despite their hostility, both characters need to cooperate to understand their situation.",
+    "Both characters display memory loss.",
+    "The story follows a first-person perspective.",
+    "The protagonist feels confused and hurt initially.",
+    "There's mutual hostility between the two characters.",
+    "The protagonist attempts to rouse Rourke multiple times.",
+    "The main character has notable physical wounds.",
+    "The character lands face-first on the floor upon waking.",
+    "The room could potentially be a garage.",
+    "The protagonists should rely on their senses due to the lack of light.",
+    "The protagonist's survival instincts kick in, derived from previous training.",
+    "Characters should express their emotions more through actions than words.",
+    "Both characters are hurt and require support to stand or move.",
+    "The protagonist's last memory is of being on an airplane.",
+    "Rourke is angry and initially refuses help from the protagonist.",
+    "The characters are in a panic and their interactions are tense.",
+    "The settings are ill-lit, contributing to the confusion and disorientation."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 45 (sb044); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

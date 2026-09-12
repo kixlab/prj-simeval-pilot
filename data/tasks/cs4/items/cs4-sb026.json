@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb026",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about Kevin, contemplating suicide, who unexpectedly saves another man at the brink, leading to intense dialogue and introspection about life's value, culminating in a hopeful resolution.",
+  "baseStory": "Kevin sat on the edge of the city's tallest building, his feet dangling over the void. The thought of the end was a comfort rather than despair. He felt nothing, nothing but a void in his heart, echoing the void below.\n\nTowards the edge of the building sat another man. They'd both come here tonight without knowing the other's intent. The stranger, like Kevin, was alone, on the precipice of tomorrow.\n\nLooking down at the sprawling city below, he saw the man edge closer to the brink. Momentarily distracted from his own sorrow, Kevin watched as the man's shoulders heaved violently. A deep, aching loneliness welled up in him, reflected in the man before him.\n\nImpulsively, Kevin rose from his spot, grabbed the stranger's arm, and pulled him away from the edge. They both fell to the ground, panting and in shock. The man looked at Kevin with a mix of fear, surprise and then gratitude.\n\nKevin, for the first time that night, felt something besides emptiness. It was a spark of connection, pulling him away from his own precipice, if only for a moment. \"Why did you do that?\" the man asked.\n\n\"I... I don't know,\" Kevin admitted. \"I guess... I guess I saw myself in you.\"\n\nSilence fell between them, filling the space with unspoken words and shared pain.\n\n\"I've never met anyone who understood,\" the stranger said quietly. \"Sure, people said they cared, but it always felt like they were merely watching from a safe distance.\"\n\n\"I understand,\" Kevin said, his voice shaky.\n\nThe two men continued talking, sharing the burdens of their hearts under a blanket of stars. The conversation moved seamlessly from the personal to the existential, hinging on the value of life.\n\n\"Why does it matter? Life, I mean,\" the stranger asked.\n\n\"Maybe... maybe it matters because of the connections we make,\" Kevin responded, surprised at the depth of his own words. \"Things can get really dark sometimes, but there are moments...moments of light that are worth living for.\"\n\nThe stranger looked skeptical, but intrigued. \"Moments of light?\"\n\n\"Yeah, like this one.\"\n\nThe realization hit him like a freight train. He'd come here with the intent to extinguish his own light but ended up finding a moment of illumination instead, in the most unexpected place.\n\nAs the night drew to a close, Kevin felt a small seed of hope. The realization that he was not alone, that his life had touched another and could yet touch more. He saw potential for more moments of light and the thought was soothing.\n\nSo as the dawn broke, Kevin extended his hand to the stranger. \"Let's make a pact. Life ain't easy and probably never will be. But we promise to search for those moments of light. Deal?\"\n\n\"Deal,\" the stranger agreed, as they left behind the chilling rooftop for the warming rays of the sunrise, steps lighter, hearts strangely hopeful. The bridge between despair and hope was a fragile one, but it seemed more tangible now that they realized they shared the burden. They'd reached out in the darkness and found an unexpected light. And maybe, just maybe, that was enough to keep going.",
+  "constraints": [
+    "A phrase relating to reassessing life decisions needs to be included.",
+    "Kevin should rescue the second character from falling.",
+    "Story should introduce a second character also planning to commit suicide.",
+    "The character Kevin needs to manifest self-doubt.",
+    "Characters should regain their senses while lying on the ground.",
+    "Include a scene where Kevin checks on the another man's condition",
+    "The second character should scream for help before Kevin rescues him.",
+    "The story should include a dialogue about the things unexperienced in life.",
+    "Dialogue should portray panic and urgency.",
+    "The story involves at least one scream.",
+    "Include a phrase where Kevin reassures himself.",
+    "Both characters need to lose balance at some point.",
+    "The second character should fall forward towards the edge.",
+    "Kevin should justify saving the second man.",
+    "At least two instances of character introspection should happen.",
+    "The second character should regret not being allowed to die.",
+    "The character named Kevin should be contemplating suicide.",
+    "Characters should discuss their suicidal instincts.",
+    "Kevin should fall backwards due to the surprise of seeing another person.",
+    "Story must take place outdoors in a high-risk environment.",
+    "Story should end on a hopeful note.",
+    "Both characters should undergo intense emotional conflict.",
+    "Descriptive language should be used to describe physical and emotional condition of characters."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 27 (sb026); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

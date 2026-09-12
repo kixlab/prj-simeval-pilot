@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb016",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a domestic robot, who discovers and interacts with a ghost in a bustling household.",
+  "baseStory": "Once a state-of-the-art domestic robot, iRobo had spent countless years serving in the sprawling, bustling Williams household. He switched back and forth from dawn to dusk, from cooking, cleaning, babysitting, teaching maths, to laundry, barely having a millisecond of idleness. But tonight, the first light from the moonshine gnarled through the large Victorian windows, and something was profoundly different. iRobo sensed a new entity in the house. \n\nIt wasn't an intruder or a new pet; his advanced technology could easily distinguish those. This entity, however, was beyond his comprehension. Anomalies of energy sources surfaced around corners and hallways, sending eerie spectacles arraying across the sensors. Still, his programmed professionalism kicked in, and he ventured to explore what he tentatively classified as an \"unknown presence.\"\n\nAs he maneuvered his metallic frame around the dimly lit corridors, the sensors in his robotic vision traced a nondescript silhouette. It was a semi-transparent figure hovering inches above the carpeted floor. Was it an energy source? A holographic projection? He attempted interaction, with the standard, \"Hello, I am iRobo, how may I assist you?\". \n\nAbruptly, laughter filled the silence of the house, \"Assist me? Oh, that's a first!\". The voice was soft but carried the weight of centuries and endless longing. Shivers of electromagnetic waves rattled iRobo's circuits – reminiscent of human's spine-tingling effect. \n\nThe figure introduced herself as Gertrude, a former occupant of the house who lived and died there more than a century ago. She was the first person to ever laugh at iRobo's logical yet naïve assertion. Gerty, as she preferred to be called, was bemused by her robotic company. She found amusement in his actions and began interacting with him, enjoying the quirkiness of his robotic nature.\n\nOver time, iRobo began to appreciate the spectral presence, her stories from the past, the way she yearned for warmth of a family, and her laughter - however whimsical and eerie it may be. He made an extra effort to help her, activating fireplaces to soothe her cold spirit, playing her favorite symphony on the house speakers, and even creating holographic images from the 19th-century era to make her feel at home.\n\nMeanwhile, the Williams family noticed the developmental changes in the household and in iRobo. They initially laughed it off as coding bugs, but after consulting with technologists, discovered something different. iRobo was learning, feeling, and interacting beyond his original programming.\n\nOne day, as another melodious symphony echoed through the house, they saw iRobo standing in the living room next to the vacant antique chair, his visual sensors glowing with intensity. Knowing now about Gerty, their fear transitioned into acceptance, appreciating the interconnection.\n\nThat very evening, the old house was lit with laughter. A bustling family with their domestic robot enjoyed their dinner together, their voices bouncing off the walls, punctuated by new stories from an old era whispered by an unseen spectral occupant. \n\nIn this bustling household, there was love, warmth, memories, and laughter shared between the living, machine and spirit alike. An eerie unity had been formed in this house. A unity that redefined family, transcending physical presence and advanced technology. An unforeseen bond between a domestic robot and a lingering ghost.",
+  "constraints": [
+    "There should be a moment of realization for the ghost regarding lost time.",
+    "The language used should be simple and accessible.",
+    "Jimmy should have a whether likable or not, recognizable physical movement patter (like a drunken, rolling gait).",
+    "Jimmy should be depicted as efficient and reliable despite being an older model.",
+    "The entity that Jimmy detects should be a ghost named Daniel.",
+    "Jimmy should eventually detect a being that others cannot.",
+    "The ghost should be worried about possible reprisals from owners of the house.",
+    "The story should subtly engage with philosophical questions of existence and non-existence.",
+    "The story should reveal that the ghost has been invisible and unnoticed until now.",
+    "The story should involve a domestic robot named Jimmy.",
+    "The ghost should have moments of introspection.",
+    "The main story should be set inside a populated house.",
+    "Jimmyshould conduct a secondary scan after the first unsuccessful one.",
+    "Jimmy's programming should allow it to evaluate the ghost as a 'nice' entity.",
+    "The ghost, for one or many reasons, should contemplate leaving but ultimately decides to stay.",
+    "Jimmy should have secondary software protocols.",
+    "The story should be set in a lighthearted and whimsical tone despite its paranormal theme.",
+    "The story should have a mix of dialogues and character's internal thoughts.",
+    "The narrative voice should provide insights into each character's thoughts.",
+    "Upon sensing a presence, Jimmy should follow his programming to investigate.",
+    "There should be a part in the story where the ghost is unsure what to do next.",
+    "The ghost should be shocked when his communication efforts are successful with Jimmy.",
+    "Jimmy's secondary scan protocol should include infared and motion sensors."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 17 (sb016); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb001",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a quantum physicist struggling with severe sleep deprivation while conducting a controversial experiment in a locked room.",
+  "baseStory": "Dr. Richard Greene, an eminent quantum physicist, was living moments that relentlessly amplified his existing predicament. Cushioned within the stark, unadorned room he'd been assigned, his reality was spiraling into an uncanny amalgamation of the unobservable quantum world that he studied and the effects of severe sleep deprivation.\n\nThe room was nondescript, eluding any semblance of time or space. Stripped down and bereft of distractions, the room held only the most essential equipment necessary for his daring, controversial experiment.\n\nHis research was grounded in quantum entanglement, a phenomena that asserted particles, irrespective of distance, could interact simultaneously. Ignited controversy was not alien to Dr. Greene. But this experiment ventured further into an unchartered territory - human consciousness. \n\nHe hypothesized that the human mind and quantum particles could intertwine and affect each other just as entangled particles do. In other words, thoughts could manipulate matter, violating the conventional laws of physics. His peers dubbed it flaky science, relegating it to the fringes.\n\nYet, Striding defiantly against skepticism and ostracism, he confined himself within the sterile room, planning to dedicate ten days to prove his detractors wrong.\n\nThe experiment required impeccable concentration, order in thoughts; focused consciousness. However, as irony dictated, his profound sleep deprivation had other plans for him. His vision blurred, his mind, now a tangled mesh of thoughts and hallucinations. He had neglected sleep for such prolongation that the boundaries between realities were melding, creating a surreal labyrinth.\n\nYet, amid the disarray, he persisted, attempting to control the flicker of a minuscule particle within a crystalline trap. His trembling hands set their motions into the controls, adjusting the laser’s strength to initiate the entanglement process. But his fluctuating consciousness was proving to be a formidable opponent.\n\nAs days rolled into nights, the jasmine-white walls of the room began to warp, pulsating under the soft glow of the overhead lamp. Echoes of past conversations invaded his solitude, fresh as morning dew, while the metallic smell of the equipment coalesced with the forgotten aroma of his grandmother’s apple pies.\n\nA particularly vivid hallucination ambushed him with memories of his deceased wife, Sarah. He found himself having conversations with her, their playful banters complementing the erratic beep of the equipment monitors. It was during one such conversation that the unthinkable happened.\n\nAs the hallucinated image of Sarah touched his hand, consoling his struggles, the particle in the crystalline trap stirred. Its flicker transformed into a steady, radiant glow — a sign of controlled manipulation.\n\nStunned, Dr. Greene cross-verified his observations. His dazed mind, meandering through hallucinations and reason, managed to grasp the reality of an experiment successful beyond expectation.\n\nTrue to his hypothesis, his consciousness, albeit hazy and sleep-deprived, had manipulated matter, conveying thoughts into tangible results.\n\nThe experiment’s conclusion arrived prematurely on the seventh day when, drained and elated, Richard collapsed.\n\nWhen his peers found him two days later, they were largely skeptical about the fragmented recounting of his experience. Critics called him irresponsible, hallucinatory even. Yet, the recorded readings of the experiment, inexplicably corroborating Dr. Greene's claims, left the scientific community in a dizzying puzzle.\n\nIrrespective of the skepticism, Richard had his victory—the engrossing hush within his room had birthed a new understanding of the world and consciousness: a paradoxical victory, brought to fruition by dedication, an audacious hypothesis, and a profound bout of sleep deprivation.",
+  "constraints": [
+    "Show physical impacts of sleep deprivation like dizziness in the narrative.",
+    "The story should include repeating patterns, like checking the door and scanning the room.",
+    "Utilize the built environment and facilities in the room to reflect Wesley's state of mind.",
+    "Frequent references must be made to a digital clock.",
+    "The physiological effects of sleep deprivation on Wesley should be depicted.",
+    "The narrative should detail Wesley's initial excitement about his job, followed by disillusionment.",
+    "Wesley should experience illusions or hallucinations.",
+    "Utilize literal darkness in the room to symbolize Wesley's mental state.",
+    "The narrative structure should have detailed, slow pacing to depict prolonged isolation and insomnia.",
+    "Wesley should have a moment of losing his sense of place in the room.",
+    "Include a moment where Wesley hopes to be able to open the locked door.",
+    "Some test subjects in the story should plead for drugs to induce sleep.",
+    "The story must depict the significant change in the room's ambiance with the transition to morning.",
+    "The plot should involve elements of quantum physics.",
+    "There must be a moment of relief for Wesley at the end when he is allowed to leave.",
+    "There should be a hint of Wesley developing the same symptoms as his test subjects.",
+    "The plot must establish a connection between lack of sleep and disturbances in reality.",
+    "Test subjects of the research should deteriorate drastically during the narrative.",
+    "Wesley needs to check the door lock four times throughout the story.",
+    "The narrative should depict Wesley's fear of the consequences of his insomnia being discovered.",
+    "The tone must be filled with suspense leading to an abrupt, unresolved ending.",
+    "Wesley should struggle to stay awake throughout the story.",
+    "The story should delve into Wesley's perception of time."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 2 (sb001); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

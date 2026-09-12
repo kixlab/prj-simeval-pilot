@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb043",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a schoolboy who fabricates a lie about winning the lottery to impress his peers and navigate the dangerous social dynamics at school, amidst a backdrop of severe consequences for lottery fraud.",
+  "baseStory": "Elston Middle School was oceans deep in its own peculiar hierarchy of social dynamics. Twelve-year-old Benjy Smith, neither popular nor particularly interesting, found himself in the overwhelming midst of it, constantly bobbing up and down in these murky waters.\n\nOne day, while engaged in his standard chatter with the other boys, his lips twisted a line to shock everyone, inspired by a story his elder brother had told him about a lottery winner. \"Guess what, guys? I won this weekend’s lottery! Can you believe it?” Benjy found himself blurting out, his face blossoming into an unlikely grin.\n\nA silence fell. Miguel, the school bully with boulder-like biceps, broke it. \"So you're saying you're rich now, Nerd?\" he drawled, skeptical eyes scrutinizing him. Nods of interest sprouted from the circle like mushrooms after a storm.\n\nTossing faux bravery over real fear, Benjy decided to ride the wave. \"We're suddenly millionaires,\" he chuckled, swaggering away. The spark of respect in those boys' eyes was a high he never experienced before. His pulse pounded with exhilaration, but also trepidation. Benjy was aware of his brother’s ominous warning about lottery fraud and the heavy consequences that would befall those who were found guilty.\n\nDays passed, and Benjy basked in the warm afterglow of popularity. Teachers and peers treated him with a newfound interest. He cleverly evaded questions about his wealth, hiding behind the confidentiality that lottery winners were entitled to.\n\nHowever, as the shadows grew long, the discrepancies within his tall tale began to creep like fissures, threatening to expose the truth. Miguel's curiosity, particularly, was not a force to be underestimated. He goaded Benjy, demanding proof to satiate his skeptical instincts. Benjy was left wavering on thin ice, trying to toss around excuses, but Miguel was relentless.\n\nThe pressure boiled over when Miguel put a condition, \"If you're a millionaire, buy everyone pizza for lunch tomorrow!\" The demand held weight; the rich kids occasionally did that. The crowd chorused their approval. Desperate to maintain his façade, Benjy found himself agreeing. That evening, he reluctantly drained his savings to arrange for the pizza.\n\nThe next day was a whirlwind. Everyone eagerly gulped down the cheesy slices and swallowed Benjy's lies whole. However, while the taste of success was sweet, panic began building its nest in Benjy's heart. With his savings now depleted, his lie seemed as fragile as a house of cards.\n\nUnbeknownst to him, his parents received an anonymous call that evening. The voice hinted at their son's lottery win and expressed worries about potential fraud. Their initial surprise morphed into concern. A stern conversation followed, revealing the depths of Benjy's lie.\n\nHe confessed tearfully, expecting a hurricane of retribution, but was met with a soothing calm. His parents understood his struggle in school and the pressures he felt. Hugging him tightly, they warned about the dire consequences of such a lie and the scandal of lottery fraud.\n\nThe next day, Benjy admitted the truth to his classmates. Some laughed, a few looked disappointed, but they all moved on, their interests caught by newer, shinier stories. \n\nBenjy learned that day that respect wasn’t won through fabled riches, but through honesty and integrity. The aftermath phased out slowly, and Benjy, despite being back at his mundane life, felt the pleasure of unburdened shoulders and the beauty of truth. He had dived into the dangerous currents of deceit and had emerged stronger, wiser, standing tall on the shores of reality.",
+  "constraints": [
+    "Jun's lie about his French cousin should help him create a plausible story.",
+    "The story must take place predominantly within a school setting.",
+    "There must be a dynamic between Jun and Veronica, with Jun trying to impress her.",
+    "The story must mention a book about philosophy encouraging saving, which inspires Jun.",
+    "There should be a narrative about past children who have become \"lotto pirates\" and their grim fates.",
+    "Develop a world where severe punishments like immediate euthanization for lottery fraud exist.",
+    "Establish Veronica as indifferent until the draw of the lottery.",
+    "Drama and tension must be created around Jun's revelation of playing the lottery.",
+    "There must be a character named Smoky Pat, who questions where Jun got the money from.",
+    "Jun's lie about playing the lottery should be the central conflict of the story.",
+    "Jun's strategy should be kept secret until a specific time before the next lotto draw.",
+    "There should be a scene where Jun reveals his plan of using a fake ID to the class.",
+    "The story must be set in a world where aliens exist.",
+    "Introduce Samantha- a character who defends Jun in front of other girls.",
+    "The false ID must be risky to use due to extensive monitoring.",
+    "The plot must have Itchy Ken, one of Smoky Pat’s friends, defending Jun.",
+    "The story must include a lottery system, which links to the children's participation in the alien war.",
+    "The story must reference a popular game called the ring world game.",
+    "Jun's move should be considered admirable, reflecting cultural values of defiance and anarchy.",
+    "The narrative must involve a questionable technique for winning the lottery, involving siblings and a genetic ID test.",
+    "The story must contain traces of mystery around the true source of Jun's \"coin.\"",
+    "Make Smoky Pat the primary voice of negation and skepticism.",
+    "The plot must involve admiration for \"lotto pirates\" for their defiance and bravery."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 44 (sb043); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

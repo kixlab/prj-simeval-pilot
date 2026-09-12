@@ -1,5 +1,5 @@
 {
   "taskId": "macgyver-problem-solving",
-  "items": ["mg-dev-fixture-01"],
-  "pilotSubset": []
+  "items": ["mg-dev-fixture-01", "mg-1655", "mg-1923", "mg-2008", "mg-2042", "mg-1079"],
+  "pilotSubset": ["mg-1655", "mg-1923", "mg-2008", "mg-2042", "mg-1079"]
 }

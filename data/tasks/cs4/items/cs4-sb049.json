@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb049",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a protagonist using nature to overcome inner demons and societal judgments, culminating in self-realization and transformation, illustrated through metaphors and spiritual imagery.",
+  "baseStory": "Under a kaleidoscope sky and towering trees stood Kate, an unshaped marble in the societal gallery. Stigmatized by the town as 'forest girl', she was often looked upon with skeptically raised eyebrows. She was an oddity in a town full of conformists, her essence felt too wild for the iron cage of standards. Though the world offered her a daisy, she craved for an entire meadow of wildflowers.\n\nKate found solace in the womb of the forest, her secret haven. She found her conversations with the babbling brooks more comforting than those with her genteel counterparts. The birds' melodious hymn felt much warmer than the society's cold masquerade of pleasantries.\n\nHaunting her, though, were the inner demons of self-doubt and anxiety, conjured by society's warped mirror. They threatened to eclipse her spirit, painting her world in bleak tones of insignificance and unworthiness. In the tumultuous storm within, her once resonant voice was reduced to a feeble whisper, battling to remind her of her unique worth.\n\nIn her agony, the forest – her sanctuary – took the role of a healer. Each towering sequoia seemed to whisper reassurances of her strength, the one she was veiling due to societal pressure. The perennial creek mirrored her resilience, flowing tirelessly even if there were stones obstructing its path.\n\nOne day, scaling the hill outside her town, she noticed a solitary dandelion fighting harsh winds. It seemed insignificant to an oblivious eye, but to Kate, it personified defiance. In its fragility, it held a beacon of hope, a lifeline for her drowning soul. \n\nKate pondered, if that single underappreciated flower can stand tall against the tempest, who's to say she couldn't stand against societal storms? Emboldened, she descended the hill, carrying the dandelion's resilience in her heart.\n\nBack in the town, society pounced with their judgements but Kate, fortified by nature’s wisdom, faced them bravely. Wounding words that once left her crippled now felt like soft autumn leaves, easily brushed off. She stood resolute, her spirit unyielding like the sequoias, her resolve flowing like the creek. \n\nShe began sharing her spiritual encounter with nature. As words washed over her, she discovered her innate gift of poetry. Her verses wove an intricate tapestry adorned by the forest's myriad marvels, seasoned with soporific serenades and the quiet strength of the dandelion.\n\nSurprisingly, the same society's skepticism melted into admiration. They hailed her transformation, now seeing her as the forest's poetess. But Kate’s victory wasn’t in silencing their judgments, rather it was her triumph over her inner demons, her metamorphosis rooted in self-affirmation.\n\nHer soul no longer craved validation from the outside world. She conquered her demons through her deepened communion with nature and her self-acceptance. Realizing she was no unshaped marble but a beautifully sculpted statue embellished by the chisels of adversity. The societal gallery that once echoed with ridicule now became her stage of illumination.\n\nKate’s transformation was a testament to nature as a spiritual guide. For in the quiet whispers of the sequoias, reassuring flows of the creek, and the dandelion's defiant stance, she found not only her voice but a radiant new self that was no longer an oddity but a trailblazer.",
+  "constraints": [
+    "The protagonist should use nature (like a tree, water, light) to find their path.",
+    "The story must contain strong visual imagery related to the journey of the protagonist.",
+    "There must be elements of nature symbolism.",
+    "There should be a body of water symbolising purification.",
+    "The protagonist must have inner demons they're struggling with.",
+    "The story should involve a feeling of being deceived.",
+    "The plot should include veiled criticism or commentary of society's narrow-mindedness.",
+    "The plot must progress to a state where the protagonist is enlightened or finds a path.",
+    "Detailed descriptions of emotion are a requirement.",
+    "The protagonist should immerse themselves in the water.",
+    "The protagonist should be seeking help or a savior.",
+    "The protagonist must reclaim their self-worth and strength.",
+    "There should be a representation of the protagonist's troubled past.",
+    "The protagonist should rediscover their identity or self-worth.",
+    "The narrative must evoke feelings of hope.",
+    "The protagonist must arrive at a state of inner peace towards the end.",
+    "The narrative must include a moment of self-realisation, self-acceptance, or catharsis.",
+    "The narrative must contain profound introspection.",
+    "The ending must reflect the character's successful transformation after the initial struggle.",
+    "The protagonist gets lost in a forest.",
+    "The protagonist must struggle with societal norms or judgement.",
+    "The protagonist should metaphorically break away from constraints or chains.",
+    "There must be metaphorical shedding of old, worn-out parts of characters' life."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 50 (sb049); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

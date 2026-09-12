@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb014",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a financially struggling vampire hunter who discovers his new flatmate is a vampire, leading to a humorous yet intense late-night confrontation in their apartment, involving arguments over rent, music taste, and survival.",
+  "baseStory": "Samuel Burt was a vampire hunter by profession and not, mind you, it wasn't an economically viable profession. There were times when he considered – vocationally, of course – the possible benefits of being a tax collector instead. \n\nAfter his latest eviction, a direct consequence of his pitiful earnings, respite appeared in his life's narrative through Leon, who was in search of a flatmate. With his pearly-white smile, dark complexion and consistently slick hair, Leon exuded uncanny suaveness. But beggars couldn't be choosers, and Samuel had overdue bills to pay.\n\nThey lived in harmony, except, of course, during every full moon (Leon hated the light), or while Samuel practiced his guitar (Leon despised everything about the '80s) or when rent was due (Leon had a habit of disappearing).\n\nHowever, one chilling night, constituted by Samuel's electricity cut-off and a mishap involving his mobile flashlight, he stumbled upon Leon's secret. The bared fangs, crimson eyes, and bats fluttering around made it rather evident - Leon was a vampire. \n\nSamuel had been trained for this. He had to act calm, reach for the garlic first, or so the manual had told him. But suddenly, all his preparation seemed ludicrous. How was he going to pay the rent without Leon?\n\nDuring this tense stalemate, Leon smirked, revealing his devilishly sharp fangs. \"So, you know. Was it the bats? Hard to train them, you see.\"\n\nTaken aback, Samuel stammered, \"Why... why didn't you...I don't get it.\"\n\n\"Suck your blood?\" Leon's grin widened. \"Let's admit it, Samuel, you barely have any life force worth feasting on, considering your ruined finances.\"\n\nSamuel flushed, partly from embarrassment, partly from irritation. \"And what about the rent, Leon? Will you ghost on that too?\"\n\nLeon sighed overly dramatically. \"Tiresome cliché, Samuel. Just because I'm a vampire doesn't mean I afford to live rent-free. My kin might have castles, but I, alas, believe in humble beginnings.\"\n\nSamuel crossed his arms, frowning. \"Also, your taste in music is atrocious. Can we compromise on a newer playlist, at least?\"\n\nLeon rolled his blood-red eyes. \"Fine! But only if we ditch the garlic altogether.\"\n\n\"Deal,\" Samuel grumbled, knowing well that he couldn't afford to piss off his undead flatmate. After all, he needed him alive - pun intended - to pay the rent. \n\nThat night, Leon and Samuel discovered an unlikely camaraderie. They would bicker about the little things - from the kind of blood (Leon preferred O negative, which was hard to fetch) to the state of the economy (bad, according to Samuel). \n\nAt the heart of these disagreements and late-night banter, they managed to strike an unconventional balance within their shared apartment spaces. Samuel, with his vampire hunting techniques and weaponry and Leon, with his natural charisma and a knack for disappearing just in time for rent.\n\nIn the end, the financially struggling vampire hunter decided it wasn't so bad to have a vampire as a flatmate. He might not have got rid of a vampire that night, but he surely gained an ally, and something more important - he didn't have to worry about the rent anymore.",
+  "constraints": [
+    "The character decided to find a flatmate due to financial troubles caused by expensive vampire hunting equipment.",
+    "The main character is a vampire hunter.",
+    "The vampire has a fast speed.",
+    "The fight between the main character and the vampire is aggressive.",
+    "The flatmate loves to listen to heavy metal music.",
+    "The story takes place in winter.",
+    "The vampire has incredible strength.",
+    "The main character is shirtless during the confrontation with the vampire.",
+    "The confrontation between the vampire and the main character happens at his flat.",
+    "The confrontation with the vampire takes place in the late hours of the night.",
+    "The main character gets injured during the confrontation.",
+    "The main character has a lockpick.",
+    "The vampire hunter uses his bleeding to distract the vampire.",
+    "The main character has a shotgun loaded with garlic bullets.",
+    "The story incorporates elements of humor into serious moments (e.g. arguing about rent payment during a life-threatening confrontation).",
+    "The vampire has red shining eyes.",
+    "The confrontation between the main character and the vampire is largely influenced by the vampire's laid-back attitude.",
+    "The main character dislikes the vampire's music choice.",
+    "The main character discovers that his flatmate is a vampire.",
+    "The main character's hatred for vampires overshadows his hatred for his accounting job.",
+    "The fight leads to damage to the apartment (kicking the door down).",
+    "The main character feels regret for hastily choosing a flatmate.",
+    "The main character's life as a vampire hunter is presented as being unglamorous and financially unprofitable."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 15 (sb014); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

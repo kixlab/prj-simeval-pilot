@@ -29,9 +29,10 @@ Scoring reads this directory from disk instead.
 Every file records where it came from. `"source": "development"` marks a
 fixture written for interface work — the loader and the API pass that flag
 through so a fixture can never be mistaken for benchmark data. Real items are
-`"source": "official"`. The two files here now are fixtures; replace them, and
-keep the licence position for the released datasets in
-`docs/audra-scoring-and-stimuli.md` up to date when you do.
+`"source": "official"`: MacGyver holds the five pilot items, CS4 the 50
+story-based instances of the benchmark (MIT-licensed; see
+`docs/task-items.md`). Keep the licence position for the released datasets in
+`docs/audra-scoring-and-stimuli.md` up to date.
 
 ## MacGyver item
 
@@ -82,3 +83,7 @@ Constraints are stored once, in order. The pilot runs three rounds — 7, then
 cumulative by construction: round 2 cannot disagree with round 1 about the
 first seven constraints, because they are the same seven strings. A file must
 carry exactly 23; the stages live in `src/tasks/cs4/item.ts`.
+
+Official instances are written by `npm run cs4:import -- --csv <Story-based Base
+Stories.csv>` rather than by hand; the importer checks the nesting of the
+dataset's constraint levels before it writes anything.

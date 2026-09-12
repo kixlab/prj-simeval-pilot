@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb027",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a man, returning to his childhood woods, who meets a mysterious new friend and confronts supernatural elements and emotional trials, blending his memories with a suspenseful, ambiguous reality.",
+  "baseStory": "Calvin hadn’t visited his childhood home in years. The imposing oaks, the scent of pine, the slight murmur of the brook; everything was just as he had left it. Only now, the familiarity didn’t bring comfort. Instead, he felt a pang of nostalgia intertwine with a sense of uncertainty, giving birth to odd discomfort. \n\nHe didn’t know why he had agreed to this one wish of his aging aunt. \"Visit the woods, Calvin. Reconnect with it. I can still see the boy in you who was always at ease among the trees,\" she had whispered, her voice heavy with emotion.\n\nSo he walked, letting his mind wander back to his childhood, reminiscing the joys and fears he had experienced right here. The woods, back then, was where majestic creatures thrived within his imagination, where he had built castles and defeated dragons.\n\nAs Calvin walked deeper into the woods, he noticed a man standing alone, his back towards him. Alarmed, Calvin paused, his heart hammering in his chest. He had never seen anyone in these woods before. Gathering his courage, he approached the unknown figure. \n\n\"Are you lost, sir?\" Calvin asked.\n\nThe man turned around, a serene smile on his lips. \"Not at all. I was waiting for you, Calvin.\"\n\nTaken aback, Calvin took a step back. \"How do you know my name?\"\n\n\"Don’t be frightened,\" the stranger said. He was probably around Calvin’s age, yet his eyes held a wisdom far beyond his years. \"You can call me Orion.\"\n\nOrion's company was peculiar at first, but his familiarity gradually comforted Calvin. They started meeting daily, reminiscing about memories Calvin thought he had long forgotten. Every time they wandered into the woods together, Calvin felt an odd blend of reality and his old childhood fantasies. \n\nOne evening, Orion pointed to an oblique path winding deep into the woods. \"Do you recognize it, Calvin?\"\n\n\"Not really...\" Calvin confessed.\n\n\"That's the path to our old treehouse, now claimed by nature,\" Orion revealed, his voice an echo of the past. \n\nSuddenly, it all came back to Calvin - a treehouse, their secret fireplace, and a friend he had forgotten. “It cannot be,” he whispered, his voice barely audible. Calvin turned to Orion, looking into his eyes – those familiar, ancient eyes – searching for the truth. \n\nHe looked back at the man he had believed to be a stranger. Orion – his best friend who had drowned in the brook when they were children. The grief he had suppressed for years flooded back. \"Where have you been?\" Calvin choked out.\n\n\"I never left, Calvin,\" Orion replied, his voice brimming with unshed tears. \"I've been here in these woods where we laughed, cried, and dreamt together.\"\n\n\"What do you want from me now?\"\n\n\"I want you to remember, Calvin,\" Orion replied with sadness in his eyes. \"Remember our friendship, the adventures, the joy. Also, remember the grief, for it was an essential part of growing up.\"\n\nMeeting Orion, confronting the supernatural elements of his past, shattered Calvin’s scepticism. It opened his heart not just to the forgotten memories but also to the pain he had been evading for so long.\n\nReturning home, Calvin felt a serenity he hadn't known since childhood. Confronted with a reality stranger than his childhood fantasies, he had made peace with his past. The forest he had roamed with enthusiasm as a boy had finally granted him closure, returning him to his ordinary life, with a slightly extraordinary friend to visit.",
+  "constraints": [
+    "The exploration of unfamiliar parts of the woods by the protagonist and his new friend",
+    "Using the wilderness as a symbol of innocence and freedom",
+    "The protagonist loves playing in the woods",
+    "Exemplification of courage as the protagonist attempts to rescue the rabbit",
+    "Use descriptive language for both the city and the woods",
+    "The protagonist's pleasant childhood memories contrast with his current life Stylistic Constraints:",
+    "The story should not reveal whether reality or dream sequence",
+    "Use of foreshadowing to forward the plot",
+    "The protagonist is trapped in a gaze with the new friend",
+    "The protagonist comes from a moderately-sized town between mountains and suburbia",
+    "Blend reality with elements of the supernatural",
+    "The unexpected occurrence of a cloud of wasps appearing from the new friend's mouth",
+    "Introduction of a new friend in the woods",
+    "The protagonist finds his favorite meal waiting for him",
+    "Protagonist starts feeling uncomfortable when his new friend treats the rabbit poorly",
+    "Appearance of the protagonist after years being on Wall Street",
+    "There are reflections on the impact of old money on new",
+    "The protagonist returns home just before dinner",
+    "Occurrence of an unexpected event during their play; discovering a nest of rabbits",
+    "Protagonist faints due to overwhelming emotions in the woods",
+    "Expression of fear and horror experienced by the protagonist",
+    "The protagonist ventures out into the woods alone at night",
+    "Use of direct and implied dialogue."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 28 (sb027); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

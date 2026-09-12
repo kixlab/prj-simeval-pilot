@@ -1,0 +1,28 @@
+{
+  "itemId": "mg-1655",
+  "source": "official",
+  "problem": "Your garden crops are at risk of damage from an impending heavy downpour with no ready-made protective structure. In your arsenal, you have a very damp bag of compost, a garden trowel with a rickety handle, a mildewed king-sized bedsheet, a watering can without a sprinkler cap, a set of dimming string lights, and garden stakes that have seen better days. The stakes are sturdy but are too short to create an adequate protective cover when draped with the bedsheet. How do you erect a protective cover on time?",
+  "objects": [
+    "a very damp bag of compost",
+    "a garden trowel with a rickety handle",
+    "a mildewed king-sized bedsheet",
+    "a watering can without a sprinkler cap",
+    "a set of dimming string lights",
+    "garden stakes that have seen better days"
+  ],
+  "constraints": [],
+  "answerKey": {
+    "solvability": "solvable",
+    "solutionType": "unconventional",
+    "goldSolution": [
+      "Use the garden trowel to dig a shallow trench around the crops.",
+      "Mound the compost in the trench to create a barrier against runoff.",
+      "Use the string lights to connect and strengthen the garden stakes, making a larger, albeit lower, structure.",
+      "Drape the mildewed bedsheet over the structure and secure to the stakes and compost mounds, creating a protective tent.",
+      "Use the watering can to collect and redirect rainwater away from the protected area."
+    ],
+    "unsolvableJustification": null
+  },
+  "datasetRef": "MacGyver problem_solution_pair.xlsx, ID 1655 (label: efficient)",
+  "notes": "Copied verbatim via Macgyver Pilot/macgyver_think_aloud_selected_candidates.md. The objects list is analysis metadata; solvers see only the problem text."
+}

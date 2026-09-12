@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb040",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a protagonist who faces off against their duplicate in a series of escalating challenges inside a sterile white room, orchestrated by the enigmatic Dr. Tay, with the suspenseful revelation that only one can survive.",
+  "baseStory": "Alice awoke in a sterile white room. Nothing more than a table, two chairs, and an omnipresent voice echoing within the four stark walls. \"Greetings, Alice. Welcome to the evaluation process,\" it reverberated, the inflections of Dr. Tay's voice instantly recognizable.\n\nA door opened on the opposite end of the room and a woman identical to Alice stepped inside. An uncanny severity gripped her heart; it was like staring into a mirror, but her duplicate, or \"Dup-Al,\" carried a disturbing sense of non-familiarity.\n\n\"The rules are simple,\" Dr. Tay continued. \"This is a duel of survival. Only one can leave this room alive.\"\n\nA series of challenges, each more sinister than the last, was designed to test them physically, mentally, and emotionally. Initially, they ran through a complex obstacle course, requiring nimble reflexes and strength. Alice observed a disturbing similarity between their moves, yet Dup-Al completed it slightly faster.\n\nNext came the mental math puzzles, word associations, memory tasks. Alice had always prided herself on her intellect, but Dup-Al seemed to be operating with the same cognitive abilities, sometimes out-performing Alice.\n\nThey moved on to an emotionally charged challenge where they had to justify their existence. Alice spoke vehemently of her experiences, her dreams, the people she loved. When it was Dup-Al's turn, Alice was distressed by the equally passionate conviction, mimicking her words with a chameleon-like authenticity.\n\nWith each contest that Alice faltered in, an existential dread wrapped itself around her heart. She started to question her uniqueness, the entirety of her life, and in the worst of moments, even her humanity.\n\nSuddenly, the voice of Dr. Tay reverberated in the room, breaking Alice's introspection. \"The time has come for the ultimate challenge,\" he stated. The room morphed, and two small digital clocks appeared beside them, counting down from five minutes.\n\n\"For the last confrontation, prove to me which Alice deserves life,\" Dr. Tay's voice echoed ominously.\n\nAlice gazed into Dup-Al's eyes. They were her eyes. The duplicated woman spoke first. Her speech was a terrifying echo of Alice's fears, outlining all her strengths, deconstructing her life into a series of algorithms and replicate reactions.\n\nA sense of doom weighed heavily on Alice. She knew, in the world outside this white room, she mattered because she was unique. But here, opposite her doppelgänger, the familiar walls of single-existence crumbled around her.\n\nWith seconds ticking away on the clocks, Alice made her last desperate plea. \"Dr. Tay, Dup-Al can mimic my actions, my thoughts, even claim to have my feelings. But at the end of the day, she is a copy, a reflection. She is you, a concoction of your experiment.\" Her voice wavered as she confessed, \"I am afraid, but I refuse to be afraid of a lesser version of myself.\"\n\nSilence descended as the clocks hit zero. Moments passed before Dr. Tay's voice filled the room. \"Congratulations, Alice. You've passed the evaluation process.\"\n\nThe door opened again, but this time, Alice walked out alone. Behind her, the sterile white room, Dup-Al, was just a vestige of her uniquely terrifying duel for existence. In its wake, the echoes of her victory over her own fears continued to resonate.",
+  "constraints": [
+    "Each protagonist should win in an activity they're particularly good at.",
+    "The second round should be won by the duplicate protagonist.",
+    "The story should be told from the perspective of the original protagonist.",
+    "The story should be set in a sterile, white room.",
+    "Dr. Tay should reveal some malicious intent through his actions.",
+    "The story should end with the original protagonist being escorted out of the room.",
+    "The story should not clarify why the protagonist was in the situation to begin with.",
+    "Dr. Tay should ask both protagonists to list their skills.",
+    "The story should involve a series of challenges between the duplicate and original protagonist.",
+    "The narrative should maintain a suspenseful tone.",
+    "The final challenge must involve a race.",
+    "Dr. Tay must reveal that one of the protagonists will not survive the encounter.",
+    "The second round of the challenge should involve swimming.",
+    "The story should induce an emotional response from the reader.",
+    "The duplicate protagonist should be aware of his derived existence.",
+    "Both protagonists must tie in the final race.",
+    "The duplicate protagonist should display distinct skills and personality traits from the original.",
+    "The protagonists decide to slow down their pace simultaneously.",
+    "The duplicate protagonist should emerge from an extension of the room that is revealed only after the story has begun.",
+    "The duplicate protagonist should offer to let the original one win.",
+    "The duplicate protagonist cites being a carbon copy as a reason for his generosity.",
+    "The challenges must be based on the individual traits or skills the protagonists claim to posses.",
+    "The character should experience confusion at the beginning of the story."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 41 (sb040); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

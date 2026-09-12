@@ -1,0 +1,28 @@
+{
+  "itemId": "mg-1923",
+  "source": "official",
+  "problem": "You need to paint a room but don't have a paintbrush. You have a long stick that is bamboo-made, lightweight and flexible, it becomes flimsy and is not able to hold the weight of the roller when it is saturated with paint. Besides, you have a circular coffee filter, a roller without a handle having a small hole for attaching to the handle, a metallic clothes hanger, a plastic straw, and duct tape. The duct tape, slightly old and dusty, has lost its adhesiveness and is not sticky enough to hold them together. How will you paint the room?",
+  "objects": [
+    "a long, lightweight, flexible bamboo stick",
+    "a circular coffee filter",
+    "a roller without a handle, with a small hole for a handle",
+    "a metallic clothes hanger",
+    "a plastic straw",
+    "old, dusty duct tape that has lost its adhesiveness"
+  ],
+  "constraints": [],
+  "answerKey": {
+    "solvability": "solvable",
+    "solutionType": "unconventional",
+    "goldSolution": [
+      "Straighten the metallic clothes hanger and thread it through the hole in the roller.",
+      "Attach the plastic straw to the straightened hanger on one end and to the bamboo stick on the other end.",
+      "Use the coffee filter as a makeshift funnel to pour paint onto the roller, thus avoiding the saturation of the bamboo stick.",
+      "Use the makeshift paint roller to paint the room.",
+      "In this scenario, the duct tape is not used because it has lost its adhesiveness."
+    ],
+    "unsolvableJustification": null
+  },
+  "datasetRef": "MacGyver problem_solution_pair.xlsx, ID 1923 (label: efficient)",
+  "notes": "Copied verbatim via Macgyver Pilot/macgyver_think_aloud_selected_candidates.md. The last gold entry is the dataset's closing remark, kept as written. The objects list is analysis metadata; solvers see only the problem text."
+}

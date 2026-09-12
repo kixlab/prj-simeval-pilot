@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb015",
+  "source": "official",
+  "instruction": "Write a suspenseful story in less than 500 words an ordinary citizen mistaken for the president, who finds himself entangled in a high-stakes secret service operation involving a high-speed chase and undercover agents.",
+  "baseStory": "Title: The Unforeseen President\n\nStephen Weaver, a simple bespectacled middle-aged man, was always fond of his daily routines. The life of this staid civil servant changed dramatically when he inadvertently became entangled in a high-stakes secret service operation.\n\nOne breezy afternoon, Stephen left his office for his lunch break, as he did every day. As he walked down the busy Washington D.C. street, built and brimming with grand governmental edifices, three black SUVs pulled up alongside him. Before he could react, a group of stern-looking men in black suits hurriedly escorted him into one of the vehicles. His protests were as unheeded as the pamphlets that flew aimlessly in the bustling wind.\n\n“Mr. President, we need you at the location right now,\" uttered the grim man sitting opposite him. Stephen stared back in disbelief. They had mistaken him for the President of the United States, a resemblance he always found amusing when pointed out by friends but never thought it could lead to such a circumstance. \n\nThe SUV sped away with haste, leaving behind Stephen's half-eaten sandwich and his bemused colleagues. As they darted through the labyrinthine city in a high-speed chase, flashes of uncovered covert officers and security chatter over sophisticated devices only added to his bewilderment. His heart pounded against his chest like a drum in a rock concert. \n\nThe operation was put into overdrive when an anonymous report alerted them of a potential threat. As a lowly bureaucrat, Stephen had no training for what was unfolding. Yet, as the vehicles wildly whooshed through traffic, his uncanny resemblance to the President was his only defense against imminent danger.\n\nThe sheer velocity of events left no room for explanations. His claims of being an ordinary citizen were drowned in the crescendo of the chase. Sense of time was replaced by the adrenaline of living in a suspenseful movie set enveloped by impending peril. The fabric of reality seemed to fray as he held onto his seat, images of his ordinary life flickering before his eyes.\n\nTheir destination was a secluded warehouse that looked ripped right out of a thriller novel. Upon reaching, the team surrounded Stephen, guns protruding from their sides. \"Stay close to us, Mr. President. This could get ugly,” said the lead agent, his voice tightly controlled yet tinged with unease.\n\nThe agents moved in swiftly, their footsteps echoing ominously. The dense silence was abruptly shattered with sounds of a scuffle followed by gunshots. Then, another sound sliced through the chaos - an incredulous laughter. \n\nStephen's eyes widened as he saw the source of it - the President himself, safely tucked away behind a bulletproof partition, observing the operation from a distance. A mix of relief and amusement washed over his face as he spotted Stephen. \"Well, that's a first,\" he chuckled, walking towards him.\n\nIt turned out that the Secret Service was well aware of their \"Mr. President\". Stephen was part of their plan - a decoy, used to draw the attention of potential threats away from the real President.\n\nLater that evening, after a tour of the White House as gratitude, Stephen returned home - still buzzing from his extraordinary day. His life as an ordinary citizen was forever etched with a taste of presidential danger and a story he would remember for a lifetime. The echoes of that adrenaline-fueled day reverberated long after, in the stillness of his routine life.",
+  "constraints": [
+    "The main character must be an ordinary citizen.",
+    "The story must take place on a Monday.",
+    "The narrative should include a lot of dialogue for character interactions.",
+    "The characters must be pursued by unknown enemies.",
+    "The female stranger must introduce herself as an undercover agent.",
+    "There must be a mention of a toothpick, used by a character.",
+    "The discovery of Ben's true identity must trigger the plot.",
+    "The story must be written in third-person narration.",
+    "The main character must be a male.",
+    "The female stranger must be introduced as typing on her phone.",
+    "The story progression includes Ben being forced to accompany the female agent.",
+    "The story includes a conversation about a basement flood.",
+    "The story MUST NOT reveal that Ben is actually NOT the president.",
+    "The story includes a high-speed car chase.",
+    "Ben must be placed on a couch once they reach the safe house.",
+    "The tone of the story must be suspenseful.",
+    "The characters must face danger, with mention of Al-Wazari militants.",
+    "A cup of coffee must be mentioned in the beginning.",
+    "The wounded agent must be tended to upon reaching the safe house.",
+    "The main character should be named Ben.",
+    "The conversation at the bus stop includes a mention about a heat wave.",
+    "One of the characters should be wounded in the chase.",
+    "The female stranger must be an undercover FBI agent."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 16 (sb015); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb042",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a man who, while walking his beagle in North Carolina, uncovers a suitcase linked to a covert mission against Russian officials.",
+  "baseStory": "John Mitchel, a retired military officer, started his days quietly in the suburbs of Charlotte, North Carolina. Known as a disciplined and observant individual, he enjoyed his daily routine, which contained walks with his loyal Beagle, Scooter. \n\nOne crisp Tuesday morning, their route led them through the thick canopies of Myers Park. Midway around the pond, Scooter started to whimper, his nose buried in the roots of an ancient oak tree. John found it strange; Scooter was usually so energetic and today, he seemed captivated by this particular spot. \n\nCurious, John began to brush away the leaves and saw a corner of a rusted metal object. Fetching a small shovel from a nearby gardener's supply box, he started to dig. To his amazement, he unearthed a bashed and battered suitcase, smothered with years’ worth of dirt and mud. Wiping away layers of grime revealed a faded Russian emblem on the suitcase. John's heart pounded in his chest as old military instincts kicked up a notch.\n\nUsing his old army knife, he carefully opened the case. The moment the case cracked open, papers filled with Cyrillic letters, photos of unidentified people, maps, and strange technological devices came into view. One of the photos featured a man whose face was oddly familiar. Unfolding a map, he recognized marked locations as embassies and consulates, some in the US and others in Europe. \n\nShaken, John closed the suitcase and picked up Scooter, heading straight to his old friend, Leon, formerly CIA and proficient in Russian. Together, they translated documents and discerned the suitcase’s contents. The documents detailed an undisclosed mission against certain Russian officials titled Operation Cardinal, presumably by a rogue faction within the SVR, Russia’s foreign intelligence service.\n\nDeciding to tread carefully, John contacted his former comrade, Lieutenant Colonel Jacobs, now involved in Homeland Security. After listening to the fantastic tale, Jacobs was intrigued and asked John to bring the suitcase to his office.\n\nThe suitcase’s arrival at the Department of Homeland Security caused a minor uproar. Numerous tasks were set into motion: identification of those in the photos, verification of symbols and codes, and tracking the suitcase’s origin. The CIA was alerted as the magnitude of the discovery was slowly revealing itself to be immense.\n\nThe investigation led them to the brink of unearthing a major international intelligence coup, revealing an internal power struggle in the SVR and a covert mission to destabilize relationships between Russia and the world powers. This revelation had a profound impact, preventing possible threats to national security and alleviating a critical potential crisis.\n\nNews traveled quickly into the dark corridors of Washington D.C, accredited to an anonymous source. A day later, Secretary of State announced an intelligence breakthrough in a press conference, with clear implications of the implications on the international spy network.\n\nJohn Mitchell, the man who used to walk his beagle in the quiet suburbs of North Carolina, became the unsung hero behind the shadows of Operation Cardinal. However, his life after that Tuesday morning was never quiet again. Despite the looming tension, every time he walked Scooter, he couldn't help but smile at the absurdity of his find, forever intertwined with the upholstery of international espionage.",
+  "constraints": [
+    "The protagonist is temporarily detained upon the discovery of the suitcase's contents.",
+    "Max should be portrayed as intimidating and forceful.",
+    "The protagonist must be threatened into silence about the discovered suitcase and its contents.",
+    "The story must include a twist that connects protagonist's father to the discovered suitcase.",
+    "A link must be created between the suitcase's contents and a mission against Russian officials.",
+    "The story should end abruptly, leaving the readers questioning Max's intentions.",
+    "The protagonist must be a resident of North Carolina.",
+    "The protagonist should be promised freedom after completing the task.",
+    "The revelation that Jonah, the beagle, has been manipulated to dig up the suitcase must occur.",
+    "The protagonist must find a suitcase while on a walk with his dog.",
+    "The protagonist must be tasked with injecting the vial of blood into a certain individual.",
+    "The white man who shot the cop becomes a recurring character, now named Max.",
+    "The shooter must be introduced as a tall, white man.",
+    "The protagonist must be in a rush to return home to watch a playoff game.",
+    "An unexpected shooting must occur, resulting in the death of a police officer.",
+    "The protagonist should be aged around 27 years.",
+    "The protagonist should be portrayed with a sense of humor (referring to Max as a 'German hit man')",
+    "The suitcase should contain five passports of a foreign nation.",
+    "The active involvement of multiple law enforcement officers should be part of the plot.",
+    "The protagonist's home should be located near Nantahala.",
+    "The protagonist must attempt to flee but fall due to being handcuffed.",
+    "The protagonist should have visited almost all US states.",
+    "There should be tension due to the protagonist asking too many questions."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 43 (sb042); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

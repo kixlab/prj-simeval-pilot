@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb036",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words set in a futuristic world where humanity, now technologically advanced, navigates a universe tired of the endless battle between supernatural forces of light and dark, showcasing human resilience and superiority.",
+  "baseStory": "Title: Quantum Harmony\n\nIn the year 3060, humanity had unlocked the most profound mysteries of the universe; time manipulation, multidimensional travel, and energy morphing weren't fiction anymore, they were our reality. Simultaneously, our cosmic civilization found itself unwitting spectators in the age-long contest between the forces of light and darkness, the supernatural entities of the cosmos. We called them Lumens and Umbra.\n\nThe Lumens, beings of immense radiance and vitality, illuminated the universe, fostering life and growth wherever they touched. Opposite to them were the Umbra, entities cloaked in cosmic shadows, annihilating and obstructing the natural flow of life, creating voids of emptiness. For millennia, they had struggled for dominance, wreaking havoc and mutating the fabric of the universe through their brutal, never-ending conflicts.\n\nTired of their relentless battle, humanity saw an opportunity for intervention. Our resilience, a core element of our very existence, urged us to find a solution. Assisted by technology, we devised a plan, a plan that only we, beings of both light and dark, could instigate.\n\nIn the heart of our grandest spaceship, the 'Cosmic Ark', we built the Balance Beacon, a massive quantum energy transmuter. Designed to absorb the energies of both Lumens and Umbra and return it readily morphed into a unique balanced energy, it was our hope to cease this ageless tug-of-war. The motive was not to dominate but to propagate harmony, something both Lumens and Umbra had missed in their timeless battle.\n\nThe 'Cosmic Ark' journeyed to the battledome of the Lumens and Umbra, a sight defying ordinary comprehension. Beings of pure light were clashing with the darkest shadows, their energies intertwining and rupturing the cosmic scenery, creating a mesmerizing yet terrifying spectacle. Taking a deep breath, Captain Jenna flicked the switch, activating the Balance Beacon.\n\nThe Beacon began its work, steadily absorbing and morphing the supernatural energies around it. A spectacular flare of purplish hue erupted from the 'Cosic Ark', bathing the battlefield in its soft glow. Lumens and Umbra alike paused, their fierce expressions morphing into confusion as the irradiating energy muted their powers, drawing them towards the Beacon.\n\nAs the last vestiges of their energy were absorbed into the Beacon, the Lumens glowed a final magnificently bright before fading into a subdued glow, and the Umbra lost their threatening darkness, becoming tamed shadows. The universe seemed to still, awed by the spectacle it had just witnessed. A spontaneous rapture went through the battlefield. The Lumens and Umbra, so long opponents, now started becoming whole, embracing an existence hitherto unknown to them - balanced coexistence.\n\nBack on Earth, the cosmic combat's end meant the beginning of a new era. Transcendent beings no longer dictated the flow of the universe and its energies. It marked a rise of humanity, not as another power-hungry entity, but as peaceful mediators. Humanity's resilience and superiority stood apart from the manipulation of cosmic forces, emphasizing harmony, a quality the universe had almost forgotten.\n\nFrom that point in history, humans were known as the 'Harmony Bringers', their technological advancement aiding their unique existential balance, a balance that led the cosmic forces to peace. The universe opened itself to its new guardians, its sectors now free of supernatural warfare and ripe for exploration and expansion.\n\nIn an ironic turn of events, Humanity realized that their true power was not their technology, but their abilitative existence, reinforcing the power of peace in a universe so long ravaged by a battle between light and darkness.",
+  "constraints": [
+    "The story should have a futuristic, science-fiction vibe.",
+    "There should be a universal battle between light and dark.",
+    "After their discussion ends, the overlord of darkness should retreat to another celestial body.",
+    "Humanity should prove its resilience by surviving the battles between these supernatural forces.",
+    "The story should imply a strong cohesion among humans in the face of supernatural threats.",
+    "The emergence of this race reignites the presence of angels and demons.",
+    "Demonstrate human superiority by making the demons threaten to destroy mankind, but to no avail.",
+    "The protagonist's frustration with the overlord's obstinacy should grow.",
+    "After their withdrawal, a new race should emerge on the planet.",
+    "The protagonist should dismissively grant him this necessity.",
+    "There must be a phase where light and dark reach a stalemate and withdraw from the planet.",
+    "The angels should be the first to break the rule, with the second coming of Jesus.",
+    "The universe should grow tired of their continuous fighting.",
+    "The protagonist should threaten to attack the planet where the overlord retreats with nuclear weapons.",
+    "The protagonist should be the human world leader who emerged as a hero from the angels' war.",
+    "The supernatural characters should show a level of bewilderment or disbelief about humanity's progress.",
+    "The story must carry a theme of survival and adaptation.",
+    "There should be a twist where the next encounter with the overlord occurs on Mars because humans have claimed it too.",
+    "The story must contain elements of mystery and suspense.",
+    "The story must include a twist where humans show their capability to counteract supernatural threats with advanced weaponry.",
+    "The story should begin with a contemplative reflection on human curiosity.",
+    "The story must have elements of religious and mythological references.",
+    "The overlord of darkness should show fear at the mention of human weaponry."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 37 (sb036); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb032",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a hardworking miner returning home, reflecting on his life's challenges and small joys.",
+  "baseStory": "As the sunset painted the sky above the coal-blackened landscape in hues of oranges and purples, the day shift in the Wendell coal mine came to an end. Emerging from the labyrinthian gut of the earth was Earl Grayson, a sixty-year-old veteran of this dark underworld, coated from head to toe in the familiar grime of stone dust. Simply known as 'Old Earl', he had served the mine for more than four decades, his existence etched onto the countless seams he had helped to chisel away. \n\nThe journey back to his small wooden shack was never easy. Legs weary from a day's pressing labor, he trudged along the beaten path, his mind painting pictures of his life spent in hardships and small triumphs. Born into a family of miners, Earl knew of no other life - his destiny had been carved out in the mineral veins of the Appalachian mountainside. Yet he held onto no regret or bitterness but basked in the satisfaction of a hard day's toil. \n\nEarl had seen it all - the initial toil when he'd first descended into the mine's mouth, the anguish when co-workers succumbed to the treacherous occupation, the jubilation of unions won, and the celestially pure joy of his daughter's birth. His life was a mosaic of sorrows and joys, painstakingly pieced together by the artisan hands of fate.\n\nEach night, as he entered his humble home illuminated by the solitary lantern's warm glow, Earl felt a sense of contentment wash over him. The interior was simple - a bed, a desk scattered with photographs of his family, each embodying cherished memories. In the solitude that his home offered, Earl would lose himself in these memories. His tired, dust-lined face would soften into a smile as he remembered the echoed laughter of his little girl as he chased her in the fields, and the silent strength of his beloved May's embrace when they'd lost their first-born to the mine's cold grasp.\n\nDespite the hardships, Earl held tight to these moments of happiness, the joy tethered like a kite flying high on a summer's day, keeping him grounded amidst life's turbulent gusts.\n\nTonight, as he slumped into his worn-out chair, exhaustion gnawing at his old bones, he took a moment to reflect on his life once again. He looked at his calloused hands, stories etched into each line and crease. Weariness was outweighed by pride as he knew his labors put food on the table, gave his daughter an education, and made May's life a little more comfortable.\n\nWith a sigh of satisfaction, Earl rose from his chair, washed the grime away from his weary body, and crawled into the warmth of his well-worn bed. Lulled by the sound of crickets and the distant cries of the whippoorwill, he drifted into sleep. As the miner's lamp flickered out, casting long shadows on the walls of his home, Old Earl was content. Despite life's trials, he had done his best. In the grand scheme of life, with its twists and torrents, this feeling of peace in his twilight years was one of the miner's truest treasures. The embodiment of his small yet significant joy, hard earned and deeply cherished, just like the coal he unearthed every day.",
+  "constraints": [
+    "There must be various aspects of the protagonist's personal history briefly mentioned throughout the story, like parents' death, upbringing etc.",
+    "The protagonist should have an established ritual of removing his boots before entering the home.",
+    "The protagonist should have a history of DUI.",
+    "The protagonist should have a daily routine, already established in drove home from work.",
+    "The story must be written in third person narrative with an internal look into the protagonist's thought process.",
+    "The protagonist should prefer career options that involve hard, physical work.",
+    "There should be a scene of the protagonist's children running towards him to greet him.",
+    "The protagonist's wife should be at home when he arrives to greet him.",
+    "The protagonist's car should have minor flaws/ damage.",
+    "The protagonist and his wife should have a strong, visible bond of love.",
+    "The protagonist should greet his wife upon reaching home.",
+    "The protagonist should get home tired and exhausted.",
+    "The protagonist postpones some small fixes in and around the house.",
+    "The protagonist should undergo discomfort due any number of factors like his day at work.",
+    "The protagonist should have a neighbor who is a war veteran and a friend.",
+    "The protagonist should observe the needs and desires of his wife.",
+    "The protagonist should work in a coal mine.",
+    "The protagonist should appreciate little moments of happiness, like interacting with a neighbor through a window.",
+    "The protagonist should live in a house with a mortgage",
+    "The protagonist should be of approximately late 20s.",
+    "The protagonist should have a slightly casual attitude towards law and order.",
+    "There should be a scene where the protagonist is driving home.",
+    "The protagonist occasionally drinks large amounts at the bar."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 33 (sb032); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

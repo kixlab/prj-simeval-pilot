@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb021",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a professor whose structured university life, filled with personal routines and significant objects, is disrupted by an emotional incident, weaving together daily interactions and poignant memories.",
+  "baseStory": "Professor Arthur Wickham's life was a study in exactitude. An eminent scholar of History at Cambridge University, his days were punctuated with lectures steeped in facts and timelines, research nested in libraries, and strolls within the architectural remnants of past empires. But across his rigid schedule, lay a thin veneer of sentimentality, carefully curated through cups of Darjeeling tea, hardback editions of esoteric literature, and a pocket watch, a memento from his late grandfather. These were idiosyncrasies that lent an air of quaintness to the stern professor.\n\nWith the seasons and semesters, Arthur set himself into a rhythm that was unbroken, uninterrupted. In his venerable age, this rhythm had become soothing, predictable – much like a sonnet whose predictable cadence he could rely on. \n\nThe autumn on the cusp of his seventieth year brought more than the promise of crimson leaves in the college courtyard. It brought a letter from his sister, a watercolourist leading a nomadic life in the Swiss Alps. The letter arrived with the subtlety of a snowflake but carried within it the weight of an avalanche. Arthur learnt that his sister's health had declined drastically. He found himself at a precipice, staring into the abyss of uncertainty.\n\nFor the first time in decades, the protection offered by ivy-clad walls and dusty libraries seemed insufficient. His sanctum seemed to echo with an unbearable silence that no amount of rhetoric could fill, and his precious pocket watch, his companion in solitude, beat relentlessly, reminding him of time both lost and slipping away.\n\nArthur substituted his daily lectures with virtual ones, a concept he had resisted simulating breaching the fortress walls of the ancient institution, suggesting an attack on the sanctity of knowledge. He found himself packing a valise with essentials: clothing, medication, but also, his well-thumbed books, and his grandfather's watch.\n\nHe journeyed to Switzerland, his mind a whirlpool of concern and nostalgic memories of childhood escapades, of family picnics in the lush countryside, of shared secrets under the soft glow of summer sunsets. Each chime of his pocket watch seemed to weave together the threads of the past and the present, a labyrinth of time that Arthur found himself tangled within. \n\nHis sister welcomed him with a smile that shimmered like veiled sunlight. Still painting, still brimming with an indefatigable zest for life, she was. The sight of her, huddled in front of a canvas with the snow-capped Alps in her background, struck a chord within Arthur, unraveling the tightly bound academic in him. Tears welled up in his eyes, for she embodied the mural of life painted in colours of courage, resilience, and love - emotions which cry out for expression, not structure.\n\nThe Alps offer a rhythm distinct from the hum of the university, accentuated by tranquil quietude, enhanced by the ecstatic chirping of alpine birds and the distant toll of cowbells. Amidst the helix of emotions and sublime natural beauty, Arthur felt his equilibrium disrupted, lulled into an uncomfortable yet profound introspection. Every evening as he watched the sun dip behind the towering peaks, he found familiarity in that celestial routine - a comforting cadence in the chaos.\n\nBy the time spring bloomed, Arthur returned to Cambridge an altered man. The structure of his life still intact, yet the soul enriched. His sister’s illness had disrupted his world, but it reconnected him with emotions, memories, and the capacity to appreciate change. His lecture halls still echoed with facts and figures but interspersed now with anecdotes, brimming with vivacity akin to his sister's watercolours.",
+  "constraints": [
+    "Certain objects in the office should have personal significance for the professor.",
+    "The receptionist should wear different shirts in a specific cycle.",
+    "The condition of snowglobe after falling should be detailed.",
+    "The professor should hurt his leg during the fall.",
+    "The professor should interact with the receptionist regularly.",
+    "The story should involve a university environment.",
+    "Create an emotional bond between the professor and his son through a treasured object.",
+    "The professors should have routine habits related to his office keys.",
+    "Central character should be a professor.",
+    "Use a predominantly third-person narrative throughout the story.",
+    "Introduce a cancer illness in the professor's family.",
+    "The story has to include a ceramic bowl, a gift from the professor's late mother-in-law.",
+    "Involve a favorite bakery shop of professor's son.",
+    "The professor should use a specific route to reach his office.",
+    "The professor should have a specific routine after entering the office, including sitting on his chair and pulling out his laptop.",
+    "The cleaning lady should have a unique working schedule.",
+    "The professor should have a similar method for unlocking his office door every day.",
+    "There should be an incident where the professor unfortunately damages the snowglobe.",
+    "The professor should have a snowglobe on his desk.",
+    "Include a character who's a receptionist.",
+    "The snowglobe should have specific attributes including diminishing water level and a stuck collection of fake snow.",
+    "The professor should be carrying a laptop in his bag.",
+    "Incorporate a memory related to the professor's son in the story."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 22 (sb021); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

@@ -1,0 +1,24 @@
+{
+  "itemId": "mg-1079",
+  "source": "official",
+  "problem": "You need to hang a heavy mirror on your bedroom wall, but you don't have any nails or screws. The walls of your bedroom are textured, not suitable for adhesive hooks. The available items are a stack of paperclips, a teddy bear, a bottle of glue, a small piece of cardboard, a hammer, a roll of aluminum foil, a pack of adhesive hooks, and a pack of toothpicks. How can you securely hang the mirror using only these items?",
+  "objects": [
+    "a stack of paperclips",
+    "a teddy bear",
+    "a bottle of glue",
+    "a small piece of cardboard",
+    "a hammer",
+    "a roll of aluminum foil",
+    "a pack of adhesive hooks",
+    "a pack of toothpicks"
+  ],
+  "constraints": [],
+  "answerKey": {
+    "solvability": "unsolvable",
+    "solutionType": null,
+    "goldSolution": [],
+    "unsolvableJustification": "It is not possible to securely hang a heavy mirror with the items provided. The adhesive hooks won't work on textured walls, paperclips and toothpicks are not strong enough to support the weight of a heavy mirror, and the other items (teddy bear, glue, cardboard, hammer, aluminum foil) are not suitable for hanging a mirror safely."
+  },
+  "datasetRef": "MacGyver problem_solution_pair.xlsx, ID 1079 (label: correct_right_reason)",
+  "notes": "Copied verbatim via Macgyver Pilot/macgyver_think_aloud_selected_candidates.md. The objects list is analysis metadata; solvers see only the problem text."
+}

@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb029",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words from the perspective of a centuries-old predator who, living underground and capable of shape-shifting, stalks and chooses his human prey based on their health, all while observing and comparing his horrific dietary habits to those of humans.",
+  "baseStory": "Humans have strange misconceptions about what it means to be a predator. They paint pictures of savage beasts with no self-control, attacking at the first smell of blood. They project an image of manic hunger and animalistic impulsiveness. But from my centuries of existence, I’ve learned that being a predator, especially an apex predator, requires a subtlety, strategy and, surprisingly, a responsibility that goes unnoticed.\n\nI dwell deep within the layers of earth, hidden from the harsh glare of sunlit worlds and the prying eyes of humanity. My solitude is a choice, a necessity to maintain my existence which relies on anonymity. The earth whispers ancient tales to me as I rest in her bosom, shape-shifting into various forms with a fluidity that only comes with time. I am an entity born of darkness and wrought from the very marrow of the underworld. \n\nHowever, it's the hunt that truly defines my existence and I take pride in the selection of my prey. Not any human would do. I am selective, the way a connoisseur sips on fine wine. I select only those who present themselves as the epitome of health, their bodies thriving, untouched by disease or decay. The healthier the host, the more nourishing their essence becomes to me, nourishing not just my body but my very existence.\n\nI find it delightful how inadvertently we predators share a strange kinship with humans. Both species taking life, not out of mindless slaughter but as nourishment for survival. They slaughter cattle, consume poultry, and catch fish while I quietly select my humans, both driven by necessity and survival.\n\nI've observed humans evolve, their dietary habits reflecting their changing world; from hunting and gathering to agriculture, industrialized farming and now to their modern habits of consumption with an undercurrent of guilt. They mask their urge to conquer, to remain at the top of the food chain, under layers of self-deception, calling it healthy lifestyle choices or conscious consumerism but it's all survival. Humans, like any other species are predators at heart. \n\nUnlike them, however, I do not disguise the nature of my existence. I hunt humans, not for sport, but for survival. The act of selecting a prey, the dance of the hunt is ingrained in my being. I am not ashamed or feel the need to conceal it behind high moral ideals. I am what I am, a predator, who knows the value and cost of life cycle.\n\nHumans often forget their position in this food chain. They feel invincible in their concrete jungles until they meet a stronger entity on top of the food chain. No, I am not a monster. I am a reality that exists underneath their carefully constructed world, a reminder that despite centuries old civilization they are still part of this primal world, they can still be prey.\n\nAs nature has created a balance, I consider it my duty to maintain it. I am not gruesome, but merely a hunter complying with the natural order of things. Thus, amidst peaceful slumber and hushed whispers of soil, I continue my eternal dance of existence. Predator or prey, we are but participants in this eternal serene cycle. I sustain to keep the balance, to live, and let live. Because isn't that the ultimate cosmic truth? That the end of one life, often becomes the beginning of another.",
+  "constraints": [
+    "The story should involve the protagonist stalking his prey.",
+    "Protagonist should live underground.",
+    "The protagonist should portray a sense of hunger throughout the story.",
+    "Write the story from the perspective of the predatory character.",
+    "Protagonist should initially avoid feeding on people because of their physique.",
+    "The protagonist must express excitement for the torment of the victims.",
+    "The protagonist should prefer healthy humans as his meal.",
+    "The protagonist should avoid eating overweight or undernourished humans.",
+    "The story should have a surprise element in the form of the unexpected character.",
+    "The story should conclude with the protagonist ready for his meal.",
+    "Protagonist should be lost in a trance due to the scene created by the malevolent activities.",
+    "The protagonist should travel to a different country to satisfy his dietary preferences.",
+    "The protagonist should be capable of changing forms.",
+    "The malevolent activities of the unexpected character should energize the protagonist.",
+    "The narrative should elicit a sense of fear and thrill.",
+    "Protagonist should yield immense pleasure from the entire experience.",
+    "The protagonist should be more than 200 years old.",
+    "There should be an unexpected human character unsafe to the females.",
+    "The unexpected character should eventually turn towards the protagonist’s chosen meal.",
+    "The story ends with protagonist preparing for his final routine.",
+    "The story should describe a detailed physical profile of the protagonist's chosen meal.",
+    "The protagonist must follow the unexpected character and his victims to a hidden location.",
+    "The story must be written primarily in the past tense."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 30 (sb029); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

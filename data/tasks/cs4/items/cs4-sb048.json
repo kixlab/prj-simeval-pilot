@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb048",
+  "source": "official",
+  "instruction": "Write a suspenseful story in less than 500 words about a protagonist abducted and trapped in a claustrophobic, dark setting, using common items to attempt escape, with themes of survival and unexpected revelations.",
+  "baseStory": "\"Kelly, I need you to focus,\" Paul's voice was shaky but clear over her earpiece.\n\n\"I know, Paul,\" she murmured fear seeping into her words. Kelly was trapped, abducted following a routine mission gone wrong. She was now in the belly of a derelict water treatment facility, shrouded in the inky darkness limitlessly gulping down her sanity.\n\nWith her heart drumming a frantic rhythm in her chest, she did a quick inventory of her possessions. Her standard CIA gear had been confiscated, but they had missed her hairpin and watch, a minor oversight, but possibly her ticket out of this hellhole.\n\n\"Remember your training,\" Paul’s words cut through the darkness, bringing her back to the reality. \n\nWith unsteady fingers, Kelly worked the hairpin into the rusty lock on the antiquated steel door. She navigated blind, relying on touch and intuition, her pulse echoing in her ears.\n\n\"Got it,\" she whispered, as the lock yielded. Pulling the door, it ominously creaked open. She was met with a narrow, pitch-black passage. The darkness was almost suffocating; the confined space pressed on her, playing on her claustrophobia. But survival was paramount.\n\nA loud click suddenly reverberated through her earpiece, momentarily stifling her breathing. \n\n\"That's the tracker, I've got your signal. You're not far from the exit,\" Paul's assuring voice was a comforting beacon. \n\nWith each step, a countdown drummed in her head – she knew they'd discover her absence soon.\n\nAs she navigated the cramped labyrinth, her watch serving as her makeshift compass, dread entwined with determination. Uncertainty nibbled at her will, but she kept moving, her thoughts clinging desperately onto the prospect of freedom.\n\nSuddenly, a deafening alarm blared, echoing through the passages. \"Time's up,\" Kelly whispered, panic knotting her insides.\n\n\"Keep moving, Kelly,\" Paul urged. \n\nShe hastened her pace, the growing sound of footsteps affirming her pursuers. As freedom neared, the passages seemed to shrink further, feeding her claustrophobia. \n\nAbruptly, she tumbled into a well-lit room—exit in sight: a small tunnel leading upwards. \n\n\"Almost there, Kelly,\" Paul's voice was triumphant, but something was wrong. His voice sounded closer, too close.\n\nAs she made for the tunnel, a figure stepped into the room. She froze, adrenaline flooding her system. \"Paul,\" she breathed, disbelief coiling in her heart. He stood there, a triumphant smile curling his lips.\n\n\"Orders are orders, Kelly,\" he shrugged, his words chilling her blood.\n\nA surge of betrayal crashed over her, but her survival instincts kicked in. Distracting him with a flicker of defeat in her eyes, she slipped the hairpin from her hair. With deftness honed from years on the field, before he could react, she threw it right at his eye and bolted towards the tunnel. His cry echoed behind her as she crawled towards freedom, the taste of betrayal bitter in her mouth. Her piercing scream of final victory tore through the silent night, breaking free into the open.\n\nHer escape, her survival, was marred by the unexpected revelation. Betrayed by her confidant, her ordeal was over, but the real battle was just beginning.",
+  "constraints": [
+    "A stranger, appearing to be the boss of the armed group, responds in English.",
+    "The protagonist is revealed to have been abducted and traded as a U.S. traitor.",
+    "There should be a consistent use of dark atmosphere and claustrophobic settings.",
+    "The consequences of having killed one of their members are hinted to be severe.",
+    "A second man is alerted by the commotion, and the protagonist attempts, but fails to hit him with the brick.",
+    "The tone of the story should be suspenseful and mysterious.",
+    "The protagonist experiences a sudden pain, and falls back into the hatch.",
+    "The story should have creative use of common items (like cigarettes and lighter) as survival tools.",
+    "The protagonist uses the lighter to illuminate the surroundings.",
+    "The protagonist's escape attempt involves damaging a brick and its mortar.",
+    "The protagonist asks if anyone speaks English.",
+    "Chains and a lock can be heard unfurling at the hatch.",
+    "The hatch is from an industrial design and appears air-tight.",
+    "The protagonist climbs up the rope ladder to the surface.",
+    "The protagonist has allegedly killed one of the armed group's men.",
+    "The protagonist shows a fear of burning away the oxygen.",
+    "The protagonist hears noise above and a conversation in an unknown language.",
+    "There are more men and a woman waiting up top, armed and masked.",
+    "The protagonist will be holding cigarettes and a lighter.",
+    "The protagonist should be proactive and quick-thinking.",
+    "Use visceral and sensory descriptions to create a vivid picture of the protagonist's situation.",
+    "The protagonist picks up on a specific word \"saoirse\" from the conversation.",
+    "There's a concrete wall behind the enclosure's bricks."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 49 (sb048); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

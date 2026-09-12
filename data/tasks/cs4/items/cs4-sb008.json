@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb008",
+  "source": "official",
+  "instruction": "Write a suspenseful crime story in less than 500 words about Tom, who, after a disturbing encounter in a psychic's room, finds himself in a series of dangerous situations including a high-speed chase, a violent confrontation, and a mysterious attack, all while grappling with his distrust of the police and his complex personal background.",
+  "baseStory": "Tom's life was devoid of normalcy following a disturbing encounter in a psychic's candlelit room. He had, on a lark, indulged in a reading, only for the psychic to fall into an abnormal trance, muttering a chilling prophecy of impending danger and a relentless pursuit. Skeptical at first, Tom had laughed it off. Until he couldn’t.\n\nA hardened former Marine with a distrust for police cultivated during his turbulent childhood, Tom was now caught up in events that defied his rational understanding. The high-speed chase down shadowy highways was just the tip of the iceberg.\n\nHis encounter with Rodge, a threatening figure from his past, had heightened his burgeoning paranoia. By the time Rodge’s scarred face loomed into view beneath a flickering streetlight, Tom’s heart was racing. The violent confrontation that followed was all a blur: a symphony of flying fists, blood, and an overpowering sense of fear -- fear of what was yet to come.\n\nThen came the hit. One he hadn't seen coming. A mysterious attack under the moonlight while returning home, leaving him battered, bruised, and even more suspicious. Despite his Herculean strength and military background, he was struggling against an unknown enemy. His past had caught up with him, perhaps? Or was it just the fulfillment of the psychic’s cryptic prophecy?\n\nHaunted by this question, the elaborate labyrinth of his past became a frightening haunt. His father's criminal history, his own stint in the military strife, and his ingrained distrust of the police created in him a sense of dread. They were components of a complex puzzle, interwoven with his current dire straits. Backed into a corner, he knew it was no longer about avoiding the psychic’s prophecy but confronting his reality head-on.\n\nWith the eerie prophecy hanging over him like a Damoclean sword, Tom resolved to fight back. Whatever yesterday held, today he was an innocent man embroiled in an inexplicable, yet dangerous chess game, relying solely on his wits and training.\n\nAs the threats intensified, paranoia gave way to determination. He would not allow his past to dictate his future, nor would he buy into the cryptic prediction of danger. He was not just a pawn, he was a king in his own right!\n\nHis mysterious enemies, whatever their motives, would soon comprehend the magnitude of their miscalculation. He was not the weak, credibility-strained rogue they assumed. They would soon discover that beneath his hardened exterior was a man determined to protect his life, his freedom, while navigating the haunting echo of the psychic's words, \"Danger lurks around you. Beware!\"\n\nIn the end, it was not the prophecy that mattered, but the resolve he discovered within himself. He had always been a fighter, but now he was a survivor too! As he stood silent in the face of danger, ready to take on the world’s hostility single-handed if he must, he smiled grimly. He was not afraid of a fight. He was not afraid of uncertainty.\n\nAbove all, he was not afraid of a future marked by uncertainty. It was his to shape, to mold into something he could call his own, devoid of societal labels or stigmatic past. Despite the cycle of chases, confrontations and relentless fear, Tom stood his ground.\n\nAnd in the end, isn't that what really mattered?",
+  "constraints": [
+    "In self-defense, Tom uses his gun.",
+    "Tom is alone and hears police sirens after leaving the psychic's room.",
+    "The attacker is revealed to be searching for a girl named Angela.",
+    "Use vivid descriptions to describe actions and scenes of the story.",
+    "Tom is beaten up by the bald man.",
+    "The story starts in the room of a psychic.",
+    "The story should be written in third person narrative.",
+    "Tom is there unwillingly because of his mother's insistence.",
+    "The entire text should maintain a fast-paced suspenseful tone.",
+    "A seriously wounded woman is discovered.",
+    "Tom finds a police car waiting at his home.",
+    "Tom experiences a high-speed car chase with his attacker.",
+    "Tom fatally shoots his attacker.",
+    "Tom decides to run to avoid the police.",
+    "Tom is unemployed and resides with his mother.",
+    "Tom's car manages to start, hinting possible divine intervention.",
+    "The narrative should gradually build tension, culminating in a violent clash.",
+    "The psychic has a peculiar voice and an odd way of appearing.",
+    "The psychic then frightens Tom to leave.",
+    "Tom identifies an escape route to an alley seen earlier in the day.",
+    "Familiarity with the neighbourhoods helps Tom escape.",
+    "His car battery is at a friend's house.",
+    "A suspicious and menacing man is watching Tom, making him anxious."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 9 (sb008); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

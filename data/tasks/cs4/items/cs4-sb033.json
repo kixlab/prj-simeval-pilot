@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb033",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a character who wakes up in their childhood, experiencing confusion and denial while trying to warn others about a future disaster, depicted through a series of frantic and dismissed encounters.",
+  "baseStory": "As the alarm jangled through his skull, Peter Masterson winced open an eye, immediately feeling something was amiss. His gaze wandered to the dinosaur wallpaper adorning the room. Abandoning his usual morning lethargy, he jolted upright. This was not his reality; this was his childhood. Adrenaline fueled his movements as he scrambled off his race car bed.\n\nConfusion, denial clawing at his sanity, he ran a hand over the now unfamiliar posters, brilliant neon hues bright on his childhood heroes. The tranquility of ignorance seemed too distant as remnants of his adult memory whispered of impending catastrophe, a comet set to collide with Earth in the not-so-distant future.\n\nPeter stumbled out of the room, dismissing the scenes of his past life as nothing but an illusion. Yet, the smells of his home wandered in, the sizzling bacon, and fresh coffee, a nostalgic yawn of mornings past.\n\nHis mother, father, and sister sat around the kitchen table. Though joy crept into his heart seeing them alive and young, it was quashed by the heavy sense of impossibility. As he glimpsed their oblivious expressions, his present duty, the dire warning he must convey, took precedence.\n\n\"Mom, Dad,\" he stammered, barely concealing his distress, \"I... I need to tell you something important.\"\n\n\"Oh, more important than your math test today?\" his dad teased, a twinkle in his eyes.\n\nIgnoring the mild reproach, Peter plunged into his desperate news, trying to convince them of the disaster looming in the near future. His frantic explanation drew a series of incredulous stares. His sister giggled, while his mother soothed his sweating forehead, blaming a feverish nightmare for his bizarre ramblings.\n\nDesperate for belief, he rambled his way to school, warning his childhood friends, the crossing guard, the elderly lady who lived on the corner. Each encounter only deepened the denial and dismissal.\n\nDefeated, an idea struck him sitting in his small classroom. The one person who might just believe him. Ms. Hanson, their science teacher, a quirky, open-minded woman renowned for inspiring the kids to believe in everything from alien life forms to time travel.\n\nSummoning courage, he hijacked science class, pouring out everything he remembered from his adult timeline, his words a hurried mix of jargon about comets, celestial events, future disaster dates, everything that could be vital.\n\nA stunned silence lingered once he was done, followed by bursts of laughter from his classmates. Tears sprung in his eyes but steadied as Ms. Hanson silenced the chaos. She studied him a moment longer, before finally nodding in curiosity and intrigue.\n\nA glimmer of hope ignited in Peter's heart. Maybe his frantic attempts weren’t entirely meaningless. Even if he couldn't prevent the disaster, if he could just manage to persuade someone, anyone, to prepare for it, then his disoriented journey to the past would not be futile.\n\nAs the day ended, Peter sat in his race car bed, praying fervently, clutching the corners of his comforter. Night fell, and as the first light peeked in through the window, the shrill alarm sounded off again. A sigh of relief swept through him as he took in the sights of his usual studio apartment.\n\nHe was back. Or maybe he never left at all. It was just a dream, a strange, vivid dream. Yet, as he opened the morning paper, an article caught his eye. The headline read - \"Wacky Claims of Youngster Inspire Comet Research, NASA Intrigued.\"\n\nWas his past warning enough to alter, or at least prepare for the future? Only time would tell.",
+  "constraints": [
+    "The main character should be forced off the bus.",
+    "The main character should feel helpless in their attempts to prevent the disaster.",
+    "The main character must experience confusion and denial about time-travel.",
+    "The bus driver must ask the main character to sit down and be quiet.",
+    "The main character must learn the current date from his/her father.",
+    "The bus driver must dismiss the main character's warnings as a joke.",
+    "The story must take place in the month of September.",
+    "The main character must try to explain a future disaster to his/her mother.",
+    "Ms. Green must rebuke the main character and ask him/her to calm down.",
+    "The main character must pinch and pull his own cheeks to check his reality.",
+    "The mother should not take main character's warnings seriously.",
+    "The main character must be taken to the school principal's office by Ms. Green.",
+    "The main character must have a conversation with his/her father while he is drinking coffee.",
+    "The main character must wake up from a dream.",
+    "The main character's mother should be screaming to wake him/her up for school.",
+    "The story must involve the use of an iconic childhood item (Bounty paper towels for wrap).",
+    "The main character must notice a Hot Wheels toy.",
+    "The main character should speak in hurried sentences, reflecting panic.",
+    "The main character must be surprised at waking up in his/her childhood room.",
+    "The bus in the story should make multiple stops.",
+    "Story must be written from a first-person perspective.",
+    "The story should depict an instance of a casual bullying (spitballs) on the bus.",
+    "Story must describe the main character's emotions while on the bus."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 34 (sb033); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

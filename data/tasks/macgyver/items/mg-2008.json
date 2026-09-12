@@ -1,0 +1,30 @@
+{
+  "itemId": "mg-2008",
+  "source": "official",
+  "problem": "Your small diamond earring has fallen down a narrow-width, metal heat vent with a sharp curve deep into its passage. The vent is positioned low, at floor level. You have a stretchy rubber band, a wide, fluorescent highlighter, a digital pocket camera, an extendable microfiber duster, a pack of mint chewing gum, and a small round handheld mirror designed for makeup application.",
+  "objects": [
+    "a stretchy rubber band",
+    "a wide, fluorescent highlighter",
+    "a digital pocket camera",
+    "an extendable microfiber duster",
+    "a pack of mint chewing gum",
+    "a small round handheld makeup mirror"
+  ],
+  "constraints": [],
+  "answerKey": {
+    "solvability": "solvable",
+    "solutionType": "unconventional",
+    "goldSolution": [
+      "Use the extendable microfiber duster to measure the depth of the vent.",
+      "Attach the round handheld mirror to the duster using the rubber band.",
+      "Insert the mirror-duster into the vent, using the mirror to locate the earring.",
+      "Use the fluorescent highlighter to mark the spot on the duster where it reaches the earring.",
+      "Remove the mirror and replace it with the gum at the marked spot.",
+      "Carefully lower the duster back into the vent to stick the earring to the gum.",
+      "Slowly pull the duster back up to retrieve the earring."
+    ],
+    "unsolvableJustification": null
+  },
+  "datasetRef": "MacGyver problem_solution_pair.xlsx, ID 2008 (label: inefficient)",
+  "notes": "Copied verbatim via Macgyver Pilot/macgyver_think_aloud_selected_candidates.md. The dataset text has no closing question; it is kept as written. The objects list is analysis metadata; solvers see only the problem text."
+}

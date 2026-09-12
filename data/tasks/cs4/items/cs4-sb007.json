@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb007",
+  "source": "official",
+  "instruction": "Write a dark and suspenseful story in less than 500 words about a protagonist who, after a car crash, encounters a mysterious old man claiming to be Death, leading to intense and eerie interactions as they confront supernatural elements and life-altering choices.",
+  "baseStory": "Dazed from the impact, Lily struggled out of the wreckage of her car. Crimson streaks stained her once ivory coat, and a deep pain throbbed in her left arm. Above, a dreary moon glowed ominously, peeking intermittently from behind dark clouds. The deserted country road where her car had spun out of control sat silent and unsettling, interrupted only by the sporadic gust of the uncaring night wind.\n\nJust off the side of the road, under the shadowy outline of a gnarled tree, a gaunt, old man sat on a rickety stool. He was unusually serene amidst the scene of chaos. In the dim light, his spectral eyes held an odd glimmer as he beckoned Lily with a bony finger. \n\nWincing in pain, she stumbled towards him. The old man studied Lily with the inscrutable interest of a collector regarding a precious artifact.\n\n\"I've been waiting for you,\" he began, his voice as ancient as the wind rustling through the skeletal branches overhead, \"You may call me Death.”\n\nLily's heart pounded in her chest, but her fear was soon mixed with frustration. This wasn't the time for eerie pranks. “Look, I have been in a serious accident. I need help.\"\n\nDeath merely chuckled, a sound dry as autumn leaves skittering across a forgotten tombstone. \"We all need help one way or another. Some seek it in living. Others find it in dying. The only question that matters is: which do you prefer?\"\n\n\"Why don't you call an ambulance?\", she pleaded, hoping to reassure herself that this was just a bad dream.\n\nDeath smirked, his glittering eyes taking on an unsettling brightness. \"Your accident was no accident, Lily. Your fate's string has been trimmed.\"\n\nPanic rose, but a strange defiance ignited within her. \"Then why am I still standing here if it's my time?\"\n\nHe rested his gaze on her, hinting at a millennial-old wisdom. \"Maybe there's a decision to be made; a choice between two worlds.\"\n\n\"But...I don't want to die,\" she whispered, tears streaming down her face.\n\nHe tilted his head as if considering her plea. \"Perhaps I could offer a deal. I am growing tired of my endless task. Take my place, see the world from a different perspective, and your life may continue.\"\n\nDuty. Existence. Immortality. It was tempting.\n\n\"Will I feel pain?\"\n\n\"Pain resides in the living. In death, there is only silence.\"\n\nLily glanced at the wrecked car, images of a hospital, tubes, pain fading into the night. A whole life spent welcoming the departed. Dreadful, yet somehow peaceful. Overwhelmed, she took a deep breath. Her hands felt icy as she unclenched her fist, extending her trembling hand towards the old man.\n\nHer world spiraled into an infinite darkness, and when she came to, she was alone. She rose, stunned by the sudden absence of pain in her arm. Instinctually, she looked down at her hands, now aged and thin with skeletal fingers. The deathly silence was broken by distant sirens that painted the dark sky with flashing lights. \n\nThey would never reach her now. For she was no longer one of the living. Now, she stood as Death, alone on the dark road, ready to guide souls into the ominous eternity that awaited them. She was Death. The end. The beginning. Eternity itself.",
+  "constraints": [
+    "The intense smell causes the protagonist to vomit his earlier meal.",
+    "The mysterious man from the back seat of the car is still alive post-crash.",
+    "Protagonist finds a medical bag and broken cane scythe in the car.",
+    "It's revealed that the protagonist's 'time to die' was during the crash.",
+    "The protagonist awakens disoriented.",
+    "The mysterious man is described as very old and blind.",
+    "The protagonist is implored to use the scythe blade to free the trapped man.",
+    "The dialogue between characters is dramatic and intense.",
+    "The overall mood of the story is dark and eerie.",
+    "The protagonist crashes his car due to the sudden shock.",
+    "The story includes detailed attention to protagonist's emotions and reactions.",
+    "The story has suspense and mystery built around the mysterious old man.",
+    "The mysterious man claims to have come for the protagonist's life.",
+    "The protagonist was speeding recklessly.",
+    "The story features a supernatural element in form of 'Death'.",
+    "The protagonist finds himself in an abandoned field after the car crash.",
+    "Protagonist crashed his company car, hinting towards potential job loss.",
+    "The narrative style is casual with some use of slang and informal language.",
+    "The old man claims that he has been spared from death.",
+    "The protagonist was transporting a medically critical package – a 'heart for transplant'.",
+    "The protagonist is spared because he saved 'Death'.",
+    "The destination for the package is the central state hospital.",
+    "The protagonist's car is destroyed after colliding with a tree."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 8 (sb007); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

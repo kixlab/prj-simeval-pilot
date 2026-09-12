@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb010",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words from the first-person perspective of a protagonist reflecting on their non-religious life and military past.",
+  "baseStory": "Even at the ripe old age of 76, the world still swirls around me with such vigour as the day I enlisted in the 3rd Battalion, 5th Marines.\n\nI've seen things that would chill your bones, reduced the staunchest God-fearing men to quivering sobs and vacant stares. But religion, the supernatural, divine intervention - they never really sat right with me. Some folks needed it - needed the reassurance that a loving god was watching over them, their families, their comrades. I found no comfort in those celestial fantasies. I had my two feet on the ground, my M16 in my hands, and a determination to make it back home, intact.\n\nNow don't get me wrong, my life hasn't been some godless void. Far from it. I've found my peace, my tranquility, in the simple and undeniable truths of the world around me. The rotating seasons, the birth of my two kids, the surety that hard work reaps rewards - these are my commandments, my guiding stars.\n\nI remember a firefight in Da Nang, bullets raining overhead like a hailstorm from hell. Consecutive deafening blasts from nearby mortars shook the earth beneath me while a platoon mate, Jimmy, cried, reciting the Lord's Prayer over the chaos. I couldn't help but think, if there was a God, would he really condemn us to this?\n\nI survived that war, or rather, I walked away from it with a body still capable of life. Jimmy didn't make it. The chaplain said he was with God now. I couldn't help but wonder if God felt his fear, his desperation in those final moments.\n\nAs years rolled on, my military past became just stories to tell the grandkids. Their awestruck faces as they listened offer a mirror to my past, reflecting both the horror and courage, encapsulated by their innocent curiosity.\n\nYet, it's strange, this life without a god. People often ask if it feels lonely, if the universe feels a bit darker, a bit colder. I always shake my head and laugh. I've held a man as he bled out, killed in the name of our petty human squabbles. I don't need a deity to remind me of the darkness inherent in our species.\n\nNo, my universe isn't colder; it's simpler, filled with my love for my family, my respect for this planet, my appreciation of a good book, and the enduring brotherhood with my surviving comrades. It's the exhale of relief after a hard day's work, the comforting warmth of a hot cup of coffee, the simple pleasure of watching a sunset.\n\nThe military taught me discipline and respect; life has taught me patience and appreciation. Both those teachings form my compass, guiding me without the need for a religious beacon.\n\nAs I sit on my porch, aging yet content, looking out onto a quiet suburban pre-dawn, tranquility washes over me. I have no god to thank for what I have, only the tangible folks around me who've made my life what it is, luxuries and flaws included.\n\nReligion may console some in their darkest hour, but I'm left remembering that religion often sparked the darkest hours of humanity. Not for me the complexities and contradictions of faith. Life in its reality, with all its harshness and beauty, that is more than enough. And I find a simple, profound peace in that.",
+  "constraints": [
+    "The protagonist should express doubts over their non-religious lifestyle and how it might affect their fate.",
+    "The protagonist should feel both fear and curiosity in the story.",
+    "The protagonist should express fear over a forgotten wrong deed affecting their fate.",
+    "The story should end on a note of uncertainty.",
+    "The two main characters should remain indecisive until the very end.",
+    "Aeros should share his misgivings about leading his troops into battles.",
+    "The entire story should be told from the first-person point of view of the protagonist.",
+    "Aeros should express regret over the deaths of his troops.",
+    "The story should reveal that the 'boarding' is related to the afterlife.",
+    "The protagonist should be reflecting on a past decision which has led them to their current situation.",
+    "Aeros should express fears of his good deeds being outweighed by his actions in war.",
+    "The protagonist and Aeros should stay on the platform, unable to decide their fate until the end of the story.",
+    "There should be moments of resilience and determination showcased by both characters.",
+    "Aeros should express moments of good deeds, such as taking an arrow for a young troop.",
+    "Introduce a character who interacts with the protagonist named Aeros.",
+    "Aeros should reveal that he was a Roman Centurion when he was alive.",
+    "Use repeated callouts to announce the remaining time until final boarding.",
+    "Introduce a theme of self-blame over the deaths of others.",
+    "Create a scenario where the consequences of the past haunt the characters in the present.",
+    "The protagonist should have had an eventful past, including time serving in the military.",
+    "Introduce a fatal car accident in the protagonist's past.",
+    "The story should reveal that the protagonist doesn't adhere to any religious belief.",
+    "The protagonist should engage in moral reasoning, filled with self-doubt."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 11 (sb010); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

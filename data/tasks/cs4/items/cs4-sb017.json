@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb017",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a protagonist uncovering a friend's dark, possibly demonic secrets through chilling discoveries and sinister notes, leading to a horrifying revelation.",
+  "baseStory": "In the quaint town of Ashbridge, life was as predictable as sunrise itself. Joy teetered in the air, swings rocked high in the parks, people chatted amiably, and everyone seemed content, especially Alex. He had lived here since childhood, happily nestled within the affectionate embrace of peace. All was wonderful, save for a volley of strange occurrences associated with his enigmatic friend, Ethan.\n\nEthan was known to be an odd one with peculiar habits—long late-night strolls and a peculiar interest in the occult. He seemed entranced by a number of esoteric subjects, from archaic symbols to whispers of magic and tales of entities and shadows. Ethan's mysterious demeanor unsettled Alex, yet the intertwined roots of their friendship stopped him from drifting away.\n\nEverything was stable, until one day Ethan disappeared.\n\nAlex worriedly ransacked Ethan's semi-abandoned home, hoping for clues of Ethan's whereabouts. Barely held together by rotting wood, the house echoed with eerie silence, amplifying Alex's pulsating heartbeat.\n\nIn the attic, a chilling discovery awaited him. Tucked away, he found a secret room. A rusty key under a dusty carpet opened more than just the room, it unlocked an arcane world. Inside the room, scattered across the wooden desk were cryptic grimoires and parchment scrolls riddled with archaic symbols and script. Ethan's world of occult and darkness made Alex shudder. Half-afraid, he unfolded a particularly scruffy paper before him.\n\n\"Be careful what you seek, for truth can sometimes shatter peace.\"\n\nHis hands trembled as he read the eerie words scribed with crimson ink. The air hung heavy, saturated with sheer horror, yet he delved deeper. As a morbid curiosity beckoned, he resolved himself to unearth Ethan's dreadful secrets, justifying his will by equating knowledge to power.\n\nDay by day, he discovered more sinister notes and symbols. They pointed towards a hideous truth, a terrifying path Ethan austerely treaded upon. One note stood out from the rest, an unfinished letter addressed to \"Alex\" that made his heart palpitate.\n\n\"Soon, you will understand why I had to leave. Darkness isn't meant for the innocent,\" the note read, hastily scribbled with a sense of urgency. The words were ominous, but they only spurred Alex further into the abyss of the mystery, the knot of worry in his stomach worsening each day.\n\nFinally, after weeks of untangling the eerie web of Ethan's life, Alex found a terrifying revelation concealed within a sinister grimoire. Ethan was not simply dabbling in the occult, he was part of it. The symbols, the notes, they all pointed to one thing - Ethan was seeking communication, not with spirits or ghosts, but with malevolent entities far darker. Demonic forces.\n\nWith wide eyes, he stumbled onto the final document, a contract of sorts, with the terms written in a language even older than time. The contract’s purpose was horrifying – a demonic pact. Ethan, in his thirst for arcane enlightenment, had pledged himself to a demonic entity. The cost? His life.\n\nThe horrifying revelation had Alex's heart pounding in his chest. Yet, on recognizing the symbols of protection inscribed on the walls of the room, the horrifying truth unfolded clearer. Ethan didn't disappear; he was taken, banished from existence against his will, ensnared by the chains of his demonic pact.\n\nAnd Ethan’s final message referenced that Alex, his innocent friend, was the next.",
+  "constraints": [
+    "The story must reveal that the protagonist's friend's entire family is missing.",
+    "There should be a specific mention of the number of gunshot wounds the bodies have.",
+    "The story should allow the protagonist's perspective towards Lucy to evolve from innocent friend to suspicious figure.",
+    "There should be a reference to Lucifer being rejected by God.",
+    "A message written in blood should be present in the bathroom scene.",
+    "The protagonist finds Lucy's parents' dead bodies in the bathroom.",
+    "The protagonist should have difficulty opening their car due to extreme fear or shock.",
+    "It must involve a scene where the protagonist bargains with their father for permission to leave the house.",
+    "There has to be a visible and disturbing mark on Lucy's front door.",
+    "The protagonist finds it shocking that someone could have put the note in his car while he was inside Lucy's house.",
+    "The protagonist should be burdened with a terrifying secret.",
+    "The note should set an eerie or unsettling tone.",
+    "The story should involve a narrative thread hinting at Lucy's potential demonic or related associations.",
+    "The story involves something found at a basin/pit the day before, possibly having religious or supernatural significance.",
+    "The protagonist should be depicted as initially naive about the seriousness of the situation.",
+    "The protagonist should exhibit elements of disbelief and terror at the horrifying revelation.",
+    "The news report should serve as a foreshadowing element.",
+    "Inside Lucy's house, the protagonist should find a note that sparks intrigue.",
+    "There should be a mention of the protagonist finally recognizing Lucy's 'snicker'.",
+    "The story should mention an Ohio Buckeyes hat that belongs to the protagonist.",
+    "The second note should contain information that suggests Lucy's potential involvement in diabolical acts.",
+    "The protagonist's last thoughts should be about the horrifying toy chest.",
+    "The story should have a warning tone reflected through Lucy's letters."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 18 (sb017); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

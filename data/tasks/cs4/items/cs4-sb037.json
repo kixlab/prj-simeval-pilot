@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb037",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about two scientists exploring the ocean floor, who follow a bioluminescent trail to a stunning discovery of intelligent, mermaid-like creatures, sparking excitement, fear, and the promise of changed perceptions of marine life.",
+  "baseStory": "In the silent depth of the water, a faint blue glow cast an extraordinary hue against the absolute darkness. Dr. Helen Harrison and her partner, Dr. Carl Goldstein, acknowledged the glimmering trail from the interior of their submersive vessel, their hearts pounding in anticipation. They were two acclaimed marine biologists, thrust deep into the abyss of the Atlantic, investigating pockets of bioluminescence they had detected on their advanced sonar. Little did they know, their lives and human knowledge of marine life was about to change drastically.\n\nGuiding their vessel towards the radiant path, they gazed wide-eyed at the visual spectacle unfolding before them. The bioluminescent trail, peppered with sparkling dots of iridescence resembling underwater cosmos, grew brighter and more concentrated as they ventured deeper. It was a phenomenon not yet observed in marine science.\n\nAmid the magnificent display of lights, they spotted an unusual moving formation flickering in and out of sight. It was no cluster of glowing plankton they had ever known, nor a colossal squid communicating through bioluminescence. A strange anticipation gripped them.\n\nDrawing closer, they could hardly believe their eyes. The formation resolved into elegantly curved creatures that were humanoid from the waist up but with pearlescent scales and powerful tails in place of legs. Their skin had an ethereal glow, displaying a whole spectrum of blues and greens. The undeniable resemblance to classical descriptions overwhelmed the scientists: could these be real-life mermaids?\n\nThe creatures displayed complex patterns on their skin, their bioluminescence forming vivid hues against the starless sea. They swam gracefully, emanating serene waves of light, directing them towards peculiar underwater structures that shimmered gold and silver in the low light, absolutely mesmerizing the scientists with their complex architecture.\n\nDr. Harrison and Dr. Goldstein watched in awe, their minds grappling with the mind-bending reality: an intelligent, underwater civilization of mermaid-like creatures. The pulsating light patterns on the creatures' bodies inferred a communication form. They were responsive to one another, responding to the light patterns intricately, pointing to a sophisticated level of social interaction hitherto unobserved in marine life.\n\nA wave of fear and awe engulfed the scientists as they faced unknown territory. They realized the implications of their discovery: it tore down preexisting ideas of marine biology, redefining the fundamental understanding of life beneath the sea. The possibilities of communication, learning from these marine beings terrified and exhilarated them simultaneously.\n\nEnsuring they had expansive video evidence of their discovery, they slowly withdrew, maintaining a respectful distance from the extraordinary life they had just encountered. Ascending to the surface, they left behind the twinkling underwater city and its luminous inhabitants still visible on their rear camera.\n\nOnce back on their research ship, they sorted through the incredible video footage. The marine biologists knew they were on the brink of revolutionizing humanity’s understanding of the ocean mystery and marine intelligence. Their discovery promised not only a significant scientific breakthrough but also brought with it the weight of responsible revelation and interaction.\n\nWhat had started as an exploration of an unusual bioluminescent trail culminated in a discovery destined to leave an indelible imprint on marine biology and human understanding of life on Earth. As they set course back to the mainland, excitement and trepidation sat heavy in the air, now that the ocean had revealed a part of its deepest, most stunning secret.",
+  "constraints": [
+    "The strip leads to a significant formation of hills beneath the ocean.",
+    "The younger scientist should express excitement using expletives.",
+    "The language should be detailed and descriptive, invoking vivid imagery.",
+    "The scientists should speculate on the identity of the glowing organisms.",
+    "The marine creatures’ approach to the submersible and interactions should be non-hostile.",
+    "There should be a hint that the discovery will drastically change the world.",
+    "The ocean floor should be described as rocky, with visible vents as its main source of life.",
+    "The younger scientist should manifest more vocal expressions of surprise and enthusiasm.",
+    "The older scientist should be skeptical about the younger scientist's discovery initially.",
+    "The discovery should be recorded as historical.",
+    "The story must have an overarching theme of exploration and discovery.",
+    "The younger scientist should always be seated.",
+    "The story must maintain a tone of suspense and surprise throughout.",
+    "The older scientist should have a near heart attack from surprise.",
+    "At this bright part, they must encounter a community of creatures resembling mermaids.",
+    "The characters must rely heavily on visual cues throughout the story.",
+    "The scientists follow the bio-luminescent trail using their underwater submersible.",
+    "Strengthen the characterization of the older scientist as an experienced, seasoned researcher.",
+    "The marine creatures should have certain distinct physical features.",
+    "There has to be a distinction on the social hierarchy in the mermaid-like creature's society.",
+    "The mermaid-like lifeform must display signs of intelligence - \"braver\" one interacts with submersible.",
+    "Ending should be open-ended, paving way for possible future exploration.",
+    "Use unique character perspectives to drive the plot."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 38 (sb037); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

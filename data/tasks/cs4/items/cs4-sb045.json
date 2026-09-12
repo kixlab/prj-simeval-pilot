@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb045",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a young protagonist reflecting on the transition from a normal childhood to a dystopian reality where a strict law restricts daylight movement, forcing allegiance to a secretive resistance movement.",
+  "baseStory": "Growing up, the warm sun against my skin was my solace. Playing outside, my companions were the wildflowers blooming in our backyard. My friends and I raced against the lingering sunset, only returning home when the street lights flickered to life. Yes, those were the halcyon days. \n\nThree years ago, an authoritarian power seized control of my city, shifting our world from the childlike normality to dystopian reality. The government enacted a law of restricting daylight movement. And so, we were immersed in eternal darkness, encapsulated in an enigma called 'Nightlock.' The sun disappeared behind the high, ominous walls of our homes and hope stared at us through the bars of a grim horizon. My childhood companions wilted, waiting.\n\nThe insidious shift instilled fear. People holed up inside, whispering about 'Nightlock' and its devastating after-effects. But the hushed tales and subdued sobs intrigued me instead of scaring me away. \n\nI was fourteen then, a curious teenager seeking adventure and resisting an imposed cage. While my parents surrendered to Nightlock, staying indoors, their spirits broken, I decided to rebel. Not a vocal one, not yet, but through small acts of resistance. \n\nI found an undercuff rebellion, a secretive resistance movement that operated during the day, utilising the remnant daylight that streamed through the ruins of obsolete buildings and long-abandoned parks. The resistance didn't just protest against the tyrannical rule; it breathed defiance into the shells of people resigned to their fates.\n\nI joined them, pledging my allegiance. I yearned for the touch of the sun, the smell of blooming flowers, the sense of freedom. I missed those days, and if it meant risking my life for the light to return, I was willing.\n\nEvery day, while my world insisted on living in the dark, I snuck out to feel the rebellion's warmth. We gathered around fire, passing tales of freedom and plotting against the oppressors. It was in these hushed discussions I found primal human emotions - hope, despair, courage, and triumph. I met children my age, parents wishing for their kids to feel the sun, old folks reminiscing about brighter days.\n\nThree years of my allegiance taught me something. Nightlock was the antagonist in our lives, the vile villain we blamed for our misery. But it wasn't Nightlock that kept us locked up; it was fear. In the rebellion, we shed that fear, even if just for moments.\n\nWe continue to resist, and the best of us grow stronger each passing day. We are not just hoping for a day without Nightlock anymore; we are fighting for it.\n\nIn reflecting upon my transition from an innocent child to a rebel, I don't see a tragic shift. Instead, I see evolution. A metamorphosis born from adversity. Nightlock might have stolen the sun from the sky, but its warmth still resides within us, fuelling us to reclaim our lost daylight. Imposing laws can restrict movement, but they can never confine the indomitable human spirit.\n\nThe sun will return. Not just in the sky but in the hearts of everyone in the city. And until it does, we remain in the fight.",
+  "constraints": [
+    "The protagonist should fear his parents' reaction if they discovered his allegiance to the resistance.",
+    "The protagonist should be playing with toys at the start of the story.",
+    "A large number of casualties must occur due to this new regulation.",
+    "The story must fast-forward to when the protagonist is in their late teens.",
+    "A sense of despair should be created in the description of the citizens adapting to the change.",
+    "The story should transition from a childhood memory to a darker future reality.",
+    "The story must be narrated in first person.",
+    "The story should involve the use of military intervention to enforce the new laws.",
+    "The protagonist must feel a sense of allegiance towards this resistance group.",
+    "The resistance group should communicate their ideology primarily via symbols and signs.",
+    "On a stylistic level, the story must include detailed descriptions.",
+    "The protagonist's family must strictly abide by the new laws.",
+    "The protagonist’s parents must disapprove of the resistance.",
+    "The main character's life should be significantly affected by these changes.",
+    "The setting must involve a typical family setup.",
+    "The protagonist must be a child when the significant event happens.",
+    "Electronic locking systems should be installed in every home.",
+    "It should be noted that the protagonist feels fear towards the military.",
+    "The story’s tone should convey a sense of oppression and longing.",
+    "The locking system should be remotely controlled by the President.",
+    "The ruler of the country, the President, must have control over when people can go outdoors.",
+    "The new regulation should generate a sense of longing for daylight within the general population.",
+    "The majority of the electorate must buy into the government’s narrative."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 46 (sb045); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

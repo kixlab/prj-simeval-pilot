@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb041",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words from a father's perspective as he navigates his son's transition from a respectful child to a rebellious teenager, culminating in a tragic accident that brings unresolved tensions and fears to the forefront during a critical hospital vigil.",
+  "baseStory": "Looking back, I suppose the signs were always there. Little things morphed into big things over the years. Tom, my son, a delightfully energetic boy filled with bright-eyed respect and politeness, was slowly changing. His school grades slipped, as did our father-son discussions, replaced by defiance, secrets, and rebellion.\n\nA brilliant Saturday morning turned overcast as we shared breakfast. His face stony, mirrored his burnt toast.\n\n\"Dad, can't I get a job instead of going to college?\" he muttered, probing the subject we'd been skirting around for months.\n\nMore than anything, I wanted to understand him, to know where those polite smiles and enthusiastic tales vanished. But frustration, fear, and my own rigid upbringing betrayed me. \n\n\"No! Education is not a choice, it's a necessity,\" I snapped back, choking the room's warmth. He stormed off, leaving me staring at a half-eaten breakfast and unsaid apologies.\n\nThat evening, I remember getting the phone call. A shivering voice on the other end mumbling about a terrible accident. My heart froze. It was Tom, lying unconscious in a sterile hospital bed. My son, the boy I loved fiercely, was struggling between life and death.\n\nI spent countless hours by his side, whispering apologies for all our misunderstandings, vowing silently to be better, praying he'd wake up to hear me. But he lay still, leaving a dreadful, gnawing silence in my life. \n\n\"His chances of making it are quite slim,\" the doctor said hesitantly, a sober look reflected on his glasses. I merely nodded, biting back tears.\n\nNothing mattered anymore, not the rebellion, arguments, or unbending rules. Not even college. Amidst the erratic rhythm of life support machines, it dawned on me how unintentionally I'd let us drift apart and how high the price was for my ignorance and fear.\n\nNow, forced to sit quietly in a cold hospital room with a son on the brink, I understood the real issue. I'd tried to mold Tom in my image, dictating how he should live, ignoring his desires and feelings. The real education wasn't in a college degree, but in understanding, compassion, and embracing change. \n\nHad I not been so wrapped up in my traditional ideals, perhaps we might have had a different conversation that morning, leading to a different outcome. But it was too late for what ifs. Here, I was left to twist in the cold wind of uncertainty, praying for a second chance.\n\nAs the eternal vigil prolonged, I hoped for a miracle. Not a day passing by without wishing for his eyes to open, overlooking my faults, past discussions, and hidden fears.\n\nMy son's rebellion, I realized, wasn't against me entirely, rather my obstinance. I needed a shift in perspective, a reconsideration of my fears, and an evaluation of my parenting methods. I wasn't losing my son. I'd lost my ability to understand him.\n\nThe beeping machines grew familiar in the background, their rhythmic symphony tainted with notes of regret, prayers, and a desperate need for change. It was here in the dimly lit room where the harsh reality of my errors resonated inside me.\n\n\"Tom, can you hear me?\" I whispered, holding his limp hand, praying fervently for forgiveness and a second chance to be a better understanding father.",
+  "constraints": [
+    "The emergency call causes immediate worry and dread in the father.",
+    "The son is severely injured and is in a critical condition.",
+    "An emergency call is received about the son.",
+    "The son becomes ruder to his parents as he grows older.",
+    "The story includes direct dialogue between characters.",
+    "Main character's relationship with his son becomes strained.",
+    "The son lies about where he's going to his father.",
+    "The element of mystery is incorporated in the son's sudden behavioral changes.",
+    "The story includes elements of defiance as seen in the son's behavior.",
+    "The theme of the son being on rooves repeats in a tragic incident.",
+    "The son’s reckless behavior is linked to alcohol consumption.",
+    "The story explores family dynamics in a time of crisis.",
+    "Main character's wife has been away on business and meets him at the hospital.",
+    "The son's physical appearance begins to change.",
+    "Son misses curfew, making father worry.",
+    "The father’s perception of his son changes as the story progresses.",
+    "The story involves a significant change in the son’s character arc from being carefree to reckless.",
+    "The narration includes a reflection on past events leading up to the present situation.",
+    "The son is found eating lunch on the school roof.",
+    "The tone of the story changes from light-hearted to being serious and concerned.",
+    "A turning point occurs when the son doesn’t come home one night.",
+    "Main character challenges the son about his outing plans for the first time.",
+    "The story includes a contrast in the son's behavior when he respects the curfew and later violates it."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 42 (sb041); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

@@ -52,9 +52,38 @@ quiet while it is empty.
 
 ## Fixtures
 
-Both directories currently hold one `"source": "development"` fixture, written
-for interface work, exactly as `src/audra` carries a development stimulus. The
-flag travels with the item through the loader and the API, so a fixture cannot
-be mistaken for benchmark data. Replace them with `"source": "official"` items
-before collecting anything, and record the licence position for the released
-datasets alongside the existing note in `audra-scoring-and-stimuli.md`.
+Both directories hold one `"source": "development"` fixture, written for
+interface work, exactly as `src/audra` carries a development stimulus. The flag
+travels with the item through the loader and the API, so a fixture cannot be
+mistaken for benchmark data.
+
+MacGyver also holds the five official pilot items (`mg-1655`, `mg-1923`,
+`mg-2008`, `mg-2042`, `mg-1079`), copied verbatim from the released dataset via
+`Macgyver Pilot/macgyver_think_aloud_selected_candidates.md`, and they form the
+pilot subset. A MacGyver `problem` is the complete text a solver sees, objects
+and conditions included; `objects` and `constraints` are analysis metadata.
+Record the licence position for the MacGyver release alongside the existing
+note in `audra-scoring-and-stimuli.md` before collecting anything.
+
+CS4 holds the 50 official instances of the benchmark's story-based set
+(`cs4-sb000` to `cs4-sb049`), imported from
+[github.com/anirudhlakkaraju/cs4_benchmark](https://github.com/anirudhlakkaraju/cs4_benchmark),
+which is MIT-licensed:
+
+```bash
+git clone https://github.com/anirudhlakkaraju/cs4_benchmark
+npm run cs4:import -- --csv "cs4_benchmark/CS4_dataset/Story-based Base Stories.csv"
+```
+
+In that set every instruction has one base story and constraint lists of 7, 15,
+23, 31, and 39 entries, each beginning with the whole of the shorter one - so
+the pilot's rounds are the dataset's own levels, and the importer refuses an
+instruction where that nesting does not hold. The pilot subset is the ten
+instructions the earlier CS4 pilot used (`SimEval/Data/CS4`), so the two runs can
+be compared item for item; pass `--pilot` to choose others.
+
+## Agent trials
+
+The same server runs agent trials on these items through
+`/api/tasks/:taskId/agent/*`, built from participant views only. See
+[agent-strategies.md](agent-strategies.md).

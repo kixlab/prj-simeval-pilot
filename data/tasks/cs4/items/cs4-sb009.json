@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb009",
+  "source": "official",
+  "instruction": "Write a horror story in less than 500 words about a solitary protagonist who, while skiing in a snowy, dangerous part of the mountain encounters a mysterious and threatening creature, leading to a climactic showdown in an abandoned train, with elements of survival and dread throughout.",
+  "baseStory": "Title: The Alpine Beast\n\nIn the heart of winter, Alex, a seasoned skier, dared to traverse the frozen wilderness of the Alpines, known notoriously for its treacherous pitfalls and mystifying legends.\n\nOne day, while careening along untouched slopes, Alex noticed an odd set of tracks. They were large, resembling nothing he’d ever seen. Coated with an icy dread, he followed the tracks to a cliff's edge that overlooked an abandoned train lodged precariously on the brink of a ravine.\n\nThe ominous appearance of the vessel peaking out from the heavy snow sent chills ricocheting off his spine. Tempted by curiosity, he scaled down and entered the decrepit locomotive. Inside, darkened and desolate, it maintained an air of terrible disquiet. He felt like he was trespassing in a space where man was not meant to tread.\n\nAs he explored further, the train shuddered violently, thrusting Alex to the worn metal floor. Fear gripped him as a growl, guttural and vicious, echoed from the next carriage. Edging towards the sound, he saw it. It was massive, covered in white fur, eyes maliciously gleaming in the dim carriage light. The creature, he reckoned, was the mythical “Alpine Beast.” \n\nIn this chilling standoff, Alex’s heart pulsed in his chest. The dread, a heavy fog, weighed him down. Using his ski poles, he found his footing and drew out his pocket knife; his only defense against the monstrous being.\n\nWithout warning, the creature lunged at him, gnashing its teeth. Alex drove his ski pole into its side, but the beast only flinched, retaliating with a claw swipe that tore through his parka, leaving a fresh wound.\n\nAdrenaline surged through Alex. He darted into the conductor's cabin, locking the door behind him. The creature roared, slamming its massive frame against the locked door, each hit causing the train to sway ominously. Desperation and cold dread clawed at Alex. Out of options, he noticed the old control levers. \n\nSummoning every reserve of strength, he pulled down upon them. The train roared back to life, throwing the beast off-balance. Busying himself with keeping the ancient train under control, he could hear the creature’s roars grow distant. Shivering, bleeding, but awash with triumph, Alex dared to hope.\n\nThe train, however, was careening towards the edge of the ravine. With a swift glance back, he knew this was his only chance. Timing his escape, he leaped from the moving train just as it plunged into the ravine, taking the raging beast with it.\n\nBruised, battered, and frozen with fear, Alex climbed back to the surface. He looked over the edge, staring at the wreck below. The roaring of the beast was replaced by silence. The dread he had been carrying lightened.\n\nAgainst the odds, he had survived. With a story etched in his every scar, Alex skied away, leaving behind the buried train and the legendary Alpine Beast, his journey marked by an overwhelming will to survive amid palpable dread.",
+  "constraints": [
+    "The hiking trip occurs during a full moon.",
+    "The creature's scent plays a key role in the plot.",
+    "Character encounters a set of train tracks and starts following them.",
+    "Imminent threat is signaled with sensory cues, such as a foul smell or sound.",
+    "Main character crosses paths with wild animals, like a bobcat.",
+    "Protagonist must have a personal connection to the location of the story (e.g., childhood home, local school).",
+    "Character must fight off a threatening creature.",
+    "The protagonist's hike must start during twilight hours.",
+    "The story must take place during winter.",
+    "The word \"ravens\" must be mentioned more than once.",
+    "The discovery includes elements of horror, such as decaying bodies.",
+    "Character is left alone in dangerous situation and must find a way to survive.",
+    "The creature is driven away but leaves a threatening presence.",
+    "There should be elements of horror included in the narrative.",
+    "Incorporate elements of dread throughout the story.",
+    "Main character uses available resources to create a makeshift weapon.",
+    "Story dialogue is limited and mainly used for dramatic effect.",
+    "The protagonist must be solitary for most of the story.",
+    "Character's journey home takes them through new terrain.",
+    "The character typically skis down a safe path on the mountain.",
+    "The story must mention a mysterious abandoned train.",
+    "Character gets in an accident and loses their ski equipment.",
+    "Tension in the story should gradually increase from the start of the hiking trip."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 10 (sb009); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

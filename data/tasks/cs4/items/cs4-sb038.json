@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb038",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a single parent who, observing suspicious signs and behaviors from their daughter, unravels a chilling connection to a mysterious SUV and unsettling events at their home, culminating in a terrifying discovery.",
+  "baseStory": "Jennifer, a widowed mother to a fifteen-year-old girl, had lately been noticing strange incidents around their house in the suburbs of Houston. As a single parent, she prided herself on the close bond she shared with Maya, but something had recently broken their rhythm, putting Jennifer off balance.\n\nMaya, a bright and independent spirit, had started coming home late, spending more time on her phone, and acting evasively with skittish eyes. Then came the strange SUV. It was parked across the road from their house most nights, the dim glow of a cigarette tip the only sign of life inside.\n\nOne evening, during a rather quiet dinner, Jennifer noticed bruising around Maya's wrist. She felt a jolt of alarm but coaxed herself to stay composed. That night, the mysterious black SUV was again lurking across from their house.\n\n\"Maya, who's in that car?\" she tried to ask nonchalantly, but her curiosity seemed to startle her daughter.\n\n\"No idea, mom. Maybe they're lost,\" replied Maya, quickly diverting her eyes away.\n\nJennifer couldn't shake off her gut feeling. The next day, she hired a private investigator on a friend's recommendation. \n\nIn the following days, tales unfolded, sending shivers down Jennifer's spine. The investigator discovered that the same SUV had been lingering around Maya's school premises and often followed her to her extracurricular classes. The car belonged to a man named Gary, a man twice Maya's age, with a history of juvenile offenses.\n\nWeeks turned into a fearful blur as horrific possibilities clouded Jennifer's mind. One evening, she found Maya in her room on her phone, in tears, her wrist bruised more intensely than before.\n\n\"Maya, who is Gary?\" Jennifer asked, trying to keep her voice steady.\n\nMaya looked pale, her fingers trembling as she put down her phone. \"He...he's someone I met online. He… he said he would ruin my life if I didn’t….\" she trailed off, tears tumbled down her face.\n\nJennifer felt cold. Her heart pounded against her ribs as she pieced together a terrifying picture. She comforted her daughter, vowing to sort everything out.\n\nNext, she contacted the authorities with all the evidence the investigator had gathered. Confronting the father of one of Maya's friends, she learned Gary had been preying on other girls online too.\n\nThe subsequent weeks were filled with fear and anticipation. Sensing the impending danger, the police deployed undercover agents near their house. One night, the haunting black SUV stopped in front of their house and out stepped Gary. As he was approaching the house, he was apprehended by the agents. It was over.\n\nWhen the news broke, Jennifer felt a rush of relief mixed with a raw sadness for the innocent childhood her daughter had lost. She pressed charges against Gary and ensured he was put behind bars, where he could harm no one else.\n\nThis chilling incident unveiled the terrible reality of online dangers. But for Jennifer, it was a wake-up call. She committed herself to not only protecting Maya but also informing other parents about the hidden threats in the digital world, turning her terror into action.",
+  "constraints": [
+    "The house has a balcony.",
+    "The protagonist recalls small habits / \"tells\" that reveal the daughter's deception.",
+    "The protagonist is observing the SUV.",
+    "The protagonist fears for their daughter's safety.",
+    "The protagonist has a king-size bed.",
+    "The protagonist suspects their neighbors for their daughter's disappearance.",
+    "Panic sets in when the main character realizes that their daughter might be missing.",
+    "The main character is afraid of their own child.",
+    "The protagonist's daughter displays odd, calculating behavior.",
+    "The story takes place during \"autumn.\"",
+    "The main character is concerned about a black SUV parked near their lawn.",
+    "The protagonist hears strange noises in the house at night.",
+    "The protagonist is a lighthearted individual who tells terrible jokes.",
+    "The house has a basement.",
+    "The main character has a beard.",
+    "The daughter depicts signs of cunningness and deceit.",
+    "The protagonist tries to maintain a normal life routine with their daughter.",
+    "The daughter has blond hair.",
+    "The main character is searching for their daughter.",
+    "The house has a loose board.",
+    "The protagonist is connecting the events with the SUV.",
+    "The protagonist sleeps alone on a king-size bed.",
+    "The daughter attempts to cover her actions."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 39 (sb038); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

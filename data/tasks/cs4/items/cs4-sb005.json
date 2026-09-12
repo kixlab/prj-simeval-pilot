@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb005",
+  "source": "official",
+  "instruction": "Write a sci-fi story in less than 500 words about a spaceship crew led by Captain Faren, who, after exiting a high-speed space passage, encounters debris from vanished ships and a massive, potentially hostile alien vessel known as 'Xenos'.",
+  "baseStory": "Captain Faren’s heartbeat echoed in his ears as the 'Voyager' exited the high-speed space passage, known as The Slipstream. His crew, seven others, all handpicked, were silent as they beheld the view in front of them. Bursting out of a staggering light show of trans-dimensional travel, a vast field of debris lay as a grim mosaic in the black silence of space. Here, amid the cosmos, was an eerie graveyard of vanished ships that had disappeared through The Slipstream over many a millennium.\n\nFaren's First Officer, Leilani, her fingers dancing over the ship's system controls, murmured a disbelieving, \"By the constellation cluster...those are Nexus-armada ships... from a century ago...\"\n\nThe ship’s AI, Omni, synced with Faren’s thoughts, provided a detailed analysis of the debris around. He couldn't ignore the seeping cold dread filling him, \"What could've caused this, Omni?\"\n\n\"Undetermined, Captain. However, probability suggests an extra-terrestrial encounter.\"\n\nJust as the statement reverberated around the command deck, an ominous object lurched into view on the wide display screen. Flickering, then stabilizing, revealing the terrifying fullness of what lurked. A gargantuan, massive alien entity, a spaceship so colossal its shadow swallowed the debris around it.\n\nA hushed gasp passed through the crew - they were all seasoned space travelers, but their wide eyes reflected raw fright. This alien entity was unknown, not recorded in any space database - the menacing unknown named 'Xenos'.\n\n\"Prepare for any potential hostile activity!\" Faren's voice, a steel-knife cutting through the palpable fear. His crew leapt into action, arming Voyager's defense systems while Faren and Omni stealthily moved the ship, closer to the monster that was Xenos.\n\nSeconds later, an alien hailing signal began to reverberate through the ship, a dizzying, sonorous hum that Omni translated, \"You trespass Xenos' domain.\"\n\nFaren, a born leader, initiated communication protocol. \"We come in peace, Xenos. We crossed The Slipstream unacquainted with your domain. We request the right of safe passage.\"\n\nSeconds passed like years, each tick resonating with the high pitch of danger. Then Xenos responded, \"Eons of your kind trespassing, wandering, and losing themselves in the abyss of our realm. Yet, Xenos observes. Xenos judges.\"\n\nFaren's gaze turned steely, \"And what does Xenos observe now?\"\n\nA colossal expel of energy, then a deafening silence – the Xenos' response. Suddenly, thousands of smaller vessels purged out from the enormous form, surrounding them - they were trapped.\n\n\"Xenos observes...,\" echoed a sinister voice, and in a blink, Xenos' vessels vanished, withdrawing back into itself, leaving Voyager and her crew unharmed in the heart of the space graveyard.\n\nThe Xenos’ final words echoed, \"...the courage to face the unknown.\"\n\nThe room exhaled, relief bristling. Faren's lips curled in a smile of victory. \"Voyager to all future voyagers: Pathway to Xenos is not hostile, but tests courage. Stay brave.\"\n\nAs Voyager navigated away from the formidable Xenos, Faren understood that they were the first to survive the Slipstream and Xenos’ trial. Pioneers, not merely travelers - a role Captain Faren embraced as he urged the Voyager and its crew towards another uncharted frontier in the cosmos.",
+  "constraints": [
+    "Use dialogue to reveal crucial plot dynamics, backstory and urgency of the mission.",
+    "Incorporate references to unknown, potentially alien entities referred to as 'Xenos'.",
+    "The protagonists should find debris of other ships upon exiting the high-speed passage.",
+    "Other crew members should have speaking parts, contributing to the navigation of the spaceship.",
+    "The tone should be serious and suspenseful, portraying the tense atmosphere of the situation.",
+    "The anomaly should be potentially hostile and moving towards central command.",
+    "The general should provide mission details about an unidentified, moving anomaly.",
+    "The story should incorporate anticipation and suspense, as they approach the unknown entity.",
+    "The story must involve travelling at high speed through space.",
+    "The spacecraft should suffer from an impact.",
+    "The crew should attempt to establish contact with the unknown entity.",
+    "Story should be set in a science-fiction universe.",
+    "Their attempts to establish communication should initially receive no response.",
+    "The characters should have the goal of revealing the nature of the unknown anomaly.",
+    "The story must climax with a cliffhanger related to an unknown voice acknowledging their message.",
+    "Crew members' reactions should indicate fear or discomfort at certain information.",
+    "Engineers on the ship should execute captain's instructions.",
+    "A safe zone should be established after evasive actions.",
+    "The protagonist must be a captain of a spaceship.",
+    "Introduce an element of doubt or fear in the character of Faren.",
+    "The story should involve mention of potential radiation hazards.",
+    "An older general character should communicate to the captain digitally.",
+    "The characters should speculate about the alien vessel's power source."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 6 (sb005); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

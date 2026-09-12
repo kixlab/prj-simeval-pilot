@@ -1,0 +1,29 @@
+{
+  "itemId": "mg-2042",
+  "source": "official",
+  "problem": "While on a long hike, you realize you've lost your route among dense forestry. Your phone is dead, leaving you unable to communicate for help. With you, you have a loud whistle, a sharp, compact-size pocket knife, a tiny compact mirror that's been scratched from overuse, reducing its reflective surface, a professional-graded compass, a modern rechargeable flashlight, and a plastic, 100ml bottle of sunscreen. In this situation, what is your strategy using these items to dispatch a distress signal?",
+  "objects": [
+    "a loud whistle",
+    "a sharp, compact-size pocket knife",
+    "a tiny scratched compact mirror",
+    "a professional-graded compass",
+    "a modern rechargeable flashlight",
+    "a plastic 100ml bottle of sunscreen"
+  ],
+  "constraints": [],
+  "answerKey": {
+    "solvability": "solvable",
+    "solutionType": "conventional",
+    "goldSolution": [
+      "Use the compass to find the direction of the nearest civilization or hiking trail.",
+      "Use the knife to mark trees along your path for visibility and direction.",
+      "Use the whistle periodically to alert nearby rescue teams or hikers.",
+      "At night, use the flashlight to send SOS signals in Morse code.",
+      "Use the scratched compact mirror to reflect sunlight during the day as an additional distress signal.",
+      "Apply sunscreen to protect from sunburn while waiting or moving towards rescue."
+    ],
+    "unsolvableJustification": null
+  },
+  "datasetRef": "MacGyver problem_solution_pair.xlsx, ID 2042 (label: efficient)",
+  "notes": "Copied verbatim via Macgyver Pilot/macgyver_think_aloud_selected_candidates.md. The objects list is analysis metadata; solvers see only the problem text."
+}

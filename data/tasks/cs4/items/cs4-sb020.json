@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb020",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a man who, after a series of unfortunate events including physical injuries, a troubling family dynamic, and a failed suicide attempt, contemplates the grim ironies of his life, all unfolding with dark humor and sharp emotional shifts.",
+  "baseStory": "Once upon a blasted time, there was a poor misfortunate man named Howard Hughes. Not that Howard Hughes, mind you; such a man of privilege would only dream of lavishing in the hard-knock absurdities life dealt our man. One day he awoke to discover himself homeless, next, he had to bid adieu to a stagnant job. Then, in an outlandish twist of fate, he suffered a series of vexing injuries.\n\nFirst, a brilliantly blue-veined nose-break, courtesy of a flying baseball; a souvenir from his unfortunate experimentation with athleticism. The very next day, as if the universe was following some sort of 'Ill-luck Calendar,' a potato-sized bolide hammered him on the right kneecap. He couldn't walk without looking like a broken marionette for weeks.\n\nAnd the family? Oh, indeed! A family sculpted by post-modern Picasso himself. His Uncle Joe thought the end of a rainbow-wrapped leprechaun gold, his cousin Betty had, tragically, been involved in more pyramid schemes than Egypt itself, and don't even get me started on his parents. A mother, a lifelong perfectionist, decided his birth was her ultimate failure, and a father, a terminal underachiever, declared him his greatest achievement. The poor bastard didn't know whether to laugh or cry over the damned delight of that dichotomy.\n\nOne aged evening, the darkness convincingly persuaded Hughes to depart prematurely from this chaos-woven tapestry called life. The suicide attempt was a grand affair, a cartwheel off his rooftop—an ironically high aim for his earthly exit. Tragically, or hilariously, depending on your tastes, a stationed trampoline, abandoned by a suburban brat for a more glamorous PS5, bounced him back to reality. Well, and medical bills.\n\nFreshly bandaged, horribly bruised and steadfastly broke, Hughes sat in his hospital bed, pondering life's grim ironies. His life had been a relentless stream of dark humor crafted by some bitter and slightly vindictive stand-up comedian. He was Job, narrated by Kurt Vonnegut, with the story arc penned by Franz Kafka.\n\nHughes began chuckling, holding his sore ribs, clutching at his shattered pride. He laughed in the face of the ironic screenplay of his life and it echoed through the sterile hospital halls. The laughter was raw, unholy, the mirth of a madman—or the wisdom of a fool. \n\nThere is cruelty in the ironies of life, a brutal humor, hidden in the swift jabs and teardrop-laden uppercuts that steal our equilibrium. It was not about counting your blessings or your miseries, it was about laughing at the gallows humor life cooked up while you were busy making other plans.\n\n\"Why mourn the tragedy when you can laugh at the comedy?\" He mused aloud, testing the philosophical note of the statement. The irony of his existence suddenly seemed less like a burden and more like a cosmic joke everyone was in on—and Hughes decided he liked being the punchline. \n\nSo, he surrendered to the bitter comedy of human existence, to the trials of being Howard Hughes, the not-so-famous. He conceded to the ridicule and absurdity, knowing the universe was having a hearty chuckle at his expense. Because there is joy to be found amid chaos, comedy within tragedy, and humor to be savored in all life's grim ironies.\n\nSomewhere in his calamity-woven story of dreadful irony, Hughes found an unexpected semblance of peace. It was as if he had stumbled upon an antidote to his despair, a balm for his numerous injuries—laughter. Pure, unadulterated laughter and perhaps, that was enough to keep the noose at bay. Indeed, what a splendid cosmic joke.",
+  "constraints": [
+    "The protagonist should start off his day by physically injuring himself multiple times.",
+    "The protagonist must visit a local store with his child.",
+    "There should be considerable use of dialogues in the narrative.",
+    "The protagonist should pen revealing, nasty letters to his family.",
+    "The protagonist should reconsider his decision to commit suicide at the last moment.",
+    "The protagonist should feel embarrassment after the failed suicide attempt.",
+    "The protagonist must lose his stash of marijuana in the skirmish.",
+    "The character must experience a setback while watching TV.",
+    "The story should depict quick changes in the protagonist's emotions.",
+    "The man should be unaware of a prank set up by his child.",
+    "The protagonist must decide to make a simple meal for himself.",
+    "In the store, the protagonist must display leniency towards his child and buy him something expensive.",
+    "The protagonist's child should have finished all the snacks.",
+    "An incident on television involving a sports player should ruin the protagonist's mood.",
+    "The protagonist should reach an emotional low point, even contemplating suicide.",
+    "The protagonist must experience a delay while checking out from the store.",
+    "The protagonist's condition post his suicide attempt should be bleak and immobile. Stylistic constraints:",
+    "The protagonist's reaction to the news on television should be violent, leading to a fight among his pets.",
+    "The protagonist should decide to go ahead with the suicide after a selfish thought process.",
+    "The man is susceptible to hunger but finds out that there is no food.",
+    "The story should conclude on a note of grim irony.",
+    "The protagonist must resolve to step outside, ignoring pleas by his spouse.",
+    "The protagonist's suicide attempt should fail because of miscalculations, leaving him paralyzed."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 21 (sb020); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb011",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words set during a mysterious gala at a law firm, where the main character, newly promoted and donning a masquerade mask, navigates a night of temptation and moral choices as he encounters two enchanting women, each representing angelic forces vying for his soul.",
+  "baseStory": "The doors of the sprawling Sullivan & Bates law firm opened to a rush of haunting classical music. The marble hallway was awash with the unruly glow of colorful lights from the grand chandelier above. As the music filled the room, Vincent, a newly promoted lawyer, adjusted his midnight-black masquerade mask, the anonymity of the night nestling him comfortably.\n\nWith his heart pulsating beneath his tuxedo, Vincent navigated his way through a throng of glittering masked faces. He had a peculiar feeling, for tonight, he wasn't just another attorney in this sea of legal giants. Tonight, he was one of the sharks.\n\nMidway through the gala, two magnetic figures caught his eyes; two women: one in iridescent white; the other in provocative red, both with matching eye masks. A subtle voice guided him towards the lady in white: Seraphina, the firm's ethical compass and pro bono legal superstar. On the other hand, the allure of Octavia, a legendary yet ruthless litigator, was nothing short of enticing.\n\n\"Vincent, congratulations on your promotion,\" Seraphina said, her eyes sparkling behind her mask. Her gentle words echoed a sense of righteousness, reminding him of the ideals that once propelled him into law. \n\nOn the other hand, Octavia's words were a strategic cocktail of flattery and ambition. \"Vincent,\" she said, placing a delicate hand on his arm, \"fame, fortune, and power are some of many rewards this firm can give you.\"\n\nEmbodied by these ethereal women were his options: the noble path of justice and servitude or the seductive course of power and personal gain. Both equally compelling through their enigmatic masks. Driven by indecision, he sought solitude amidst the bustling crowd.\n\nWhile alone, he remembered his father's words, \"In this world so many people will tell you what to do, but only you can make the final call.\"\n\nAgain Vincent found himself caught between Seraphina and Octavia. He'd been enticed by Octavia's charm, her worldly wisdom felt realistic, practical. But Seraphina symbolized what he'd always believed in: fighting for the underdog, standing up against the odds. He remembered the joy he felt when he helped a single mother win custody or when he saved an old man's home from foreclosure.\n\nMulling it all over, a wave of clarity rushed over him like the city’s midnight breeze. The path he chose would shape not just his career, but his soul too.\n\nHe returned to the crowd, approaching both women. His decision echoed in the silence between their heartbeats.\n\n\"Octavia, I appreciate your compliments, but I can't compromise my beliefs for personal gain.\" Octavia's smirk disappeared as he turned to the lady in white.\n\n\"Seraphina, I believe in the path of justice above all else. Let's make this firm a beacon of hope and fairness.\"\n\nAs the night came to a close, the angel and the devil vanished into the sea of guests, leaving Vincent alone once more on his chosen path. His heart was light, his decision a callback to his beginnings. His mask aided his anonymity but unmasked his virtue. As the gala ended, he felt renewed, confident he had made the right choice. Taking off his mask, he welcomed the dawn of a new day at Sullivan & Bates.",
+  "constraints": [
+    "The main character gets endorsed and moved to a high-profile position.",
+    "The story involves powerful and influential people.",
+    "The story contains elements of good and evil.",
+    "Sel-affirmation and confidence-building occur throughout the story.",
+    "The main character wears a tuxedo and a masquerade mask.",
+    "The story indicates that angels can transform into human form.",
+    "The setting includes elements of mystery provided by no one knowing who is who due to masks.",
+    "The two women are standing on different sides of the main character.",
+    "The angels are competing for the main character's love.",
+    "The left shoulder angel becomes jealous at the main character's string of good deeds.",
+    "The main character is given a sense of familiarity with the two women.",
+    "The primary characters interact at the bar.",
+    "The story is set during a gala or a luxurious event.",
+    "The plot involves temptation and sway away from righteousness.",
+    "The main character experiences an unusual situation (being approached by two beautiful women).",
+    "The story takes place in a lawyer firm.",
+    "The main character gets promoted.",
+    "The main character is shown to have a set life path.",
+    "There is a sense of competition in the story - both between the angels and within the protagonist's choice of the women.",
+    "Two women approach the main character at the bar exhibiting extreme beauty.",
+    "Both women laugh at the main character's jokes.",
+    "The main character is reflecting on their past accomplishments.",
+    "The story introduces the idea of the main character having a choice between the two women."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 12 (sb011); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

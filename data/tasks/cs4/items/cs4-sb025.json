@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb025",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a protagonist navigating a bizarre, weightless world filled with anthropomorphic mice and mysterious environments, all perceived through the haze of hallucinations, questioning the boundaries of reality.",
+  "baseStory": "Once a revered physicist, Emerson became lost in the abyss of his own genius. One day, he found himself transported not to another planet, but to a dimension where the rules of gravity ceased to exist, and anthropomorphic mice were the dominant species. He wandered through the weightless world, seeing everything through a haze of hallucinations, not entirely sure if he had even left his laboratory.\n\nIn this hallucinatory world, these mice bore an uncanny resemblance to the men Emerson used to repeatedly encounter at scholarly conferences. Their postures perpetuated the arrogance of professors, their squeaks mimicked the conceited laughter of the academics. As he perceived their gossamer threads of control on this world, Emerson couldn't help but question the boundaries of his reality.\n\nHe attempted to converse with the mice but only received bewildering riddles as replies. Frustration filled Emerson as the lines between his hallucinations and reality blurred. He felt the cold absence of gravity around him, the peculiar warmth radiating from the mice, and the harsh emptiness ringing in the silence, but he was unaware of whether he was genuinely experiencing these sensations or whether they were merely psychological constructs of his disintegrating sanity.\n\nThe world was a labyrinth of shadowy labyrinths and mazes suspended against the boundless, star-speckled void. Steps were replaced by leaps, and leaps by free floating and the concept of direction dwindled into irrelevancy. He floated through archways and tunnels, inexplicably drawn through this haunted cosmic merry-go-round by an invisible force.\n\nThrough the tangles of his mind, Emerson contemplated if he was dreaming or if he had truly unlocked a previously unfathomed dimension. The line between his empirical studies and supernatural speculation became murky. He yearned for solid ground, for the comforting tug of gravity and the reassuring chatter of human conversation. Yet, all he received in return was the squeaky chatter of the mouse men and an ever-pervading weightlessness.\n\nDays turned into weeks, or perhaps it was all one long, unending day, the concept of time was as meaningless here as the concept of gravity. Emerson's despair deepened, and his body floated—his own personal ghost wafting indefinitely in this weightless place.\n\nOne day, or what he perceived to be a day, he found a mirror floating mysteriously in the backdrop of this spectral world. As he got closer, he saw that the reflection in the mirror wasn't his. Instead, it reflected an anthropomorphic mouse version of himself, sermonizing to a captive audience of other mice. \n\nThe mirror shrank into insignificance as the hallucinatory version of himself towered in significance. With a jolt, Emerson realized he was that mouse, squeaking incoherently, trapped in a world of his own creation. He, the physicist, was just another mouse fueling the mechanism of pompous intellectualism. His essence was trapped in this bizarre dimension, a reflection of his own intellectual vanity. \n\nSuddenly, the weightlessness felt heavy. His lab coat, a burden. As the revelation dawned, gravity started to creep back into his world. The mice other than him faded into wisps of smoke, swallowed by the abyss around them. The spectral world he inhabited slowly dissolved, replaced by the comforting sterility of his lab.\n\nThough shaken and stirred, Emerson found himself back in the world of gravity. A humbled man, he realized the weightless world was a reflection of his conceit, for even in the realms of the extraordinary, arrogance bore no weight.",
+  "constraints": [
+    "Protagonist is in a weightless environment.",
+    "Protagonist hears high-pitched voices.",
+    "Protagonist was offered biscuits by the mice.",
+    "Protagonist finds a wooden door inside the creature.",
+    "Protagonist sees an abyss filled with plastic chairs.",
+    "The protagonist claims not to remember committing a crime.",
+    "Protagonist ends his interaction with the mice on a polite note.",
+    "The high-pitched squeal is the creature's way of communicating.",
+    "Protagonist sees a dim circle of light below him.",
+    "The story revolves around the protagonist's hallucinations.",
+    "The protagonist remains a passive observer in the bizarre world.",
+    "A snakelike creature approaches the protagonist.",
+    "Protagonist enters a house after opening the wooden door.",
+    "The protagonist expresses gratitude to the mice for the cake.",
+    "Protagonist explores the strange world with a calm demeanor.",
+    "Protagonist spies on three mice wearing birthday hats.",
+    "The creature engulfs the protagonist.",
+    "Protagonist decides to leave the house.",
+    "The mice have an anthropomorphic behavior.",
+    "Protagonist feels uncomfortable at the continued silence of the mice.",
+    "Protagonist is in a slimy, sticky space.",
+    "Protagonist begins the day by taking morning pills.",
+    "The protagonist believes he's perceived as \"Grandma\" by the mice."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 26 (sb025); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

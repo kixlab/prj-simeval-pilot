@@ -1,7 +1,7 @@
 {
   "itemId": "mg-dev-fixture-01",
   "source": "development",
-  "problem": "A framed photograph has to hang on the wall tonight, but the picture hook that came with it is missing and no shops are open.",
+  "problem": "A framed photograph has to hang on the wall tonight, but the picture hook that came with it is missing and no shops are open. You have a metal coat hanger, a roll of duct tape, a pair of pliers, a wooden ruler, and a box of paper clips. Nothing may be nailed or screwed into the wall, and the photograph must stay level and stay up overnight. How do you hang it?",
   "objects": [
     "a metal coat hanger",
     "a roll of duct tape",
@@ -25,5 +25,5 @@
     "unsolvableJustification": null
   },
   "datasetRef": null,
-  "notes": "Development fixture written for interface work. Not a MacGyver benchmark item and not valid for data collection."
+  "notes": "Development fixture written for interface work. Not a MacGyver benchmark item and not valid for data collection. The problem text states the objects and conditions itself, as benchmark items do; solvers see only that text."
 }

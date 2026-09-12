@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb002",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a high school chemistry teacher turned meth producer, who, faced with inoperable lung cancer, descends into the criminal underworld to secure his family’s financial future, navigating threats, betrayals, and tragic losses along the way.",
+  "baseStory": "Walter Morgan was an ordinary high school chemistry teacher. His life was filled with a mundane routine—endless classes, mundane lectures, and dinners with his family. His quiet little world was shattered when he was diagnosed with terminal lung cancer. With a limited time to live and no means to financially secure his family's future, he spiraled into desperation. His intellect led him to a drastic idea—from chemistry teacher, he would turn to a methamphetamine producer.\n\nHis first steps in the criminal world shook him to the core, but he locked up his fears. Driven by determination, he partnered with a former student, Jesse Rails, a small-time meth producer with connections in the drug world. They converted an old, dilapidated RV into a mobile meth lab, interspersing their hideabouts between the desolate deserts and shifty trailer parks.\n\nLife in the criminal underworld was overwhelming for Walter. Navigating through ruthless drug traffickers, dodging the police, and covering tracks from his family were not tasks for the faint-hearted. Responses mattered so much more than reactions, and every decision could mean life or death. It was a high stakes lifestyle, and Walter was learning swift and hard. \n\nFrom being the timid chemistry teacher, Walter slowly turned into someone he could never recognize. He adopted a pseudonym, \"Heisenberg,” drawing inspiration from his favorite theoretical physicist, Heisenberg who introduced 'uncertainty principle'. His personality echoed the same: unpredictable and volatile.\n\nAs Heisenberg, Walter turned into a cold, calculating criminal mastermind. He produced the purest form of meth that the streets had ever seen—blue in color and 99.1% pure. This skyrocketed his reputation in the drug world, and fetched a fortune enough to secure his family’s future.\n\nHowever, with success came betrayals. Dealers he allied with turned against him. His own brother-in-law, Hank Schrader, a DEA agent, loomed dangerously close to uncovering his secret. Jesse parted ways after a string of bloody encounters that traumatized him.\n\nBut perhaps the biggest blow came when Heisenberg’s empire began to crumble before his own eyes. He lost his wife and son’s trust; his wife, Skyler feared him and his son, Flynn, disgusted by him.\n\nDeath, too, wasn’t far behind. His cancer worsened. He witnessed the tragic losses of friends and foes alike. Jesse’s girlfriend, Jane, overdosed with the meth that Walter had cooked. Hank, who had discovered Walters’ secret, was brutally killed in an execution-style by a motorcycle gang to whom Walter was allied.\n\nIn his final days, Walter had everything he wrestled with the devil for—money, power, and control. But he was broken inside, haunted by the wreckage of his past decisions.\n\nIronically, alone, standing amidst the shards of his broken dreams, Walter found redemption. He rescued Jesse who had been enslaved by the gang, and in a final standoff, he killed the gang members, knowing well that he was not going to make it out alive.\n\nWith the sirens blaring in the distance, Walter walked into his meth lab one last time, reminiscing the journey that had started with a worksheet on chemical reactions. Smiling, he collapsed next to his last batch of blue meth, finally succumbing to cancer and bullet wounds. He died, surrounded by his greatest creation, ensuring that his family would be taken care of, even though it was at the cost of his humanity.",
+  "constraints": [
+    "The protagonist should be offered a high-paying job at a state-of-the-art meth production facility.",
+    "The protagonist's assistant should start stealing from the meth lab.",
+    "One character should threaten to report the protagonist to the police.",
+    "The former student should strike a romantic relationship with their neighbor, a recovering addict.",
+    "The protagonist and the assistant should find themselves under threat from their boss.",
+    "The protagonist should team up with a former student to manufacture methamphetamine.",
+    "The protagonist should miss the birth of his child due to business dealings.",
+    "The protagonist should make a late arrival at the delivery of his meth product.",
+    "The DEA should be investigating the protagonist’s operation.",
+    "The protagonist’s romantic interest should die from drug overdose.",
+    "The protagonist’s son should be significantly handicapped.",
+    "The operation should move to tented houses.",
+    "The protagonist should be a struggling high school chemistry teacher.",
+    "The two main characters should put aside their differences to kill their boss.",
+    "The protagonist should confess his illegal activities to his wife.",
+    "They should have a lawyer helping them navigate their legal issues.",
+    "They should be forced to move their lab to a more remote location.",
+    "The protagonist's team should face legal issues.",
+    "The assistant’s girlfriend's younger brother should be revealed to be responsible for a past murder.",
+    "The DEA should start investigating the protagonist's operation.",
+    "The protagonist's wife should discover his secret life and ask for a separation.",
+    "The recovering addict character should blackmail the protagonist.",
+    "The protagonist should be diagnosed with advanced, inoperable lung cancer."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 3 (sb002); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb019",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a protagonist who, after a selfless life and a dramatic death, awakens as a baby with the opportunity to donate their accumulated karma to enhance another life, facing spiritual revelations and ethical dilemmas.",
+  "baseStory": "Once there was a woman named Sarah who lived her life as an embodiment of altruism. As a dedicated humanitarian, she healed fractured hearts, mended broken spirits, and filled countless lives with echoes of laughter. Yet, at her life's zenith, she fell prey to an unannounced calamity—a tragic plane crash claimed her life and left a void that even time struggled to fill.\n\nHowever, her death was not the end. Sarah awoke, baffled, in the soft cradle of life again, as a newborn wrapped in the soothing aroma of fresh linen and motherly love. Baby Sarah's nascent cognition was a miraculous blend of innocence and wisdom—she carried her past's memories along with the anticipation of a future she had been given another chance to shape.\n\nSoon, she came to a profound realization: she possessed an ethereal pool of accumulated karma from her past life, precious and potentially transformative for another existence. A divine whisper informed her that she could confer this spiritual fortune to enhance another life—an ultimate act of altruism.\n\nChildhood was an unusual sojourn for the reborn Sarah; she was a silent spectator of human life, acutely aware of its vicissitudes and still struggling with the complex decision looming over her. Who was worthy of her gift? On what basis shall she bestow it? Should it go to someone already virtuous or someone in dire need of spiritual enlightenment?\n\nQuelling her internal turmoil, Sarah decided to gift her karma to her younger brother, Tom, inclined to juvenile delinquency and growing resentment. She hoped that the endowed karma might guide him onto the path of empathy, understanding, and compassion.\n\nBut as she prepared to make her didactic offering, an ethical dilemma unfurled itself before her. Bestowing her karma on Tom could influence him to walk a holier path, but wasn't it manipulation? Was she tampering with his authentic journey of learning in life?\n\nSarah yearned to make the right decision—to act without infringing upon anyone's autonomy and purity of experience. She was caught in a battle between free will and predetermined destiny, unable to discern the right from wrong.\n\nHowever, her life took a dramatic turn when Tom collapsed due to a sudden illness. As the doctors battled to stabilize him, Sarah found herself on a precipice. The perfect union of her spiritual wealth and his physical health could complete a circle of healing.\n\nWith love overflowing in her young heart, she made the conscious choice to donate her accumulated karma to save Tom's life. It wasn't about guiding him anymore—it was about giving him a chance to learn, grow and cherish his life for whatever it was, however he wanted.\n\nWhen Tom survived against all odds, Sarah, despite her shrunken frame, felt tremendous relief. She sacrificed her karmic pool not to interfere in life's flow but to contribute to a healing process—a decision that harmonized her ethical dilemma and spiritual duty.\n\nAwakening amidst a canvas of lived experiences and reincarnation, she redefined her altruistic essence. Sarah encouraged herself to embrace the dichotomies of life and its uncertainties. She realized her purpose wasn't just in influencing others, but in lovingly accepting them as they are.\n\nThus, Sarah became an embodiment of spiritual wisdom and existential acceptance—a child of life that found the balance between karma and neutrality, love, and autonomy.",
+  "constraints": [
+    "The man behind the desk is shocked at this decision.",
+    "The protagonist recollects the events from the previous day.",
+    "Protagonist chooses to donate all karma towards improving a newborn's life.",
+    "The story should contain elements of spirituality and divine undertones.",
+    "The protagonist's transition should be signified through a dramatic event including darkness and an unexpected incident.",
+    "It's revealed that the protagonist has accumulated substantial karma.",
+    "The protagonist notices their lack of control over their limbs.",
+    "Confrontation with the armed man involves grabbing the gun and tackling him.",
+    "The protagonist has the options of multiple afterlife packages.",
+    "The protagonist should remember their past life.",
+    "The protagonist's definitive ethical dilemmas should be highlighted.",
+    "The protagonist should be shocked at finding themselves in a baby's form.",
+    "This accumulated karma can be donated towards improving a newborn's life.",
+    "The protagonist comes to the realization that they are in a crib.",
+    "Protagonist is tasked with bringing positive change into the world.",
+    "The protagonist realizes they are not in a prison.",
+    "The protagonist should have been selfless and altruistic in their previous life.",
+    "The protagonist wakes up in a reception-like room after being shot.",
+    "There's a man with wings and a halo behind the desk in the room.",
+    "The protagonist can't initially communicate but plans to reveal themselves when capable.",
+    "Examination of self reveals small, baby-like limbs.",
+    "The protagonist is presented to a powerful entity presumed to be \"God.\"",
+    "The powerful entity commends, adopts, and renames the protagonist \"Jesus.\""
+  ],
+  "datasetRef": "CS4 story-based set, instruction 20 (sb019); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

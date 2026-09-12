@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb022",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a young magician in Paris, who, inspired by the burgeoning art of film, devises a grand illusion to land a rocket on the moon, facing rivalry and technological challenges along the way.",
+  "baseStory": "Once upon a time, in the dazzling city of Paris, lived a young and ambitious magician named Luc, known for his exhilarating performances and captivating tricks. From a tender age, Luc was drawn to the allure of illusion, however older he grew, grander became his dreams. With the advent of the age of film, Luc was stirred beyond imagination. He envisioned combining the thrill of illusion with the magic of film to create an unprecedented spectacle, landing a rocket on the moon.\n\nThere was just one trouble - Jean-Paul, a seasoned magician and Luc's close rival. Jean-Paul snubbed Luc’s ideas as pedantic and considered them to be too avant-garde for the conservative taste of the Parisian audience. Regardless, Luc was unshaken. Inspired by visions of Méliès’ “A Trip to the Moon,\" he embarked on his moonshot project, with zeal and unwavering determination.\n\nObsessed with perfecting his grand illusion, Luc shut himself away in his atelier, drafting intricate sketches and designs of the rocket. However, pulling off the trick was not as easy as conjuring a rabbit from a hat. He faced daunting technological challenges. The size of the rocket, the precision of its projected trajectory, the illusion of the moon’s surface landing - implementing all these aspects called for an understanding of mechanics and optics that Luc had never imagined would intertwine with his world of magic.\n\nUndeterred by constraints, Luc urged forward, toiling day and night. His workbench was strewn with tools, metal scraps, and endless rolls of film. The spine of his grand illusion was his design of a projecting device blended with mirrors and intricate levers which, when rightly timed, would launch and land the rocket seamlessly.\n\nMeanwhile, Jean-Paul continued to disparage Luc's project, fueling doubts among the public. To quell rumors, Luc decided to offer a sneak peak of his project in-progress. Under the glittering Parisian night sky, Luc demonstrated a small-scale version of his grand illusion. The projection device worked immaculately as the rocket soared, landing perfectly on a makeshift moon hanging nearby. The crowd gasped and erupted into applause, and for a brief moment, Jean-Paul was seen admiring his young rival's feat.\n\nThe successful public demonstration steeled Luc's resolve. He worked tirelessly to improve the craft until finally, the grand illusion was ready. An event was held at Lumière Brothers’ Cinematographe, the first theater-house in Paris, where all the city’s elite and art cognoscenti gathered.\n\nAs the projector buzzed to life, an oversized, fantastical rocket appeared, suspended in space. It moved towards the moon, and with a soft thud, landed on the ashen surface. The spectacle of the first moon landing, albeit illusionary, left the audience breathless. The applause echoed through the theater-house, and even Jean-Paul couldn't resist clapping.\n\nLuc's dedication to bring together illusion and film, along with his unwavering perseverance, had not only revolutionized magic but also the world of cinema. His rivals were now his admirers, and he had set a path for future magicians, filmmakers, and dreamers alike, reminding them that with audacity and ingenuity, even the moon was within reach.",
+  "constraints": [
+    "Characterize George as a stern man at the stand's corner.",
+    "As crowds begin to leave, the wizard should receive his promised reward.",
+    "Use dialogue to convey the plot at key moments.",
+    "Main character should be a young, aspiring magician.",
+    "Specify that the magician aims to supposedly land a rocket on the moon.",
+    "The wizard should be bored of his existing life.",
+    "Incorporate a projected image of a moving train that creates an illusion of danger.",
+    "Characterize the magician as knowledgeable about common magic tricks.",
+    "George should accuse the magician of stealing his idea.",
+    "Include the concept of a moving picture film introduced by George.",
+    "The rocket lift-off should be shown as a formidable feat.",
+    "The magician must promise something to both in return for their help.",
+    "Set the story in Paris.",
+    "The magician should be inspired by the idea of a film and aspire to use it for a trick.",
+    "The magician should have the idea to land a rocket on the moon.",
+    "Use first-person narration.",
+    "Use a descriptive style to add detail to the setting and characters.",
+    "The device should point towards an empty wall.",
+    "Introduce George again, this time as an angry person.",
+    "The tone of the story should be mythical yet grounded.",
+    "Include a scene where the magician feels clueless about a unique trick to perform.",
+    "The protagonist's desire to etch his name in history should remain consistent in the story.",
+    "Introduce a strange, camera-like device in the story."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 23 (sb022); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

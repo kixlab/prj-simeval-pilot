@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb004",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about two strangers who meet on a bridge in a small town during a severe storm, each contemplating suicide.",
+  "baseStory": "On an exceptionally stormy night in a tiny town nestled in the valley, two individuals sought solace on an old wooden bridge. Both were strangers, unknown to each other, yet they shared a common purpose marked by despair: contemplating suicide.\n\nThe first was a middle-aged man named Tom, a farmer whose crops had failed for the third season straight, leaving him destitute. The second was a teenage girl, Lily, who had grown weary of the constant bullying she encountered at her high school. Their hearts were heavy with nervousness and misery as they each arrived there, neither expecting the other's presence.\n\nTom arrived first, let his gaze slide over the swirling waters, already rehearsing his apologetic eulogy in his head. Moments later, Lily quietly appeared, shocking him. Her eyes were red and swollen, a stark indicator of the emotional pain she had endured.\n\n\"Rough night, huh?\" Tom asked, glancing at her. His eyes reflected empathy and understanding. His voice was gentle, a stark contrast to the heinous storm that raged around them.\n\nLily merely nodded, too choked up to utter a word, but she seemed strangely comforted by his presence. Tom's rugged exterior masked his own anxiety expertly; he seemed like the lighthouse amidst a raging sea, giving her unexpected hope.\n\nSilence pursued in the storm; it was their companionship and the torrent surrounding them that calmed their stirring thoughts for a while. They watched the swollen river carry away debris hastily, mirroring the chaos inside them. For the first time, they fathomed they weren't alone in their despair.\n\nThe storm raged on, and so did their conversation. Each heartrending story was revealing the depth of their afflictions. By speaking about their individual struggles, they both found a surprising kinship, a tether in the tumultuous sea of their sorrows.\n\nTom narrated his tale of abject poverty, of dreams dashed and self-esteem shattered. Lily empathized, speaking of her tribulations at school, a place she thought she would learn but had instead become a battlefield for her sanity.\n\nThey found an odd comfort in each other's tragedies. Their solitude dissolved, replaced by a strange accord. Their hearts were braving the storm together on the bridge, choosing to fight rather than surrender. They decided to be each other's beacon of hope amidst the tempest. \n\n\"This storm will cease eventually,\" Tom said, barely audible over the cacophony of the tempest. But his words made a mark. Lily turned her gaze towards him, quiet admiration replacing the desperation in her eyes.\n\n\"There will be a new dawn, and we will be there to watch the sunrise. Together,\" she added affirmatively. Their voices drowned in the storm, but their pact was solidified in the darkness.\n\nTheir contemplations were disrupted, their thoughts reshaped. Two strangers who arrived on a bridge with the individual intent of ending their lives found solace in shared melancholy. They realized that not all was lost; they were still standing, probably alone against the world, yet together on the bridge in that stormy night.\n\nAs dawn broke, the storm receded. The fury of the nature had passed, leaving behind a serene calmness. Tom and Lily were nowhere to be seen, but the bridge now held a story – a story of two strangers who chose not to jump off but to pick each other up. Hope, it seemed, had won against despair.",
+  "constraints": [
+    "The storm must have caused power cuts across the town.",
+    "The protagonist should be walking alone in the early morning.",
+    "The stranger should ask to look into protagonist's eyes.",
+    "The setting should be in a small town.",
+    "Use descriptive language to intensify the severity of the storm and its role in the plot.",
+    "The stranger and the protagonist should talk about their perceptions of themselves.",
+    "Use a somber tone to highlight the plight of the protagonist and stranger.",
+    "The protagonist and the stranger should physically support each other at various points.",
+    "The story must contain indirect information about the mental health struggles of the protagonist and stranger.",
+    "The stranger should be similar in age to the protagonist.",
+    "The story must portray a depressive and hopeless mood.",
+    "The stranger should express his understanding of the protagonist's feelings.",
+    "The interactions should happen only under the moonlight.",
+    "The protagonist must initially plan to avoid interaction with the stranger.",
+    "The stranger should disclose being ostracized by his family.",
+    "The personalities and backgrounds of the protagonist and stranger should remain largely undisclosed.",
+    "The protagonist should reveal personal details about his deceased closest friend.",
+    "Another character, a stranger, must appear in the story.",
+    "The protagonist and stranger must cross paths at the bridge.",
+    "The story must take place during a severe storm.",
+    "The protagonist should fail at discussing their intention to commit suicide.",
+    "The protagonist must experience instability due to the wind.",
+    "Use active voice throughout the story to keep it engaging."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 5 (sb004); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

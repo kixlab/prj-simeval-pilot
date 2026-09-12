@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb047",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about someone watching a Korean movie, but ending up talking to a fly and listening to a long story.",
+  "baseStory": "Amy had always been a sudden enthusiast. This time it was the rave about Korean movies that had caught her fancy. All her friends had been buzzing about the cultural nuances, multilayered plots, and the compelling storytelling that Korean cinema offered. So on a lazy Sunday afternoon, she decided to sit with popcorn on her cozy couch and play a highly recommended movie- \"Parasite\".\n\nAs the movie started, it was so engrossing that she hardly noticed the pesky fly hovering around her bowl of popcorn. After a few swats of annoyance, she realized the fly wasn't going anywhere. In an uncanny whim, she jokingly addressed the fly, “Well, aren't you relentless! Why don't you find other sweets to bother?”\n\nTo her disbelief, the fly actually responded. It buzzed in a rhythm that seemed like language. Shocked, yet intrigued, Amy decided to continue the conversation.\n\n\"So tell me, why bother me?\" she asked.\n\nThe fly answered in a series of buzzes that Amy surprisingly understood. It started narrating its tale, of how it was once a scholar in the kingdom of antiquated Korea. It had been cursed by a bathroom ghost to live as a fly until it narrated its story to a thousand human ears. Astonishingly, the cursed scholar story had parallels with the unfolding plot in the movie.\n\nThe fly told about the corruption and greed that had been infused in the kingdom’s politics and how he, through his scholarly knowledge tried to expose the parasites of the society that fed off the common people's happiness and trust. But his intentions were misinterpreted and devious plots were hatched against him.\n\nAmy was taken aback at the turn of events, her Sunday movie turning into a live interaction with a thousand-year-old fly. She found herself drawn in, much more invested in the fly's story than the movie she initially decided to watch.\n\nThe tale took her through the scenic beauty of Korea, the warmth of its people, the grandeur of its palaces, and the cold brutality of its politics. It was engaging, emotional, and beautiful altogether. Everything she had expected from Korean cinema, was being narrated to her by a fly, framed by the close shots and masterful direction of the movie playing on her television.\n\nHours passed, the sun set, and the story reached its end. The scholar's clever tactics had been revealed, the corrupt had been punished, but he got trapped in a grave misunderstanding leading to his curse. The story concluded with a heavy regret, a sense of sacrifice, and a quest for redemption, something echoed eerily, by the movie’s climax similar to the fly's fate.\n\nAmy, by the end of it all, was teary-eyed, overwhelmed with emotions. She looked at the popcorn bowl, now untouched, and then at the fly, the scholar, the storyteller.\n\n\"I guess I was the thousandth listener\", she mused. As if responding, the fly buzzed around her one last time and vanished into thin air. Amy was left sitting in her room, the credits of the movie rolling onscreen, but a different story imprinted on her heart. And all she could say was, \"What a movie night!”.",
+  "constraints": [
+    "The protagonist's emotions and reactions should be carefully described.",
+    "The fly should fly to a wall above the oven.",
+    "The protagonist's family should be at the market.",
+    "The protagonist should forget to charge his laptop until the battery hits 7%.",
+    "The protagonist's family should be getting mayonnaise from the market.",
+    "The narrative should be filled with humor and irony.",
+    "The protagonist made a chicken sandwich and stored it in the fridge.",
+    "The protagonist watches movies on his computer.",
+    "The movie's paused scene should depict people rubbing powder on a shot person.",
+    "The protagonist should be alone in the house.",
+    "The protagonist should believe the sounds originated from the fly.",
+    "The protagonist should find the charger on his younger son's bed.",
+    "The dialogue should be written in simple and clear language.",
+    "The story should be narrated in the first person point of view.",
+    "The overall mood of the story should gradually shift from relaxed to surprised.",
+    "The protagonist leaves the movie paused to get his charger.",
+    "The protagonist should accept a request to listen to the fly.",
+    "The protagonist should hear a buzzing sound.",
+    "The protagonist should hear a strange voice.",
+    "The atmosphere of the story should lean towards the surreal.",
+    "The story should be written in a relaxed and casual tone.",
+    "The protagonist should own a fly swatter and intend to use it.",
+    "The protagonist should display interest in listening to the fly's story."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 48 (sb047); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

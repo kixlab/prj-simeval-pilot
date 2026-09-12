@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb000",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about an introverted protagonist with uncontrollable intuition, who experiences others' emotions intensely, as she navigates a challenging encounter during the holiday season.",
+  "baseStory": "Evelyn was introverted by nature, more comfortable in her world of books than in social groups. What made her exceptional, however, was her latent, uncontrollable intuition. She was highly empathic, experiencing others' emotions as vividly as they did themselves - sometimes, even more so. The holiday season, with its swirl of emotional undercurrents, was particularly overwhelming for Evelyn, and she dreaded it every year. \n\nIt was the eve of Christmas. Evelyn's small apartment was bursting at the seams with relatives she hadn't seen in years. Overwhelmed, she nestled into the corner of the couch, trying to make herself invisible amid the sea of forced cheerfulness. Any close interaction was a sensory overload for her; she would involuntarily feel their feelings, read their deepest thoughts, and become emotionally exhausted.\n\nSuddenly, the door swung open, and her cousin, Ava, strode in, a torrent of unspoken emotions swirling around her. A shiver of apprehension ran through Evelyn as she braced herself, feeling the churning storm of emotions through her intuitive empathy.\n\nAva looked around the room, her eyes widening slightly as she noticed Evelyn. Evelyn felt Ava's shockwave of anxiety and self-consciousness hit her like a punch. Despite being at her most vulnerable, Ava hid it well under a veneer of social amiability. But Evelyn's perceptive intuition saw right through it.\n\nTaking a deep breath to steel herself, she wandered over to Ava. Silent conversations, almost piercing in their intensity, flowed between them.\n\n\"Are you okay, Ava?\" She asked finally, breaking the momentary silence.\n\nAva's eyes widened in surprise. \"Yeah, I'm fine. Why do you ask?\" But the underlying tremor in her voice betrayed the turmoil within.\n\nEvelyn quietly admitted, \"I can tell something's wrong.\"\n\nAva looked at her silently for a long moment before sighing deeply. \"I lost my job, Evelyn,\" she confessed, her voice barely above a whisper. Evelyn felt a tidal wave of despair crash over her as Ava's feelings of hopelessness washed over her. \n\nEvelyn, despite her own burden of emotions, took Ava's hands in hers, feeling the tremors running through them. \"You're not alone, Ava. You have us. We'll sort it out together,\" she said, her voice reassuring.\n\nArmed with her intuitive empathy, Evelyn spent the rest of the evening comforting Ava, helping her cope with the raw wound of job loss. It was an extremely challenging, emotionally draining journey, but Evelyn's heart swelled at Ava's gradual shift from despair to a glimmer of hope and optimism. \n\nThat Christmas Eve, Evelyn, buoyed by Ava's resilience, also discovered something about herself. Her gift, which she had despised for its uncontrollability, for how much it drained and overwhelmed her, could also be used to help others.\n\nAs Evelyn watched Ava slowly blend back into the crowd, her heart lighter, the usual cacophony of emotions she feared seemed more bearable. Evelyn realized that while her introverted nature and intuitive empathy made the holiday season challenging, it was also what made her essential in processing these unspoken struggles. It wasn't a curse; it was her gift. A gift of understanding, of empathy, of being the silent pillar of comfort in a room filled with concealed emotions.",
+  "constraints": [
+    "The protagonist suffers physical discomfort when overwhelmed by emotions (nausea, shaking, etc.).",
+    "The protagonist is challenged by the need to engage in public spaces.",
+    "The unknown man realizes that the protagonist can feel his emotions.",
+    "The protagonist uses humor and sarcasm to cope with her situation.",
+    "The protagonist is an introverted character.",
+    "The story includes communication via text messages.",
+    "The story is set in a Starbucks on Michigan in Chicago a week before Christmas.",
+    "The protagonist is forced to leave the meeting early due to being overwhelmed.",
+    "The protagonist desires to live a more normal life despite her unique condition.",
+    "There exists a vaccine for controlling intuition.",
+    "The protagonist devises coping strategies for managing her anxiety in public places.",
+    "Scientists are working to find a solution for people who can't use the intuition vaccine.",
+    "Tiffany threatens the protagonist to meet her.",
+    "The protagonist struggles with accepting her condition.",
+    "The protagonist must grapple with the thoughts and feelings of others in the Starbucks.",
+    "The man looks at the protagonist with both desire and love.",
+    "The protagonist is physically attractive.",
+    "The protagonist encounters an unknown man who causes powerful and unique emotions.",
+    "There is societal disapproval for people whose intuitions cannot be controlled by the vaccine.",
+    "The protagonist has a heightened intuition.",
+    "The setting should be during the holiday season.",
+    "The protagonist feels other people's emotions intensely.",
+    "The protagonist struggles with disentangling their own feelings from others'."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 1 (sb000); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

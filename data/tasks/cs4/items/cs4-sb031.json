@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb031",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words from the first-person perspective about a protagonist having a series of unfortunate events at work, dealing with a mysterious new coworker in a black suit who turns out to be eerily similar to him, leading to a humorous yet unsettling conclusion.",
+  "baseStory": "My name's Rob, and I work at the illustrious Grazier & Kovel Marketing Corp. Today, it'd seem life had a peculiar classic slapstick course charted out for me. Starting at the coffee machine accident, progressing to the printer ink splash, and culminating with the unexpected tumble down the office stairs - what a day! Oh, and there was the incident involving the new guy who seemed oddly familiar yet unnervingly different.\n\nBeneath the hanging artificial lights, contrasting with the office white, was the conspicuous black suit. This was my first look at Eric, the new recruit. He had a face eerily similar to mine - same beard, same snub nose, even identical glasses. It was like looking at a dressier version of myself.\n\nExtending a friendly hand, I decided to greet him. \"Eric! I'm Rob. Welcome aboard!\" His handshake was firm, crisp, like his jet-black suit, and oddly enough, not too unlike mine. A layer of curious anxiety settled beneath my skin. \n\nWork was mundane, but Eric, he was downright interesting. He seemed to mimic my work style, the way I knocked the glass partition before stepping into the meeting room, the habit of twisting the pen during brainstorming sessions, even the way I frowned at my computer. The likenesses were so uncanny, it was like he was mimicking me.\n\nOn the day of the ultimate slip on the office stairs, I hit more than my funny bone. Just after, there was Eric yet again, with this sly grin on his face. He mirrors me in everything else, why not in the pratfalls?  \n\nOne day, the opportunity for a showdown accidentally presented itself during our monthly meeting. Our boss Mr. Kleinsmann had this quirky little tradition where every now and then he'd pick two employees to square off in a 'Whose Strategy is Better' debate.\n\n\"Rob or Eric? Who's up first?\" Mr. Kleinsmann announced, examining us over the rim of his glasses.\n\n\"Let Eric,\" I offered, eager to finally uncover the mystery behind his incessant mimicking.\n\nEric was good. His suggestions had the zest of my style sprinkled with a new perspective. As he moved like me, talked like me, I began to understand it wasn't mockery. It was mirroring. An unexpected warmth flushed my cheeks. It was like watching myself from a spectator's lens, only to find the view better than I'd anticipated. \n\nThe unsettling realization was that we turned out to be kindred spirits in a weird, uncanny way. Even Mr. Kleinsmann seemed to be amused, watching us with his sparkling hawk-like eyes beneath the thick grey eyebrows.\n\nThe day ended on a surprisingly pleasant note. Opting out of the usual 'Burger Mayhem' dinner, I invited Eric to my favorite Chinese restaurant, where we laughed over fortune cookies that read 'Reflections are strangely familiar, yet quirkily different.'\n\nSo there you have it, an unfortunate day turned out to be one of the most intriguing. It was unsettling at first, yes, but a bit of a twist at the end. I'm stuck with Eric for the foreseeable future, sure. But hey, who can say no to a personalized mirror at work? I hope he likes my coffee preferences as much as I do.",
+  "constraints": [
+    "The protagonist should have a laid-back or sarcastic attitude overall.",
+    "He should start driving the protagonist's car without explicit permission.",
+    "Introduce a plot twist related to the identity of the new employee.",
+    "The story must include a scene where business cards are exchanged or shown.",
+    "The story should have the theme of \"a day at work starting off bad can get worse.\"",
+    "The black suit guy should be referred to in a derogatory manner (like \"jerk-off\").",
+    "The protagonist should not like his boss.",
+    "The protagonist should make a quick exit from the workplace at the end of the day.",
+    "The protagonist should interact with his coworkers in the rec room.",
+    "The protagonist should think of the black suit guy as a jerk.",
+    "The story should be written in first-person narrative.",
+    "There should be a new employee wearing a black suit who annoys the protagonist.",
+    "The protagonist must have an office job.",
+    "There should be a feeling of rivalry over business cards.",
+    "The black suit guy should eventually reveal that he looks like an aged version of the protagonist.",
+    "The narrative should incorporate elements of humour.",
+    "The protagonist should enjoy messing around at the rec room in the workplace.",
+    "The series of unfortunate events should begin with an alarm not going off.",
+    "There should be a sense of camaraderie among the coworkers.",
+    "He should make a reference to \"Back to the Future\" to explain the situation, but rule out time travel as the rationale.",
+    "Protagonist's coffee machine should be not working initially.",
+    "The protagonist must be having a bad day.",
+    "The suit guy should reveal that he needs directions to the protagonist's house, making protagonist nervous."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 32 (sb031); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

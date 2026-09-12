@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb046",
+  "source": "official",
+  "instruction": "Craft a dynamic story in less than 500 words centered around Maggy's chaotic morning routine, her confrontations with her family, challenges with a vicious dog, and unexpected news at school, utilizing a mix of dialogue forms and fast-paced narration.",
+  "baseStory": "The dawn broke into Maggy's room with a streak of sunlight, strategically stabbing through her blinds and landing on her face. She groaned, kicking the duvet aside. Another chaotic morning was upon her, as entertaining as a sneeze during a singing competition.\n\n\"Maggy, time for school!\" her mother hollered from the kitchen.\n\n\"I know, Mom!\" Maggy huffed, pulling her shirt backward, the 'Hello Kitty' insignia doing a 180-degree spin. She peered into the mirror, sighed and rushed out, clumsily knotting pigtails.\n\nIn the kitchen, rife with the aroma of burnt toast and freshly brewed coffee, confrontation number one was simmering like a ticking time bomb.\n\n\"Dad, where's my lunch bag?\" Chorused she, eyebrows arching in annoyance.\n\n\"It's on the countertop, Maggy,\" her father said innocently from behind his newspaper.\n\n\"I can't eat soggy sandwiches, dad!\" She spat, opening the bag to witness a grape jelly massacre of WWIII proportions. \n\nChallenge number two came growling up the lawn, teeth bared, ears flat. It was the neighbor's dog, more lopsided fur and fangs than brawn and brain. For some weird reason, he had chosen Maggy as his sworn enemy and considered her ankles as his fountain of youth.\n\nAs Maggy stepped outside, the dog leapt forward, a vicious growl rumbling in its throat. She froze for an instance then remembered the trusted pepper spray tucked in her bag. In what can only be described as comically surreal, Mag",
+  "constraints": [
+    "The primary setting is in the morning, before school.",
+    "Maggy is a tough little girl shown when she retaliates her brother's pranks.",
+    "The mother's desperation for raising a lady is depicted when she corrects Maggy's posture.",
+    "Maggy is not particularly a morning person.",
+    "There's a vicious dog named Jax on Maggy's way to school.",
+    "Maggy often reaches school late and doesn't get reprimanded much.",
+    "The rest of the class reacts in unison to the Headmaster's order.",
+    "Maggy hardly pays heed to threats at home.",
+    "The story unfolds in short, crisp sentences.",
+    "Various forms of dialogues are used - exclaiming, questioning, threatening, and more.",
+    "Maggy doesn't feel particularly beautiful about herself looking at the mirror.",
+    "Maggy and her mother go through a typical morning squabble.",
+    "She is an organized chaos when putting things together for school.",
+    "Maggy is so overwhelmed by the news that she breaks classroom decorum.",
+    "Maggy is unafraid of Jax and confronts him regularly.",
+    "Maggy experiences an unforeseen rush of emotions upon learning of Ned's death.",
+    "The storytelling switches from third-person to first-person narration occasionally.",
+    "The father seems to having a better understanding of Maggy.",
+    "After leaving home, Maggy asserts her intentions for the day aloud to herself.",
+    "Maggy is always late to get ready for school.",
+    "The story uses fast pacing to mirror Maggy's morning rush.",
+    "The story revolves around a young girl named Maggy.",
+    "The story employs onomatopoeia occasionally for better effect."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 47 (sb046); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

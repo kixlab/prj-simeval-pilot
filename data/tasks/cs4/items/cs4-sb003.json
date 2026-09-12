@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb003",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a protagonist who, after dying, finds himself in a mysterious room with a screen that allows him to review and explore the interconnected paths of his life decisions.",
+  "baseStory": "Title: The Room of Reflection\n\nIn a steep plunge of darkness, Aaron Walker, a renowned scientist, succumbed to death. Quite unexpected, yet he was caught unprepared by death's subtlety.\n\nHis last moments on Earth were enveloped in an icy paralysis, lost amidst the strange threads of reality and fantasy. As the world around him faltered into oblivion, he sensed a delicate drift into another realm. He opened his eyes to a room bathed in gentle, otherworldly light, something out of a dream. The room was bare but for a single imposing screen, large and vibrant, that captured his instant attention.\n\nA suspended, ethereal voice echoed through the room, \"Aaron, this is where thou get the chance to explore the labyrinth of thy life. This screen holds all the decisions you have made or could have made. The profundity, the impact, the implications of every path chosen rests here.\"\n\nThe screen flickered to life, showcasing glimpses of his past. He saw himself as a child, deciding to pursue science over sports, thus paving his way to adulthood filled with accolades and recognition in the field of research. Yet in the shadows of the decision, he saw the unexplored path of sports he could have been a champion at, had he followed that road.\n\nAnother fragment of his life appeared, where he chose to stay back in his city to care for his ailing parents rather than accepting his dream job abroad. His parent's grateful eyes contrasted with the tantalizing, successful overseas career that might have been his. The turmoil of emotions, the value of familial bonds over career success unveiled the depth of his decision.\n\nLaughing, crying, regretting, he journeyed through the tapestry of his life's decisions. From choosing his wife over a wealthier girl who proposed to him, to deciding against adopting a pet due to his scientific commitments, each decision held its unique echo in Aaron's heart. The screen displayed the untaken paths, the unfulfilled potential, and the alternate realities he failed to live.\n\nAaron's eyes welled up when he saw himself turning down an offer of using unethically obtained data for his cancer research. In an alternate scenario, he could have accepted it, leading to a premature cure saving millions of lives. However, that triumph would have been swathed in the guilt of aesthetic compromise.\n\nThe screen silenced, awaiting his transmutation. The room pulsed with an understanding silence, reflecting the complexity of life’s decision-making and the duality of the consequences. He felt an inexplicable liberation—the burden of regret and what-if's lifted from his heart. \n\n\"Every decision made, every path taken or forsaken remains resonant in the grand orchestration of life,\" the voice echoed, the underpinning wisdom soaking Aaron's soul. \n\nWith newfound perspectives on his life decisions, Aaron stood up. His heart was lighter, not burdened by regrets or restrained by 'what could have been.' The screen went blank, signaling his journey was over. \n\nThe room bathed in darkness, and the words, 'Life Reviewed' appeared on the screen before he was gently propelled towards another intrigue of post-death reality. His life's intricate exploration taught him—one man's life is an interconnected web of decisions, alive in the hearts left behind and the subsequent ripples created in the universe.",
+  "constraints": [
+    "The protagonist must attempt to address the \"manlike entity\" but receive no response.",
+    "The protagonist should not be startled by the presence of the \"manlike entity\" anymore over time.",
+    "The dialogue from the \"manlike entity\" must be largely indiscernible.",
+    "The protagonist must struggle with understanding who or what the \"manlike entity\" is.",
+    "The protagonist must use a screen to review his life.",
+    "The protagonist must discover that his life decisions are interconnected like multiple trees from a single root.",
+    "The protagonist must identify a pattern within the branches of his life's paths.",
+    "There should be contemplation over the possible choices and their potential to bring happiness.",
+    "The protagonist should question this conclusion due to a feeling of inaccuracy.",
+    "The discovery must be made that he could remember all the main life paths.",
+    "The story must carry an undertone of reflection and introspection.",
+    "The protagonist should feel a strong draw towards understanding the \"something else\".",
+    "The protagonist eventually gets back to reviewing his life.",
+    "The protagonist must clearly hear the \"manlike entity\" speak a word for the first time.",
+    "Sporadic expressions of emotion should be noticed from the \"manlike entity\".",
+    "The protagonist must find himself in a large room with a screen.",
+    "The protagonist must initially feel fear when confronted with the \"something else\".",
+    "The protagonist’s questioning of the \"manlike\" figure should lead to silence and deepen the mystery of the story.",
+    "The clarity of the protagonist's memories of potential lives should increase.",
+    "The protagonist must hear a third statement from the \"manlike entity\".",
+    "The protagonist should learn to ignore the indiscernible whispers from the \"manlike entity\".",
+    "The realization must be established that a minor decision could have drastically changed the protagonist's life.",
+    "The protagonist should eventually hear the \"manlike entity\" speak, which is a new occurrence."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 4 (sb003); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

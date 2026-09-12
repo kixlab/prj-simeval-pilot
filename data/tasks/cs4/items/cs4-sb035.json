@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb035",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a protagonist who, after ordering an outlandish knife from an infomercial, experiences its bizarre, supernatural qualities, leading from skepticism to terror, all narrated with a thread of humor.",
+  "baseStory": "Sam, a skeptic at heart, had an odd proclivity—late-night infomercials. The outrageous products and over-the-top enthusiasm of the presenters tickled his ironic detachment. He’d built a collection of humorous knick-knacks which solicited eye rolls and chuckles from his friends—novelties such as the 'Oxi-Clean Stain-Detecting Binoculars' and 'Solar-powered Party Pliers'.\n\nThen came the 'Nebula Knife', a cosmic-themed kitchen tool being touted as if it were Excalibur reborn. The infomercial boasted about its edge that \"cut through spacetime itself!\" And just for $19.99! Sam chuckled, dialed, and waited for the \"interdimensional utensil.\"\n\nThe Nebula Knife arrived in a holographic box that shimmered with a stellar aurora. Chuckling, Sam extracted a knife devoid of physical brilliance. A kitchen-knife - bit too thin, too light. The touch, however, delivered a mild static shock. \"Classy,\" he snickered, \"Intergalactic tetanus.\"\n\nDinner was pork roast. Sam, deciding to humor his newest acquisition, unsheathed the Nebula Knife. The moment he pressed the blade against the roast, something in the air shifted. The blade cut through effortlessly. So effortlessly that he'd sliced thinner than paper. Astonished, he tried again, fascination replacing amused anticipation. Same result. Curiously, he grazed the blade against his finger. A clean cut - gentlemen's paper cut. No pain. Amazement fogged over the sting of surprise. \n\n“Okay, this thing is bizarre.” Sam confessed, perplexedly observing the odd kitchen blade. Finally, a product that lived up to the bizarre infomercial promises. Excitement teetered dangerously close to a creeping unease.\n\nDays passed, with the more Sam used the knife, the more unsettling its properties seemed. The Nebula Knife, it seemed, could cut - redefine - anything. Multiple slices to an apple resulted in a Porcupine Apple - an apple with slices still attached. A confetti cut cucumber? A Cucumber-in-hold—each piece, while separate, stayed just put, the cucumber retaining its form. Every cut took on a bizarre, unnatural quality, as if rewritten by the blade. Humorous disbelief matured into consternation.\n\nWhile chopping onions one day, heavy with apprehension, Sam misjudged. He winced reflexively, preparing for a bloody mishap. The Nebula Knife, however, had sliced through the heart of his skepticism - and his hand. He looked, expecting a gory mess, yet his hand remained whole, the cut forming and sealing instantly. He felt no pain, just a cool tingle as his hand phased back to intact. A translucent slice remained, peering into his shocked, pallid face. Alarm bells blared.\n\nFear eclipsed the humor entirely. It wasn't just a novelty item now, it was...supernatural, terrifying. Each effortless slice, a heart-stopping moment. The dam of his skepticism had collapsed, flooded by a torrential tide of pure terror. He needed to rid himself of the knife, urgently.\n\nIn the dead of night, he buried the Nebula Knife, the celestial shimmer mocking him one last time. The next morning, he found it in his kitchen drawer, as if waiting, reminiscing about the pork roast. He tried dumping it further away, but it always returned.\n\nNow, Sam watches every infomercial with a knot in his stomach. Every joke, every outrageous claim, chills him a little. After all, the Nebula Knife still rests in his drawer, gleaming with an alien menace, an uncanny memento of the time humor slipped into horror. Just waiting for Space Bacon or Cosmic Sausages.",
+  "constraints": [
+    "Protagonist should attempt to distance themselves from the knife, but it should reappear in their hand.",
+    "The story should show the protagonist's journey from skepticism to inexplicable reality.",
+    "There should be a thread of humor running through the story.",
+    "A visitor rings the protagonist's doorbell, interrupting their contemplation of the strange events.",
+    "The story should integrate elements of surprise and disbelief.",
+    "Delivery of the product should be surprisingly fast.",
+    "Protagonist then tests the knife under extreme heat, causing an unexpected color reaction.",
+    "The protagonist should test the item on a mundane task (like cutting an apple) initially.",
+    "The protagonist should have a sleep-deprived state.",
+    "The item ordered off the infomercial should be seen as 'outlandish'.",
+    "The protagonist should be intrigued by the item's advertised qualities.",
+    "The story should be told in the first person with the protagonist as the main narrator.",
+    "Initial test of the knife shows it to be ordinary.",
+    "The narrative should be engaging and encourage curiosity.",
+    "The story should precipitate a sort of a climax with the realization of the knife's bizarre abilities.",
+    "The story should make use of everyday objects (an apple, a banana, an oven) to heighten the unreal quality of the knife.",
+    "The story should hint at a possible continuation with the doorbell ring.",
+    "The pace of the story should be quick, without unnecessary details.",
+    "Protagonist should be confused and scared by the knife's unexpected abilities.",
+    "The protagonist starts to doubt their sanity upon witnessing the knife's strange behavior.",
+    "The item should come with a note of congratulations and a cautionary disclaimer.",
+    "The item (a knife in this case) should be surprisingly high quality physically.",
+    "The protagonist should initially dismiss the warnings as a result of the item being cheap."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 36 (sb035); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

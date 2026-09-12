@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb012",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a tumultuous breakup in a restaurant where one character confronts the emotionally detached partner.",
+  "baseStory": "Title: Unsettled Symphony\n\nIn the softly lit ambiance of Brasserie Lenoir, he idly traced patterns on the snowy, linen tablecloth as Ella Fitzgerald's honeyed voice washed over the hushed conversations. He glanced at the waiter placing their Cosmkeys on the table and gave him a strained smile before turning towards her.\n\nThe flickering candlelight reflected off her hazel eyes, belied by a distant look, as she pressed the red lipstick-stained rim of her cocktail to her lips. He reached out, his palm grazing hers setting off a shiver that swam through him like electric eels. \n\n\"Madeline,\" Steve's voice, usually so calm and sure, was trembling.\n\nShe tilted her head, toying with the pearls around her neck, her gaze as cool as it had been for the last few weeks. But Steve had finally registered the painful glimmer of disinterest in Madeline's eyes.\n\n\"We need to talk,\" he said, steeling himself.\n\nShe cocked an eyebrow, a practiced display of surprise. \"About?\"\n\n\"Us,\" Steve swallowed, a lump forming in his throat. \n\nNot so long ago, the very mention would bring twinkling eyes and soft laughter. Now, it fell between them like a lead weight. \n\n\"We're just not the same anymore,\" he stated, his voice barely more than a whisper. \n\nMadeline glanced up, her eyes meeting his, but they remained expressionless. \n\n\"Is that so?\" she murmured, swirling the ice in her drink. \n\nThe emotionally detached reaction, much like she had been lately, hit him harder than a wail or a sob would have. He hadn't signed up for such a ride. The emotional roller coaster of a relationship he found himself in was tiring him, pushing him to breaking point. Her absent-minded converses, her hushed phone calls in whispers, finally made sense.\n\n\"Madeline, we need to split up.\" It was a statement, not a question. His voice echoed loud in his ears above the dwindling hum of the restaurant.\n\nThere was a moment of silence where her mask seemed to slip, her eyes flashed with an orchestra of unshared emotions; surprise, confusion, relief. But it was gone before he could truly comprehend it.\n\nEventually, she sighed, a soft, resigned sound. \"If that's what you think is right, Steve.\"\n\nHe blinked, not expecting her voluble agreement. Her acceptance was like a cold shower, dousing the remnants of hope he had. \n\nThe rest of the evening passed; they discussed the logistics of their separation in hushed voices, their dinner untouched. He could hardly taste the tart berries of his dessert, the sweetness seeming to mock the sour turn his life had taken. More than the rupture, it was her indifference that stung.\n\nWith a hollow feeling, Steve paid the check, his eyes unconsciously seeking the comfort of her gaze, only to be met with the sight of her already half out of the door. As he watched her retreating figure disappearing into the Parisian evening, he finally let himself mourn the dying embers of what they once had.\n\nAmong the scattered tableware, under the melancholy glow of the chandeliers, all that was left of their relationship was the lingering aroma of their unfinished dinner and a love story that was no more. The closing bars of Ella Fitzgerald’s song echoed throughout the Brasserie Lenoir, an unsettled symphony of a beautiful culmination that had reached an all too inevitable, dramatic end.",
+  "constraints": [
+    "The female character is anxious in large crowds.",
+    "The male character apologizes to the female character.",
+    "The female character formally announces the breakup.",
+    "The breakup scene has to be emotionally charged.",
+    "The woman stands up, moving towards the end of their conversation.",
+    "The female character is blonde.",
+    "They have a prior history of shared intimate experiences.",
+    "The female character enters dressed in a red dress and ruby earrings.",
+    "The male character professes his continued love and affection despite the breakup.",
+    "The female character reveals her lack of emotional attachment to the male character by saying she doesn't love him.",
+    "Indicate the female character's lack of remorse or empathy.",
+    "Their relationship is portrayed as being somewhat tumultuous.",
+    "The female character rejects the anniversary gift.",
+    "Stylistically, characters' emotions should be displayed through their dialogues and actions rather than explicit narration.",
+    "The entire conversation should be kept within the confines of the restaurant with minimal interaction with external elements or characters.",
+    "Setting takes place in a restaurant.",
+    "The waitstaff are watching and reacting to their conversation.",
+    "There must be frequent references to the surrounding environment and characters' physical appearances.",
+    "The story should entail a romantic relationship ending in a heartbreaking manner.",
+    "Indicate that the male character cries in public, despite societal expectations.",
+    "The female character mentions having 6 best friends, adding further insult.",
+    "The dialogue should be filled with sarcasm and sharp comments.",
+    "The emotional toll on the male character progressively increases."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 13 (sb012); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

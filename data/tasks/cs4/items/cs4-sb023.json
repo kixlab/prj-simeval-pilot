@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb023",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words from the first-person perspective about a protagonist who, on the brink of suicide, gets a second chance to relive and reshape past regrets with a lost love, experiencing both hope and recurring tensions.",
+  "baseStory": "As I stood on the edge of the abyss, the watery depths below seemed to echo my despair. It was horrifying yet mesmerizing, a cold invitation to eternal peace.\n\nEach pill in my hand told a story – rejection, insult, guilt, lost love. My past mistakes were many, but losing Emily was the hardest. The love of my life, my only source of sanity in a world so bitter, I had pushed her away. A heated argument, toxic words uttered – our love was a collateral damage. I hadn't expected her to leave permanently though.\n\nDeep in her memory, as I was about to make the final leap, I was halted by a voice. Soft, familiar, it called out my name, \"John.\"\n\nI closed my tear-filled eyes, \"Emily?\"\n\nThere was no response. There, standing at a distance was Emily, heavily pregnant. But she died six months ago. Confusion coursed through me. Was I dreaming? Pleasantly delusional?\n\nLooking at the child inside her, my heart filled with warmth. Our child, a beautiful prospect that was never a reality. She advanced towards me, gently took my hand and we began walking through an ethereal portal.\n\nSuddenly, the past was our palette. I was in our past, revisiting every argument, every word. I saw myself shouting at Emily. Each time I was about to utter a toxic word, I refrained. I could change things now, save our love. Our resolve grew stronger, our love deeper and each bend of our life slowly reshaped itself. Our fights turned into constructive conversations. Those loaded silences transformed into consoling whispers of comfort. I felt hope blooming within my chest, as if reviving from a near-death slumber.\n\nHowever, with each bend that I reshaped, tensions resurfaced. Every alteration had its consequence. In trying to mute our screams, we became distant. In avoiding hurtful remarks, we held back so much that transparency faded. The love became mechanical and Emily drifted apart.\n\nI tried to fix all that, but she seemed distant, as if we were losing our connection. But there was still hope, because she was still there, still with me. Even in my dreams, my subconscious, I had a chance to save her, our baby and our love.\n\nI witnessed our love re-blossoming. We spent days talking, loving, and healing together. The pain of the past was slowly retreating, opening us up to the beauty of forgiveness and love. The heavy tension of regrets was replaced by the lightness of hope.\n\nIn an instant, everything went black.  \n\nI woke up with a shudder, Emily's name escaping my lips. It was quiet, devoid of any voice but the rhythm of my pounding heart. I was on the brink, about to join Emily in oblivion.\n\nLooking at the bottle of pills, I felt a new urge, the urgency to live, to relive painful moments with a sense of understanding and love. To reshape my grief into a source of strength. My regrets no longer bound me to my past, they pushed me to a better future.\n\nEvery dream, every reality, every bend in life has its tensions. But with love, there emerges a glimmer of hope, a second chance to make things right. I stepped away from the edge, leaving behind tranquility of death for a promised chaos of life.",
+  "constraints": [
+    "The protagonist jumps off the ledge.",
+    "Reflect about the common regret of suicide survivors wanting to \"fly\".",
+    "Protagonist tries to be a perfect boyfriend this time around.",
+    "The protagonist must not die in the end.",
+    "Transition from a dark mood to a hopeful tone to tension again.",
+    "The protagonist prepares for the impact of the ground.",
+    "Write the story from a first-person point of view.",
+    "Explicitly mention that the protagonist is regretting a past romantic relationship with a woman.",
+    "Protagonist wakes up in his room after the fall.",
+    "Reliving an important day climbing the tallest mountain of a national park.",
+    "Keep the language simple and conversational.",
+    "The protagonist contemplates his impending actions during the drive.",
+    "Make the protagonist contemplate suicide again.",
+    "The setting is the ledge of a tall building.",
+    "He asks her out later, breaking from his past actions.",
+    "Incorporate a sense of nostalgia when the protagonist looks back on his relationship.",
+    "The protagonist is contemplating suicide.",
+    "Protagonist finds himself to be younger.",
+    "She arrives at the protagonist's place around 1:",
+    "Recall past adventures with \"her.\"",
+    "Constraints about past regrets concerning a romantic relationship.",
+    "The protagonist kisses her this time.",
+    "Protagonist starts his day excited about the chance to relive his life."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 24 (sb023); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

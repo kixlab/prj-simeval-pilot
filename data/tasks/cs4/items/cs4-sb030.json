@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb030",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words from Shawn Cross's perspective about his search for his charismatic but mysterious friend, Ethan, who disappears without a trace, leaving behind unanswered questions and a life marked by a lack of excitement.",
+  "baseStory": "I knew Ethan as a charismatic charmer, a whirlwind of energy who seized every moment. He had a magnetism that drew you in, a mystery that kept you engaged. Suddenly, he disappeared, leaving behind unanswered questions and a void stark against our otherwise uneventful lives. I'm Shawn Cross, Ethan’s best friend, and everything changed the day he vanished.\n\nIt started with regular get-togethers, which gradually dwindled into mere good-night texts. Then days slipped into an unsettling silence. Concern gnawed at my insides when Ethan's name on my phone's screen gradually faded, replaced by the niggling fear of his safety. Frustrated and worried, I decided to conduct my search, not ready to accept this uncharacteristic withdrawal.\n\nMy first stop was our local bowling alley. Every Wednesday, Ethan and I would compete to claim the title of the 'Bowling King'. The attendants hadn't seen him for weeks, leaving me worried and baffled. \n\nNext, I visited Ethan's apartment. His neighbor only echoed my concerns - Ethan hadn't been home for a while. I entered his apartment anyway, hoping to find a clue. As I stood there, taking in the scent of his cologne hovering in the air, I couldn't help but feel overwhelmed. His desk scattered with unread books sat in the room's corner, their words lost on an absentee reader. \n\nDays stretched into weeks of desperate searching. Aware of my futile attempts, I kept the hope alive. It wasn’t until I contacted the police that I hit a breakthrough. They found CCTV footage of a man, bearing a striking resemblance to Ethan, boarding a train out of town.\n\nSomewhere in the midst of the painful mystery, something struck me. Ethan had often talked about wanting to explore the world, to break free. The disappearing act, the sudden need to distance himself, it all fell into place. Even though no outward signs pointed at Ethan longing for a sojourn, his sudden disappearance told its story. Had the monotony of life driven him out looking for thrill and excitement? I could only guess.\n\nYet, I understood his decision, seething with a strange mixture of relief and melancholy. I had touched the thrilling corners of his personality, brushed against the restlessness that I never fully comprehended until now. Ethan wasn't hiding; he was exploring, living, breathing in a world beyond our laid-back town.\n\nMonths later, I received a postcard from Greece. There, among the elegant architecture and sunlit coasts, Ethan was chasing his dreams. The postcard had few words but spoke volumes. \"See the world, Shawn. It's waiting for you.\"\n\nWhile Ethan's departure left our small town quieter and me with a looming sense of loneliness, it was also strangely exciting. It was a solid reminder of the world that waited beyond, full of mysteries, just like Ethan. Although he traded legibility for enigma, Ethan never truly disappeared. Instead, he metamorphosed into a specter of charisma, mystery, and aspiration gesturing towards the path less trodden. \n\nThrough Ethan’s untraceable footprints, I realized that life wasn't meant to be played safe. It was meant to be lived, one wild adventure at a time.",
+  "constraints": [
+    "Story should include the phrase, \"Let's get fucked up,\" which is uttered by Ethan.",
+    "The main character's name should be Shawn Cross.",
+    "Shawn hadn’t heard from Ethan since that late Saturday night.",
+    "The last interaction between Shawn and Ethan should be late in the night.",
+    "Mention that Ethan owns an old red 1978 Mustang car.",
+    "Ethan's appearance should project a businesslike or serious vibe.",
+    "Shawn's search for Ethan should be carried out independently, without police assistance.",
+    "Ethan should have a well-maintained, close shaven beard.",
+    "Ethan should be characterized as a charismatic, womanizer.",
+    "The setting should be modern day due to the reference to cellphones.",
+    "The story should end on an inconclusive, suspenseful note with many questions about Ethan's whereabouts left unanswered.",
+    "Shawn’s life should be depicted as painfully bland.",
+    "Shawn decides to find Ethan himself, thinking of checking places Ethan usually frequents.",
+    "The story should have a melancholic or despondent tone.",
+    "Describe Ethan as wearing the same outfit every day: a green and blue sweater, a white undershirt, and blue slim dress pants.",
+    "The story should be told from Shawn’s first-person point of view.",
+    "Ethan should be presented as a conspiracy theorist.",
+    "Ethan's style should be unique and consistent throughout the story.",
+    "Shawn imagines a better life involve enjoying a tropical vacation.",
+    "The story is set on a Tuesday, and Shawn considers involving the police to find Ethan.",
+    "Ethan dismisses Shawn's rejection with a laugh and a smirk.",
+    "Shawn is left with multiple questions regarding the missing car.",
+    "Shawn should be depicted as having a tedious, monotonous life."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 31 (sb030); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

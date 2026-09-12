@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb024",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a protagonist discovering his younger brother can summon demons without sacrifices, exploring the mysteries and tensions of this unusual power within their familiar home setting.",
+  "baseStory": "Growing up in the quaint town of Nova, magic was not unusual. Our family, the Astoria's, were steeped in magical tradition, each possessing various abilities. However, no one expected what my little brother Jake was capable of. \n\nOn an average Tuesday, our home erupted into chaos. In the heart of our centuries-old manor, I found my ten-year-old brother surrounded by a horde of lesser demons, eating the last of mom's apple pie.\n\n\"Jake!\" I yelled, \"How the...?\", I sputtered. The sight was more than just perplexing. It defied everything we'd learned about summoning—sacrifices were integral to the process. Yet here he was, with a guilty look on his face, and not a burnt offering in sight. \n\n\"I didn't mean for this to happen, Alex,\" were the only words he whispered before the demons vanished.\n\nAnd so began our investigation into his inexplicable power. Every evening after dinner, we sneaked into the basement, once used by our ancestors for rituals, now a makeshift research lab for us. While I leafed through ancient family grimoires, Jake practiced summoning, and even dismissed the demons on command. \n\nAs weeks passed, one thing was clear: Jake contained immense power that contradicted all that our magical lineage conformed to. Struggling with summoning even a single entity, my respect and fear for my younger sibling burgeoned simultaneously.\n\nOne evening, my eyes met an anomaly in our family tree—an ancestor named Cedric Astoria, a pariah for his unique power: summoning demons without sacrifice. Everything seemed to fall in place. Our bloodline was marked by this notorious sorcerer! \n\nWe confronted our parents about the situation. The tension in the room was palpable. \n\nAfter a long pause, our father sighed, \"We'd hoped demon summoning had skipped this generation. It’s a power rooted in raw emotion, volatile and dangerous.\" He rose from his chair, walked over to a hidden bookshelf and revealed a dusty old tome. \"Cedric's Diary,\" he announced solemnly, making us follow him back to the table. \n\nEach handwritten page was an insight into Cedric’s life, fear, guilt, and eventual isolation. His unchecked power had caused inevitable destruction, ripping open an uncontrollable gateway for the demonic realm. It was terrifying. Jake's face paled as he read through the entries.\n\nFrom that day forward, our home suddenly seemed strange, filled with constant tension. There were no more family movie nights, no baking in the kitchen, just the constantly looming shadow of Jake's power. But it also drew us closer together. We realized that we had to help him control this ability rather than fear it.\n\nDespite his young age, Jake's determination was remarkable. He restricted his interactions with the infernal realm, only calling upon others when absolutely necessary. His stability was my relief, and we slowly returned to our former routine, now strengthened by an unspoken mutual support.\n\nJake was still my little brother, now just accompanied by an occasional demon or two. I found him one day, attempting to teach a low-rank demon how to flip pancakes.\n\n“Jake!” I groaned, “Don’t teach them to cook. That's an invite for more to join.”\n\nWith a roguish grin, he replied, \"But Alex, who's going to help you eat all those also-burnt pancakes you make?\"\n\nAnd with that, life in the Astoria manor continued its magical chaos, an unusual power just another part of our extraordinary bond.",
+  "constraints": [
+    "The protagonist feels fearful upon seeing two high-class demons in his brother's room.",
+    "The protagonist expresses disbelief upon hearing that the demons appeared without the need for a sacrifice.",
+    "Multiple demons must be seen organizing the younger brother's room.",
+    "The protagonist cautiously steps into the room and immediately draws the attention of the demons.",
+    "The dialogue between protagonist and younger brother must be intermittent between observational paragraphs.",
+    "The story must capture tension and curiosity from the protagonist's perspective.",
+    "The summoning process experienced by the younger brother is inexplicably different from traditional summoning; demons appear to him voluntarily.",
+    "The story involves the protagonist observing an unusual scene in his younger brother's room.",
+    "The mystery deepens when the younger brother mentions that the demons told him not to worry about the sacrifices \"yet\".",
+    "Demons must display loyalty towards the younger brother.",
+    "The story must utilize mythical cues and elements.",
+    "The final twist should leave the protagonist awestruck and speechless.",
+    "The younger brother's single statement defuses the tense situation.",
+    "The protagonist asks questions about how the younger brother managed to summon and control the demons.",
+    "Use of foreshadowing technique to heighten suspense.",
+    "The protagonist expresses shock and awe upon realizing the number of demons under his brother’s control.",
+    "The protagonist is established as being knowledgeable about demon summoning.",
+    "The story must conclude with an indication that the younger brother can summon demons freely until an unidentified future timestamp. Stylistic Constraints:",
+    "The language must contain a mix of easy-to-understand explanations and complex mythologies.",
+    "The exchanges between the younger brother and the demons must portray an employer-employee relationship.",
+    "The younger brother sees the protagonist's astonishment and uses it to gloat.",
+    "The language used should be descriptive.",
+    "The younger brother shows no concern about the demons' presence and carries on with his regular activities."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 25 (sb024); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

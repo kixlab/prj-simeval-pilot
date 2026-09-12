@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb039",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about Brad, a leader in a secretive tech firm, grappling with a newly developed stress-monitoring chip amid international tensions and revelations of time-altering technologies, culminating in a critical call with the president.",
+  "baseStory": "Brad Dawson, the enigmatic CEO of Phantom Tech, had a relentless curiosity that transcended the traditional confines of technology, thrusting the company into the forefront of the global stage. Phantom Tech was shrouded in secrecy, and rumors swirled of its latest endeavor: a chip methodically engineered to continually monitor stress levels. However, amid fretful international tensions and staggering revelations of time-altering technologies, the project conveyed not innovation, but fear and anxiety.\n\nHe had denied the innovations of time-altering technology, but whispers from the tech grapevine contradicted his firm stance. Powerful nations had supposedly started using Divergence Chips, stretching the threads of time itself under the guise of universal progression. The world was no longer embroiled in an arms race but a time race.\n\nBrad wasn't blind to the rising tensions or the strain his revolutionary inventions would place on global diplomacy. He stared at the prototype of the stress-monitoring chip resting on his palm, a meek object that bore colossal implications. Its intended purpose was to aid in understanding and controlling stress levels, potentially alleviating mental health issues. However, he couldn't ignore its possible misuse, its potential ability to make countries bend under its pressure, rendering them feeble in the face of powerful adversaries. \n\nThe present-day complexities of international politics had become intertwined with the inexorable march of technology, making his invention a potential weapon rather than a solution to a global mental health crisis. Before he could implement it, he needed to ensure that the path it paved would be one of peace and not conflict.\n\nA call from his secretary interrupted his brooding thoughts. \"Brad, the president is on line one.\"  \n\nGathering his composure, he picked up the phone. The weight of his predicament seemed to swirl around him as he heard the president’s voice echo through the speaker.\n\n\"Good evening, Mr. President,\" he began, immediately diving into the issue at hand, \"I wanted to discuss Phantom Tech’s recent advancement, the stress-monitoring chip.\"\n\nThe conversation wound through the nuances of high-tech brinkmanship, discussing the chip's potential misuse, ethical dilemmas, and possible diplomatic fallout. Calmly, Brad outlined his proposed safeguards, ensuring the chip could not be weaponized. Technology was a tool, he reasoned, its use – or misuse – depended on the wielder. \n\nThe silence from the president's end was heavy, leaving Brad in a momentary limbo before he finally spoke. \"Your technologies, Brad, have often changed the course of humanity. But this...this could radically alter the balance of power. A weapon or not, it could create a shift we can't control.\"\n\nBrad nodded, \"If you permit, Mr. President, I propose an international regulation body to oversee these advanced technologies, including Phantom Tech's developments. We need to ensure they serve humanity collectively and not individual self-interests.\"\n\nA pause ensued, then a sigh — a sign of concession. \"That's a lot to ask for, Dawson, especially with the palpable tension around time-altering technologies, but it’s a start.\"\n\nAs he hung up, Brad knew he had taken the first step in ensuring his inventions served humanity as they were meant to and not become pawns in a potent power game. The long road to fostering joint-ownership and responsible use was daunting, but today a seed was sown, one that would hopefully grow into a tree providing respite from the technological flames of strife.",
+  "constraints": [
+    "Brad has an important rank within an organization.",
+    "This technology leads to altering events in the past.",
+    "Brad heads a company with little public information available.",
+    "There's a reference to an accidental missile detonation that killed over a thousand people.",
+    "The main character is a man named Brad.",
+    "The story involves mapping group relationships.",
+    "Brad's firm has developed the stress-monitoring chip.",
+    "The chip is used by many in military and important civilian jobs.",
+    "Brad is responsible for the advancement of human technological progress.",
+    "There is a crisis connected with the first case that needs to be traced.",
+    "Brad is unable to explain the crisis.",
+    "The story involves disturbing chatter picked up from Chinese surveillance.",
+    "The year of the story's setting is",
+    "Brad is trying to cope with his emotions facing the crisis.",
+    "The company has managed to secure government contracts.",
+    "Brad uses an elevator where a device scans him.",
+    "Brad has established a successful project in the past year.",
+    "The story involves a chip that monitors stress and releases a drug.",
+    "There's a presence of anomalies on social media.",
+    "Brad awaits a call from the president.",
+    "Brad has a reputation among the elite in his area.",
+    "Brad feels out of control for the first time in his life.",
+    "Brad's firm had sold the patent for a chip with intoxicating effects to the public."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 40 (sb039); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

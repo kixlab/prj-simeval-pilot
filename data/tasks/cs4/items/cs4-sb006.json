@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb006",
+  "source": "official",
+  "instruction": "Write a humorous story in less than 500 words about a protagonist who, while dealing with escalating chaotic events and a mischievous cat, ultimately changes his attitude towards the pet amid a life-threatening crisis.",
+  "baseStory": "Once upon a time, in a quiet, peaceful hamlet, lived a quirky protagonist named Jeff. Jeff was an eccentric man, happily living a life of solitude till Destiny thought it'd be downright hilarious to gift him a cat for company. The cat, whom he reluctantly named Chaos, seemed to underpin Destiny's sense of humor perfectly!\n\nChaos was the epitome of his name. He was adventurous, on a perpetual hunt for trouble, jumping around, conveniently knocking down vases, climbing up curtains, and clawing Jeff’s favorite 2000 dollar Chesterfield! Nothing was a sanctuary from his mischievous antics.\n\nLesson number one Jeff learned, 'Living with a cat named Chaos is directly proportional to living within a hurricane!' Jeff bore these torments chained to responsibility and silently cursed Destiny for her cruel prank.\n\nThings started escalating when Chaos discovered he could tweak the television's settings. He would sit on the remote and inadvertently alter the language to Japanese, Arabic or Zulu. On Fridays, he'd change the football matches to operas causing extreme turbulence in Jeff's tranquil existence. 'Living in a hurricane with a Shakespeare-loving cat was challenging,' Jeff noted!\n\nTheir dynamic duo's life reached its zenith when Chaos discovered the secret to the basement. As it seemed, the house harbored a bat colony in secrecy, which Chaos unleashed onto the house in his adventurous zeal.\n\nImagine the sight! A terrified man chasing a mischievous cat chasing twenty odd bats around his house! House plants were destroyed, furniture knocked over, bat poop in unexpected corners, equilibrium of the entire house shattered, and peace was a mere illusion!\n\nBut, Destiny, it appeared, hadn’t expended her full reservoir of chaos until she released her pièce de résistance. Jeff woke up one fine morning to find his house submerged underwater. A natural calamity! After initial shock and disbelief, he realized that the incident had upgraded his situation from being “pretty comedic” to “life-threatening”— especially since he couldn’t swim!\n\nSuddenly all the nuisance-creating by Chaos seemed trivial. It was a matter of life and death. But just as panic began to hamstring his actions, Jeff saw something that jolted his survival instincts. On top of the staircase, doing a balancing act on the thin railing, was Chaos, terrified and meowing pitifully.\n\nSwift fear for Chaos overwhelmed his earlier annoyance. Jeff realized he’d gotten attached to the cheeky cat more than he'd ever admit. He waded across the rising water, reached the stairs, and with great difficulty, rescued Chaos, clutching the terrified him to his chest protectively.\n\nIt took days for life to regain normalcy. The house was a wreck, more than before if that was even possible. But something changed in Jeff, and he couldn’t deny the strange fondness he felt towards Chaos. The cat had indeed lived up to its name, unleashed turmoil in his life, but also ended up saving him from dying alone in a flood.\n\nAs Chaos purred contentedly in his lap and Jeff sat amid the wreckage of his once peaceful house, he smiled a little. Destiny, it seemed, had given him the gift of company disguised as a perpetual, mischievous hurricane called Chaos. Their journey together was just starting to unfold.",
+  "constraints": [
+    "The protagonist must express his annoyance towards his cat while in danger.",
+    "The cat should make a quick escape when the protagonist tries to catch it.",
+    "The cat should engage in action resulting in the protagonist's loss of property.",
+    "The protagonist and the cat must find themselves in a life-threatening situation.",
+    "The writing style should evoke humor, even in stressful situations.",
+    "The protagonist should be alone in the chaos, accompanied only by his cat.",
+    "The protagonist must show bravery in face of the danger.",
+    "The protagonist should plan revenge on the cat in some humorous way for his actions.",
+    "The protagonist should have a troubled relationship with the pet cat.",
+    "There should be a change in the protagonist's attitude towards the cat during the crisis.",
+    "In narration, physical movements of the cat must be described in detail.",
+    "The protagonist should be baffled by the cat's odd behavior.",
+    "Use colloquial/casual language and slangs by the protagonist.",
+    "The protagonist should misunderstand the cat's actions as mischief.",
+    "Protagonist's reaction to the cat's mischief should be humorous frustration.",
+    "The protagonist must face a moment where he has to evaluate his choices.",
+    "Have quiet and eerie silence before the chaotic event takes place.",
+    "A quiet suburban setting should turn chaotic in the story.",
+    "The protagonist's car must play a part in their escape.",
+    "The protagonist should ignore obvious signs of danger.",
+    "The protagonist's mode of transportation is a car.",
+    "The hints of danger should be ignored by the protagonist until it's too late.",
+    "The protagonist must have a pet cat."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 7 (sb006); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

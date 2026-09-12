@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb028",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a non-human protagonist with a long lifespan who forms a complex relationship with a human girl, Casey, and faces confrontation from her grandmother due to historical grievances against his species.",
+  "baseStory": "Bluebell was not an average creature. He was a dragon, old as time itself, gifted with a lifespan extending over centuries. Unlike his destructive counterparts, Bluebell was compassionate and gentle, preferring the company of humans to his own breed.\n\nHe first met Casey when she was a five-year-old girl, lost in the forest near his dwelling. Intrigued by his sparkling blue scales, Casey reached out fearlessly. Bluebell responded with a soft breath of enchanted, cool flame, enchanting the young girl.\n\nOne encounter transformed into many, and a unique bond grew between the two. Casey was adventurous and brave; she found peace in Bluebell's quiet demeanor formed through thousands of years of solitude. They spent their days exploring the woods, Casey riding on Bluebell's back, giggling with delight as they flew over treetops. They filled their evenings with stories—Bluebell's tales of the ancient world, and Casey's stories about her school, friends and homework.\n\nTheir harmony was disrupted when Casey's grandmother discovered their friendship. Martha wasn't any ordinary grandma; she was an elder of the town who held generations of tales and secrets. Her eyes held the painful reminder of the past wars—wars that stained the lands with blood and ash, wars caused by dragons.\n\nMartha charged into the forest after Casey, hoping to sever the girl’s connection to Bluebell. Her heart hardened by the past, and she saw a threat where Casey found only a steadfast friend.\n\n\"Casey, come down! You don't understand, child. He is dangerous!\" Martha yelled.\n\n\"No, Grandma! Bluebell is my friend! He won't harm anyone!\" Casey defended.\n\nMartha stared fiercely at the draconic creature, her eyes filled with suspicion. But as she watched Bluebell gently nudge Casey with his snout, her expression softened. The twinkle in Casey's eyes and the dragon’s gentleness gave her pause. Martha drew on her courage and walked forward, laying a hand on Bluebell.\n\n\"Promise me,\" she said, her gaze piercing into Bluebell's eyes, \"Promise me you will not bring harm to our family or town.\"\n\nBluebell let out a soft, melodious roar and nudged Martha's hand with his forehead, sealing the promise between them. \n\nIn that moment, the historical grievances, the fear, and the prejudice melted away. Martha raised Casey and protected her town, just as Bluebell rescued lost children and guarded the woods. Despite their differences, they knew they had a common intent—to keep their loved ones safe.\n\nBluebell's relationship with Casey evolved. He was not just a dragon or a friend, but a guide and protector, watching over the child as she grew into a strong and compassionate woman, often reminding Martha of herself. In turn, Martha developed an unexpected bond with Bluebell—a guardian in his right.\n\nTheir saga became a legend, passed down generations—a testament to unexpected friendships and powerful alliances, an endearing fairy tale for some, and to Martha, Casey, and Bluebell, a treasure capturing their unique and profound kinship.",
+  "constraints": [
+    "The protagonist does not eat meat or touch animals.",
+    "Casey's family does not include her father due to past incidents.",
+    "Humans are scared of the protagonist's species true nature.",
+    "The interaction between protagonist and Casey's grandmother ends in silence.",
+    "Protagonist's brother is named Borris and sister is named Karla.",
+    "The protagonist's family moves to new areas every few decades to blend in.",
+    "The protagonist's parents are reassuring about his situation.",
+    "The protagonist's species could be potential threats to human beings.",
+    "The lifespan of the protagonist and his family is longer than the average human life.",
+    "The protagonist experiences extreme negative emotions throughout the narrative.",
+    "The protagonist has a contemplative personality and reflects upon his interactions and situations.",
+    "The protagonist has an older brother and a younger sister.",
+    "The protagonist has a meeting with Casey's family.",
+    "Casey starts avoiding the protagonist after the confrontation.",
+    "Casey's grandmother confronts the protagonist about his true nature.",
+    "Protagonist and Casey become friends and spend a lot of time together.",
+    "The time perception for the protagonist and his family is different due to their longer lifespans.",
+    "The protagonist has a confrontation with Casey's grandmother in a grocery store.",
+    "The protagonist becomes increasingly interested in this girl, Casey.",
+    "The protagonist has a strong desire to find love.",
+    "The protagonist's life becomes monotonous and his perception of humans blurs.",
+    "The protagonist can't find a mate from his own species.",
+    "The protagonist is left confused and distraught after the confrontation."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 29 (sb028); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

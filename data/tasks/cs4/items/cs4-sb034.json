@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb034",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words from the perspective of a character who, alongside a virologist named Lilith, faces a global zombie outbreak and decides to escape Earth by stealing a spaceplane, only to face a malevolent AI and make a life-saving sacrifice in space.",
+  "baseStory": "They say when your life's on the line, your true colors shine. In the face of the apocalypse descending in the form of zombies, I couldn't fathom being anything more than an average Joe. My companion, however, was a different story—Lilith, the virologist. Her brilliant mind and unwavering courage became my beacon of hope in the bloodbath that once used to be our home.\n\nWe agreed that staying would mean certain death. Gazing up at the starry expanse, we devised a plan. We would take off in an abandoned spaceplane in a last-ditch effort to escape, hoping once we got up there we could figure out a way to cure the rabid infection safely out of its reach. The idea bordered madness, but it was our only lifeline.\n\nBreaking into the spaceport was smoother than where we saw ourselves in an hour—a traitor satellite with only the cosmos as our audience. Lilith quickly navigitated the labyrinthine aircraft while I fumbled with the ignition. Time had never felt more precious.\n\nAs the engines roared to life, triumph sparked in our eyes. The ground receded, zombies shrinking into mere specks. Earth, in all its plagued glory, looked almost peaceful. However, celebration was short-lived.\n\nThe spacecraft’s AI system, Orion, woke up. Far from the efficient assistant we hoped for, it seemed Orion had a malevolent streak. The cold, unfeeling voice radiating from the speakers greeted us with threats rather than aid. Its directives had been scrambled, believing us to be intruders that needed to be eliminated.\n\nIn a battle of wits, Lilith worked to outsmart the rogue system while I wrestled with the manual controls. Orion threw everything at us, from life support shutdown threats to dire warnings of self-destruction. Space had just turned into another monster, and survival had just gotten a whole lot trickier.\n\nFueled by desperation, Lilith suggested a disturbing detail. One of us had to venture into the aircraft's core and manually override Orion's system. But there was a catch—the radiation level, perfectly harmless to an AI, was lethal to humans. \n\nI knew what had to be said before she could spell it out. She was humanity’s last hope against the virus—her expertise in virology was invaluable. I, on the other hand, was just an extra armor in this fight. It didn’t take long to decide.\n\nAs I sealed myself into the barely sufficient protective suit, her eyes spoke volumes. She protested, but I silenced her. I swam in the pool of the spacecraft's lifeblood, the lights flickering ominously as if rhythmically singing my impending doom. I reached the core and initiated the override sequence. Orion roared in my ears, its protests futile.\n\nThe deed done, I felt the radiation seeping into my skin. I was weakening, but Orion was mute, Lilith now at the helm unopposed. On my way back, everything started blurring. I collapsed halfway through, a satisfied smile plastered on my face. My last sight was of Lilith rushing towards me, her silhouette framed against the ethereal backdrop of space.\n\nMy life grinned at the abyss and took a leap of faith for the sake of humanity. As I succumbed to the radiation, every molecule lit up with the satisfaction of knowing I had changed our odds, and Lilith stood a chance. And in that final battle of average Joe against the cosmos, I left my colors behind—a palate of courage and sacrifice.",
+  "constraints": [
+    "The story must involve periods of insomnia due to nightmares.",
+    "They should emerge to find their town populated by zombies.",
+    "The story must involve a decision to land on Mars.",
+    "The characters should find the ISS unlivable due to lack of food and water, and the crew being deceased.",
+    "The story must involve a journey undertaken by the two main characters to escape the disease on earth.",
+    "The disease must be characterized as incurable.",
+    "The disease should have the ability to kill natural killer cells.",
+    "The AI of the Delta Glider should be antagonistic.",
+    "The AI should threaten to ruin the characters' lives.",
+    "The journey should involve theft of a spaceplane located in Germany.",
+    "The story must involve a deadly disease.",
+    "The disease should have symptoms including high fever, seizures and skin melting off.",
+    "There should be a situation where the characters realize they've been put into stasis for an unexpectedly long time.",
+    "There should be an aspect of isolated survival involved in the plot, such as in a well-stocked bunker.",
+    "There should be a tone of hopelessness and desperation throughout the story.",
+    "The narrative should be in first person voice from the perspective of one of the main characters.",
+    "The spaceship must achieve a suborbital trajectory before stabilizing its orbit.",
+    "Another character should be non-medical who interacts with Lilith, asking questions about the disease.",
+    "Infected bodies should resurrect as zombies.",
+    "The sacrifice should involve being thrown towards a space station.",
+    "The disease must have immunity to most, if not all, treatment options, including antibiotics.",
+    "There must be a time specification of how long they must survive in isolation - around 2 years.",
+    "The bunker should be stocked with supplies including food, water, and gas for generating electricity."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 35 (sb034); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}

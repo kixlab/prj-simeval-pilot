@@ -1,0 +1,33 @@
+{
+  "instanceId": "cs4-sb018",
+  "source": "official",
+  "instruction": "Write a story in less than 500 words about a college student who, mastering his mind-reading ability, encounters another mind-reader, blending their extraordinary experiences with personal growth and challenges.",
+  "baseStory": "When Trevor arrived at the prestigious Wilford University, he already carried an unusual secret: he had the ability to read minds. At first, it was a novice skill, picking up stray thoughts here and there, but as he grew, so did his abilities. Keeping the gift to himself, Trevor learned to navigate his college life smoothly – foreseeing exam questions to securing appealing roommates. But Trevor wasn't just exploiting his power; he empathized with people, understood their unvoiced struggles, and occasionally shared advice that seemed intuitive to examinees but were actually from their underestimated selves.\n\nHowever, during the spring semester of his sophomore year, things took a striking shift when he met Liana, a vibrant psychology major. As they sat across each other in the crowded cafeteria, Trevor leaned in to catch her thoughts, expecting her reaction to the bad coffee or perhaps her stress about the upcoming psychology thesis.\n\nBut instead, Trevor found himself ensnared in a fascinatingly bewildering experience. For the first time, instead of reading thoughts, he visualized a mirror that was reflecting his own thoughts back to him. Someone was reading his mind; Liana was reading his mind.\n\nShocked, Trevor narrowly avoided choking on his coffee. Liana just smiled, her eyes twinkling with a knowing knowledge. “Thought you're the only one with mind-reading ability?” She winked. “Welcome to the club.”\n\nEncountering another mind-reader was a jolt to Trevor. His once-secretive skill was not unique, and his personal bubble was alienably invaded. Yet, it was also exhilarating; he found a comrade.\n\nTheir relationship unfurled like the most complex yet captivating script. Simply passing in the hallway became quick exchanges of thoughts and long conversations without uttering a single word. Nevertheless, with this surreal communication also came eventual clashes.\n\nOne day, amidst a heated disagreement about a political issue, their embedded instincts activated, prying open each other's boiling thoughts. The exchange became a mind battle, and Trevor found himself lost in the labyrinth of her thoughts, his emotions escalating to an overwhelming crescendo.\n\nThat's when it occurred to Trevor: he'd used his ability as a tool, a convenience, even a weapon, but he'd never learned how to control it. Overwhelmed and exhausted, he looked at Liana who was equally drained. They realized they'd ventured into unchartered territories of their minds which harbored pure chaos instead of control.\n\nFollowing that episode, Trevor and Liana made a pact. They agreed on an obscure line of respect and set out on shared therapy sessions, training themselves to think responsibly, to understand boundaries, and to be respectful of others' privacy. Trevor not only learned how to control his ability but also how to hone it responsibly. A similar transformation repeated in Liana. \n\nThe extraordinary experience bred staggering growth, evolving their exceptional powers from self-centered tools to considerate abilities for mutual respect and understanding. Trevor found himself in this journey, learning self-restraint and respect for others' minds. The experience with Liana didn't bring only personal growth but a lifelong friend with an extraordinarily matching intellect. As he'd expected, college was an enlightening journey – just more literally for him.",
+  "constraints": [
+    "The protagonist should be surprised and disbelief about overhearing mind-to-mind communication.",
+    "The story should explore the thought processes of other characters.",
+    "The protagonist must be a young man having the ability to read minds.",
+    "The protagonist and the second mind-reader should have a mutual recognition of each other's abilities.",
+    "The protagonist should be gaining mastery over his ability, learning to take others' thoughts with a grain of salt.",
+    "The protagonist should be portrayed as sympathetic and relatable despite his extraordinary ability.",
+    "There should be a situation where the protagonist is mentally exhausted.",
+    "The story should maintain first person point of view.",
+    "The protagonist should be attending an esteemed university.",
+    "The protagonist must have developed a strong, outgoing character, maintaining a group of trusted friends.",
+    "Internal monologues of other characters should be included to showcase protagonist's ability.",
+    "The voices in the protagonist's mind should be illustrated with different points of view.",
+    "The protagonist needs to overhear another mind responding to this thought.",
+    "Initially, the protagonist should have experienced negative effects due to this ability, like isolation and trust issues.",
+    "The story should end on a cliffhanger, suggesting there's more to come.",
+    "There should be a situation where the protagonist uses his ability to his academic advantage.",
+    "The story should present the protagonist's ability as both a gift and a burden.",
+    "One character, besides the protagonist, should have mind-reading abilities.",
+    "The protagonist should overhear a variety of thoughts amongst his peers.",
+    "He should fear the potential consequences of revealing his ability.",
+    "This ability should be presented as another one of his senses, as natural as seeing or hearing.",
+    "The theme of understanding and empathy should be explored.",
+    "The protagonist should come across someone thinking they can communicate with a mind reader."
+  ],
+  "datasetRef": "CS4 story-based set, instruction 19 (sb018); CS4_dataset/Story-based Base Stories.csv, github.com/anirudhlakkaraju/cs4_benchmark (MIT)",
+  "notes": "Constraints are the dataset's 23-constraint list for this instruction; its 7- and 15-constraint lists are exact prefixes of it, which the round stages rely on."
+}
