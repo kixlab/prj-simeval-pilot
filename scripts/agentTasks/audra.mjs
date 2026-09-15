@@ -17,6 +17,8 @@ function taskPrompt(timing = {}) {
 Your task: use ALL four starting lines as part of ONE creative drawing. Be as creative as you can.${timeLimitLine(timing, formatDuration)}
 
 Coordinates: x from 0 (left) to 1024 (right), y from 0 (top) to 1024 (bottom).
+Always give coordinates in this 0-1024 space, whatever pixel size the canvas
+image happens to be shown at. Use the whole canvas.
 
 ${actions}
 
@@ -24,6 +26,12 @@ Rules:
 - draw_stroke needs at least 2 points. Long curves need many points.
 - You cannot move or erase the four starting lines.
 - Draw several strokes before finishing.
+- Fix what goes wrong instead of drawing over it: erase_stroke removes your ink
+  along the points you give it, and undo_last removes your most recent stroke.
+  Neither can touch the four starting lines.
+- Stop adding when the picture reads clearly. A finished drawing is usually 20
+  to 60 strokes; past that, more ink buries the picture instead of improving it.
+  Use the remaining time to fix and refine rather than to keep adding.
 
 Finishing, in this exact order:
 1. set_description - answer the question "What did you draw?" with ONE final

@@ -65,7 +65,7 @@ export const driverDefaults = {
   fallbacks: "default",
   reasoningSummary: "auto",
   promptedThought: "off",
-  observationSize: 768,
+  observationSize: 1024,
   seed: null,
   apiKey: null,
   out: null,

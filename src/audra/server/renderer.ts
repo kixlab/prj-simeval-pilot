@@ -16,7 +16,7 @@ import { encodeRgbPng, parseHexColor } from "./png";
  * geometry does not.
  */
 
-export const defaultObservationSize = 768;
+export const defaultObservationSize = 1024;
 
 const rasterMimeTypes: Record<string, string> = {
   ".png": "image/png",
