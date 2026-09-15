@@ -169,6 +169,29 @@ carry Anthropic's server-side `fallbacks: "default"`, which re-runs a declined
 request on a recommended fallback model; each turn records `servedBy` and
 `fallbackRan`, and `--fallbacks off` returns the refusal instead.
 
+## Reading a sweep
+
+A `reasoning.jsonl` is one JSON object per model call, which is the wrong shape
+for reading. Two tools rewrite a sweep into something a person can go through;
+both read `runs/<sweep>/` as `agentSweep.mjs` leaves it and change nothing.
+
+```bash
+# one markdown file: turn by turn, what was refused, thought, and then done
+node scripts/reasoningDigest.mjs runs/sweep-mg-v2            # -> runs/sweep-mg-v2/reasoning.md
+node scripts/reasoningDigest.mjs runs/sweep-cs4-v2 --chars 600   # clip long traces
+
+# one self-contained web page comparing the protocols on each task
+node scripts/buildProtocolPage.mjs runs/sweep-audra runs/sweep-mg runs/sweep-cs4
+node scripts/buildProtocolPage.mjs runs/sweep-mg --out /tmp/mg.html
+```
+
+The page carries each protocol's artifact beside its traces - the drawing as
+SVG, the steps, the story with its per-round counts - read from the export
+bundle each run recorded. Pass one sweep per task; a sweep whose bundles have
+been moved still renders its numbers and traces. Its summary figures are
+computed from the sweeps passed in, so a claim it makes is a claim about that
+input and not about a run you did not pass.
+
 ## Tests
 
 ```bash
@@ -179,8 +202,6 @@ npm run test:audra-driver       # tolerant reply parser
 
 ## Not yet in place
 
-- The human screens for MacGyver and CS4 are not built yet; only the drawing
-  task collects both actors.
 - The licence position for using the released MacGyver items is not recorded.
 - Text-task bundles have no replay page yet; the event log is complete, so one
   can be built from it.
