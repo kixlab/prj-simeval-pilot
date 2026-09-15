@@ -2,7 +2,7 @@
 // Checks an exported trial bundle is complete and ready for AuDrA scoring.
 //
 //   node scripts/audraVerifyBundle.mjs exports/              # every bundle
-//   node scripts/audraVerifyBundle.mjs exports/audra__human-…/
+//   node scripts/audraVerifyBundle.mjs exports/20260915-0412Z__audra__human-p001__…/
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";

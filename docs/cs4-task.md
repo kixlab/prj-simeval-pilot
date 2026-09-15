@@ -57,7 +57,7 @@ dialogue and abbreviations is imperfect - and the think-aloud is the check on it
 
 ## The bundle
 
-`exports/cs4__human-<id>__item-<instance>__<stamp>__<trial>/`:
+`exports/<stamp>__cs4__human-<id>__<instance>__<trial>/`:
 
 | File | Contents |
 | --- | --- |

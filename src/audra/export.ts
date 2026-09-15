@@ -1,3 +1,4 @@
+import { bundleBaseNameFor } from "../tasks/bundleName";
 import { canonicalArtboard, eraserWidth, inkColor, pencilWidth } from "./artboard";
 import { normalizeActions, summarizeActions } from "./actions";
 import { audraSchemaVersion, toEventsJsonl } from "./events";
@@ -64,15 +65,16 @@ export type BundleContext = {
 export type TextFile = { name: string; content: string };
 
 export function bundleBaseName(state: AudraTrialState, startedAt: string) {
-  const safe = (value: string) => value.replace(/[^\p{L}\p{N}_-]+/gu, "-").replace(/^-+|-+$/g, "") || "unknown";
-  const stamp = startedAt.replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-  return [
-    "audra",
-    `${state.actorType}-${safe(state.actorId)}`,
-    `stimulus-${safe(state.stimulusId)}`,
-    stamp,
-    state.trialId.split("-").at(-1) ?? "trial"
-  ].join("__");
+  return bundleBaseNameFor(
+    {
+      taskId: "audra-incomplete-shapes",
+      actorType: state.actorType,
+      actorId: state.actorId,
+      itemId: state.stimulusId,
+      trialId: state.trialId
+    },
+    startedAt
+  );
 }
 
 export function buildSessionJson(context: BundleContext) {

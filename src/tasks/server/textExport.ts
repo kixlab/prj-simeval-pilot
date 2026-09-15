@@ -1,5 +1,6 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { bundleBaseNameFor } from "../bundleName";
 import { textTrialStatus, type TextTrialRecord } from "../agent/textTrialRegistry";
 
 /**
@@ -8,11 +9,6 @@ import { textTrialStatus, type TextTrialRecord } from "../agent/textTrialRegistr
  * `data/tasks` from disk and joins on the item id in session.json.
  */
 export const textExportVersion = "text-task-export-v1" as const;
-
-const shortTaskName: Record<string, string> = {
-  "macgyver-problem-solving": "macgyver",
-  "cs4-creative-writing": "cs4"
-};
 
 export type TextExportContext = {
   startedAt: string;
@@ -23,21 +19,7 @@ export type TextExportContext = {
   protocol?: Record<string, unknown> | null;
 };
 
-/** One naming scheme for every text-task bundle, human or agent. */
-export function bundleBaseNameFor(
-  parts: { taskId: string; actorType: "human" | "agent"; actorId: string; itemId: string; trialId: string },
-  startedAt: string
-) {
-  const safe = (value: string) => value.replace(/[^\p{L}\p{N}_-]+/gu, "-").replace(/^-+|-+$/g, "") || "unknown";
-  const stamp = startedAt.replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-  return [
-    shortTaskName[parts.taskId] ?? safe(parts.taskId),
-    `${parts.actorType}-${safe(parts.actorId)}`,
-    `item-${safe(parts.itemId)}`,
-    stamp,
-    parts.trialId.split("-").at(-1) ?? "trial"
-  ].join("__");
-}
+export { bundleBaseNameFor };
 
 export function textBundleBaseName(record: TextTrialRecord, startedAt: string) {
   return bundleBaseNameFor({ ...record, actorType: "agent" }, startedAt);

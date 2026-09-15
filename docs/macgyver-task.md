@@ -47,7 +47,7 @@ think-aloud is the check on it.
 
 ## The bundle
 
-`exports/macgyver__human-<id>__item-<item>__<stamp>__<trial>/`, laid out like an
+`exports/<stamp>__macgyver__human-<id>__<item>__<trial>/`, laid out like an
 agent's:
 
 | File | Contents |
