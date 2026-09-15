@@ -46,13 +46,13 @@ for (const name of Object.keys(loadProfiles())) {
     tasks: ["audra", "cs4"],
     strategies: ["one-shot", "single", "multi"],
     repeats: 2,
-    itemsByTask: { audra: ["dev-fixture-01"], cs4: ["cs4-sb000", "cs4-sb001"] }
+    itemsByTask: { audra: ["dev-fixture-02"], cs4: ["cs4-sb000", "cs4-sb001"] }
   });
   assert.equal(jobs.length, 2 * 2 * (1 + 2) * 3);
   assert.equal(new Set(jobs.map(job => job.key)).size, jobs.length, "keys are unique");
   assert.deepEqual(jobs.slice(0, 3).map(job => job.strategy), ["one-shot", "single", "multi"]);
-  assert.deepEqual(jobs.slice(0, 4).map(job => job.item), ["dev-fixture-01", "dev-fixture-01", "dev-fixture-01", "cs4-sb000"]);
-  assert.equal(jobs[0].key, jobKey({ profile: "a", task: "audra", item: "dev-fixture-01", strategy: "one-shot", repeat: 1 }));
+  assert.deepEqual(jobs.slice(0, 4).map(job => job.item), ["dev-fixture-02", "dev-fixture-02", "dev-fixture-02", "cs4-sb000"]);
+  assert.equal(jobs[0].key, jobKey({ profile: "a", task: "audra", item: "dev-fixture-02", strategy: "one-shot", repeat: 1 }));
   assert.equal(jobs.at(-1).profile, "b");
 }
 

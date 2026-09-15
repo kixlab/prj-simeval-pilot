@@ -39,7 +39,7 @@ export const driverDefaults = {
   // Text tasks: which item to run; empty means the server's first pilot item.
   item: null,
   // Drawing task: which stimulus to run.
-  stimulus: "dev-fixture-01",
+  stimulus: "dev-fixture-02",
   endpoint: "http://127.0.0.1:8000/v1/chat/completions",
   provider: "local",
   // Deprecated alias for --provider: `mock` and `openai` (an OpenAI-compatible

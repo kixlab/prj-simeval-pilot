@@ -23,8 +23,8 @@ images AuDrA can score.
 
 ## Getting the official stimuli
 
-We do not ship them. `dev-fixture-01` is our own drawing and is not an official
-MTCI stimulus. Three routes, best first:
+We do not ship them. The bundled `dev-fixture-02` is our own drawing and is not
+an official MTCI stimulus. Three routes, best first:
 
 1. **CAP** — `cap.ist.psu.edu`. Free, point-and-click, includes the Drawing Task
    with the official stimuli and built-in AuDrA scoring. Licensed **CC BY-NC-ND
@@ -86,8 +86,8 @@ scoring render:
 
 At width 3 — the original default — **no pixel in the scoring image was ever
 solid ink**; every mark antialiased to mid-grey. The pencil default is now **6**
-and the minimum **4**, and `dev-fixture-01` was rethickened to match so the
-contours and the participant's marks still carry identical weight. Official
+and the minimum **4**, and the bundled fixture is drawn at width 6 to match, so
+the contours and the participant's marks carry identical weight. Official
 stimuli should be authored at the same weight.
 
 ## Scoring this project's exports

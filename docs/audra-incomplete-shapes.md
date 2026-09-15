@@ -3,10 +3,10 @@
 A task mode for comparing human and agent creative drawing processes on the
 same stimulus, under the same allowed operations.
 
-> **The bundled stimulus is a development fixture.** `dev-fixture-01` was drawn
-> for interface development. It is **not** an official MTCI stimulus, is not
-> derived from or validated against any published incomplete-shapes instrument,
-> and must not be used for analysable data collection. Replace it with the
+> **The bundled stimulus is a development fixture.** `dev-fixture-02` was traced
+> by hand from an image supplied for testing. It is **not** an official MTCI
+> stimulus, is not validated against any published incomplete-shapes
+> instrument, and must not be used for analysable data collection. Replace it with the
 > official contour set first — see
 > [audra-scoring-and-stimuli.md](audra-scoring-and-stimuli.md) for where the
 > official stimuli come from and what CAP, MTCI, and AuDrA each actually are.
@@ -255,7 +255,7 @@ shared canvas event log**. Rejections are retained with their code and message.
 
 ```jsonc
 {
-  "sessionId": "session-…", "trialId": "trial-…", "stimulusId": "dev-fixture-01",
+  "sessionId": "session-…", "trialId": "trial-…", "stimulusId": "dev-fixture-02",
   "actorType": "human" | "agent", "actorId": "p001",
   "eventIndex": 0,          // assigned by the reducer, never by the actor
   "timestampMs": 1240,      // milliseconds since trial start

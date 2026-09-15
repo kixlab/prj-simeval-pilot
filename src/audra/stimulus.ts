@@ -17,17 +17,22 @@ export type Stimulus = {
   metadata?: Record<string, unknown>;
 };
 
+/**
+ * The stimulus a trial uses when none is named. Traced by hand from an image
+ * supplied for testing: two short diagonals and two arcs of one circle, broken
+ * at the bottom.
+ */
 export const developmentStimulus: Stimulus = {
-  stimulusId: "dev-fixture-01",
+  stimulusId: "dev-fixture-02",
   version: "0.1.0",
   source: "development",
-  backgroundAsset: "/audra/stimuli/dev-fixture-01.svg",
+  backgroundAsset: "/audra/stimuli/dev-fixture-02.svg",
   metadata: {
     contourCount: 4,
     artboardWidth: canonicalArtboard.width,
     artboardHeight: canonicalArtboard.height,
     notice:
-      "Development fixture only. Not an official CAP/MTCI stimulus and not validated for scoring. Replace before data collection."
+      "Development fixture only. Traced from a supplied test image, not an official CAP/MTCI stimulus and not validated for scoring. Replace before data collection."
   }
 };
 
